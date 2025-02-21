@@ -9,7 +9,7 @@ import React, {
 import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { Sprite } from "pixi.js";
-import { useTextures, useDisplayObject, useApplication } from "../../hooks";
+import { useTextures, useDisplayObject } from "../../hooks";
 import { DisplayObjectProps, DisplayObjectRefProps, Size } from "../../types";
 
 extend({
@@ -38,8 +38,6 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
 
   const $props = useDisplayObject(props);
   const { getTexture, getSpriteSheet } = useTextures();
-
-  const {} = useApplication();
 
   const [$texture, $setTexture] = useState<Texture>(undefined);
 

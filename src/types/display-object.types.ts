@@ -12,6 +12,9 @@ export type DisplayObjectProps<DisplayRef> = {
   eventMode?: EventMode;
   cursor?: Cursor;
   tint?: number;
+  alpha?: number;
+  zIndex?: number;
+  sortableChildren?: boolean;
 
   onDraw?: (ref: DisplayRef) => void;
   onPointerDown?: (event: PointerEvent) => void;
@@ -23,6 +26,9 @@ export type DisplayObjectRefProps = {
   readonly scale: Readonly<Point>;
   readonly anchor: Readonly<Point>;
   readonly eventMode?: Readonly<EventMode>;
-  readonly cursor: Readonly<Cursor>;
-  readonly tint: Readonly<number>;
+  readonly cursor?: Readonly<Cursor>;
+  readonly tint?: Readonly<number>;
+  readonly alpha?: Readonly<number>;
+  readonly zIndex?: Readonly<number>;
+  readonly sortableChildren?: Readonly<boolean>;
 };

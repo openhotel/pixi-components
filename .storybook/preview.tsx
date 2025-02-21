@@ -29,6 +29,8 @@ const preview = {
           { value: 2, title: "Scale 2" },
           { value: 3, title: "Scale 3" },
           { value: 4, title: "Scale 4" },
+          { value: 5, title: "Scale 5" },
+          { value: 6, title: "Scale 6" },
         ],
         dynamicTitle: true,
       },
