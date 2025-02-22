@@ -49,6 +49,7 @@ export const useDisplayObject = ({
     pivot: $pivot,
     scale: $scale,
     anchor: $anchor,
+
     ...props,
-  };
+  } as DisplayObjectRefProps;
 };

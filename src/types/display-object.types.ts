@@ -1,6 +1,6 @@
-import { Point } from "./point.types";
 import { Ref } from "react";
 import { Cursor, EventMode } from "../enums";
+import { Point, Size, Bounds } from ".";
 
 export type DisplayObjectProps<DisplayRef> = {
   ref?: Ref<DisplayRef>;
@@ -16,11 +16,11 @@ export type DisplayObjectProps<DisplayRef> = {
   zIndex?: number;
   sortableChildren?: boolean;
 
-  onDraw?: (ref: DisplayRef) => void;
   onPointerDown?: (event: PointerEvent) => void;
 };
 
 export type DisplayObjectRefProps = {
+  //
   readonly position: Readonly<Point>;
   readonly pivot: Readonly<Point>;
   readonly scale: Readonly<Point>;
@@ -31,4 +31,17 @@ export type DisplayObjectRefProps = {
   readonly alpha?: Readonly<number>;
   readonly zIndex?: Readonly<number>;
   readonly sortableChildren?: Readonly<boolean>;
+};
+
+export type DisplayObjectRefFunctions<PixiDisplay> = {
+  /**
+   * Prevent the use of this in favor of adding more props!
+   * @deprecated
+   */
+  component: PixiDisplay;
+
+  readonly position: Readonly<Point>;
+
+  getBounds: () => Bounds;
+  getSize: () => Size;
 };

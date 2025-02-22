@@ -1,15 +1,16 @@
-import React, { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import React, { useCallback, useImperativeHandle, useRef } from "react";
 import { extend } from "@pixi/react";
 import { Graphics } from "pixi.js";
-import { DisplayObjectProps, DisplayObjectRefProps } from "../../types";
+import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
 import { useDisplayObject } from "../../hooks";
 import { GraphicType } from "../../enums";
+import { getDisplayObjectRefFunctions } from "../../utils";
 
 extend({
   Graphics,
 });
 
-export type GraphicsRef = {} & DisplayObjectRefProps;
+export type GraphicsRef = {} & DisplayObjectRefFunctions<Graphics>;
 
 export type GraphicsProps = {
   type: GraphicType;
@@ -22,7 +23,6 @@ export type GraphicsProps = {
 
 export const GraphicsComponent: React.FC<GraphicsProps> = ({
   ref,
-  onDraw,
   type,
   polygon,
   radius,
@@ -35,45 +35,47 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
 
   const $props = useDisplayObject(props);
 
-  const $refProps = useMemo(
+  const getRefProps = useCallback(
     (): GraphicsRef => ({
-      ...$props,
+      ...getDisplayObjectRefFunctions(graphicsRef.current),
+      component: graphicsRef.current,
     }),
-    [$props],
+    [graphicsRef.current],
   );
 
-  useImperativeHandle(ref, (): GraphicsRef => $refProps, [$refProps]);
+  useImperativeHandle(ref, getRefProps, [getRefProps]);
 
-  useEffect(() => {
-    const graphics = graphicsRef.current;
+  const $onDraw = useCallback(
+    (graphics: Graphics) => {
+      graphics.clear();
+      switch (type) {
+        case GraphicType.POLYGON:
+          graphics.poly(polygon).fill({ color: 0xffffff });
+          break;
+        case GraphicType.CIRCLE:
+          graphics.circle(radius, radius, radius).fill({ color: 0xffffff });
+          break;
+        case GraphicType.CAPSULE:
+          graphics
+            .rect(0, radius, radius * 2, length)
+            .circle(radius, radius, radius)
+            .circle(radius, radius + length, radius)
+            .fill({ color: 0xffffff });
+          break;
+        case GraphicType.TRIANGLE:
+          graphics
+            .poly([width / 2, 0, width, height, 0, height])
+            .fill({ color: 0xffffff });
+          break;
+        case GraphicType.RECTANGLE:
+          graphics
+            .poly([0, 0, width, 0, width, height, 0, height])
+            .fill({ color: 0xffffff });
+          break;
+      }
+    },
+    [type, polygon, radius, length, width, height, getRefProps],
+  );
 
-    graphics.clear();
-    switch (type) {
-      case GraphicType.POLYGON:
-        graphics.poly(polygon).fill({ color: 0xffffff });
-        return;
-      case GraphicType.CIRCLE:
-        graphics.circle(radius, radius, radius).fill({ color: 0xffffff });
-        return;
-      case GraphicType.CAPSULE:
-        graphics
-          .rect(0, radius, radius * 2, length)
-          .circle(radius, radius, radius)
-          .circle(radius, radius + length, radius)
-          .fill({ color: 0xffffff });
-        return;
-      case GraphicType.TRIANGLE:
-        graphics
-          .poly([width / 2, 0, width, height, 0, height])
-          .fill({ color: 0xffffff });
-        return;
-      case GraphicType.RECTANGLE:
-        graphics
-          .poly([0, 0, width, 0, width, height, 0, height])
-          .fill({ color: 0xffffff });
-        return;
-    }
-  }, [type, polygon, radius, length, width, height]);
-
-  return <pixiGraphics ref={graphicsRef} draw={null} {...$props} />;
+  return <pixiGraphics ref={graphicsRef} draw={$onDraw} {...$props} />;
 };

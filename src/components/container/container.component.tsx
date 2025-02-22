@@ -1,5 +1,7 @@
 import React, {
   ReactNode,
+  Ref,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -8,44 +10,60 @@ import React, {
 } from "react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import { DisplayObjectProps, DisplayObjectRefProps } from "../../types";
+import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
 import { useDisplayObject } from "../../hooks";
+import { getDisplayObjectRefFunctions } from "../../utils";
 
 extend({
   Container,
 });
 
-export type ContainerRef = {} & DisplayObjectRefProps;
+export type ContainerRef = {} & DisplayObjectRefFunctions<Container<any>>;
 
 export type ContainerProps = {
   children?: ReactNode;
   mask?: ReactNode;
+  onChildLoaded?: (ref: Ref<unknown>) => void;
 } & DisplayObjectProps<ContainerRef>;
 
 export const ContainerComponent: React.FC<ContainerProps> = ({
   children,
   ref,
-  onDraw,
   mask,
+  onChildLoaded,
   ...props
 }) => {
+  const $ref = useRef<Container>(null);
   const maskRef = useRef<Container>(null);
   const [isMaskReady, setIsMaskReady] = useState(false);
 
   const $props = useDisplayObject(props);
 
-  const $refProps = useMemo(
+  const getRefProps = useCallback(
     (): ContainerRef => ({
-      ...$props,
+      ...getDisplayObjectRefFunctions($ref.current),
+      component: $ref.current,
     }),
-    [$props],
+    [$ref.current],
   );
 
-  useImperativeHandle(ref, (): ContainerRef => $refProps, [$refProps]);
+  useImperativeHandle(ref, getRefProps, [getRefProps]);
+
+  const $onChildLoaded = useCallback(
+    (ref) => {
+      $ref.current.parent.emit("child-loaded", getRefProps());
+      onChildLoaded?.(ref);
+    },
+    [$ref.current, onChildLoaded, getRefProps],
+  );
 
   useEffect(() => {
-    onDraw?.($refProps);
-  }, [onDraw, $refProps]);
+    $ref?.current?.on("child-loaded", $onChildLoaded);
+
+    return () => {
+      $ref?.current?.off("child-loaded", $onChildLoaded);
+    };
+  }, [onChildLoaded, $ref.current]);
 
   // Render the mask into the PixiJS tree and capture its ref
   const renderedMask = useMemo(() => {
@@ -56,16 +74,19 @@ export const ContainerComponent: React.FC<ContainerProps> = ({
           maskRef.current = instance;
           setIsMaskReady(!!instance);
         }}
+        position={$props.position}
+        pivot={$props.pivot}
       >
         {mask}
       </pixiContainer>
     );
-  }, [mask]);
+  }, [mask, $props, setIsMaskReady]);
 
   return (
     <>
       {renderedMask}
       <pixiContainer
+        ref={$ref}
         mask={isMaskReady ? maskRef.current : null}
         children={children}
         {...$props}

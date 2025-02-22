@@ -6,7 +6,7 @@ import { GraphicsComponent } from "../graphics";
 import { GraphicType, HorizontalAlign } from "../../enums";
 import { Sides, Size } from "../../types";
 
-export type SpriteProps = {
+export type SpriteTextProps = {
   spriteSheet: string;
   text: string;
 
@@ -22,7 +22,7 @@ export type SpriteProps = {
   alpha?: number | number[];
 } & Omit<ContainerProps, "alpha">;
 
-export const SpriteTextComponent: React.FC<SpriteProps> = ({
+export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   spriteSheet,
   text,
   maxWidth,
@@ -84,8 +84,8 @@ export const SpriteTextComponent: React.FC<SpriteProps> = ({
                 y: lastY,
               }}
             />
-            {Array.isArray(backgroundColor) ||
-            Array.isArray(backgroundAlpha) ? (
+            {(backgroundColor && Array.isArray(backgroundColor)) ||
+            (backgroundAlpha && Array.isArray(backgroundAlpha)) ? (
               <GraphicsComponent
                 type={GraphicType.RECTANGLE}
                 width={
@@ -165,17 +165,17 @@ export const SpriteTextComponent: React.FC<SpriteProps> = ({
       {...containerProps}
     >
       {textSprites}
-      {Array.isArray(backgroundColor) ||
-      Array.isArray(backgroundAlpha) ? null : (
+      {(backgroundAlpha && !Array.isArray(backgroundColor)) ||
+      (backgroundAlpha && !Array.isArray(backgroundAlpha)) ? (
         <GraphicsComponent
           type={GraphicType.RECTANGLE}
           width={size.width}
           height={size.height}
-          tint={backgroundColor}
-          alpha={backgroundAlpha}
+          tint={backgroundColor as number}
+          alpha={backgroundAlpha as number}
           zIndex={0}
         />
-      )}
+      ) : null}
     </ContainerComponent>
   );
 };

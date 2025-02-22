@@ -1,7 +1,7 @@
 import React, {
+  useCallback,
   useEffect,
   useImperativeHandle,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -10,7 +10,8 @@ import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { Sprite } from "pixi.js";
 import { useTextures, useDisplayObject } from "../../hooks";
-import { DisplayObjectProps, DisplayObjectRefProps, Size } from "../../types";
+import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
+import { getDisplayObjectRefFunctions } from "../../utils";
 
 extend({
   Sprite,
@@ -18,9 +19,7 @@ extend({
 
 export type SpriteRef = {
   texture: Texture;
-
-  getSize: () => Size;
-} & DisplayObjectRefProps;
+} & DisplayObjectRefFunctions<Sprite>;
 
 export type SpriteProps = {
   spriteSheet?: string;
@@ -29,7 +28,6 @@ export type SpriteProps = {
 
 export const SpriteComponent: React.FC<SpriteProps> = ({
   ref,
-  onDraw,
   spriteSheet,
   texture,
   ...props
@@ -49,22 +47,22 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
     else getTexture(texture).then($setTexture);
   }, [spriteSheet, texture, getSpriteSheet, getTexture, $setTexture]);
 
-  const $refProps = useMemo(
+  const getRefProps = useCallback(
     (): SpriteRef => ({
-      ...$props,
+      ...getDisplayObjectRefFunctions(spriteRef.current),
+      component: spriteRef.current,
       texture: $texture,
-
-      getSize: () => spriteRef.current.getSize(),
     }),
-    [$props, $texture],
+    [$texture, spriteRef.current],
   );
 
-  useImperativeHandle(ref, (): SpriteRef => $refProps, [$refProps]);
+  useImperativeHandle(ref, getRefProps, [getRefProps]);
 
   useEffect(() => {
-    if (!$refProps.texture) return;
-    onDraw?.($refProps);
-  }, [onDraw, $refProps.texture]);
+    const refProps = getRefProps();
+    if (!$texture || !refProps.component) return;
+    spriteRef.current.parent.emit("child-loaded", refProps);
+  }, [getRefProps, $texture]);
 
   return <pixiSprite ref={spriteRef} {...$props} texture={$texture} />;
 };

@@ -1,8 +1,8 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { ContainerComponent } from "./container.component";
-import { SpriteComponent } from "../sprite";
 import { fn } from "@storybook/test";
-import { Cursor, EventMode } from "../../enums";
+import { Cursor, EventMode, GraphicType } from "../../enums";
+import { GraphicsComponent, SpriteComponent } from "..";
 
 const meta: Meta<typeof ContainerComponent> = {
   title: "Components/Container",
@@ -20,13 +20,15 @@ export const Primary: Story = {
   args: {
     children: (
       <SpriteComponent
-        position={{ x: 10 }}
+        position={{ x: 0 }}
         texture="/assets/logo_64x_transparent.png"
       />
     ),
-    position: { x: -15, y: 0 },
+    mask: (
+      <GraphicsComponent type={GraphicType.RECTANGLE} width={32} height={64} />
+    ),
+    position: { x: 0, y: 0 },
     pivot: { x: 0, y: 0 },
-    onDraw: fn(),
     onPointerDown: fn(),
     eventMode: EventMode.STATIC,
     cursor: Cursor.POINTER,

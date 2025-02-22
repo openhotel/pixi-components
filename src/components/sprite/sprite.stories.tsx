@@ -22,13 +22,11 @@ export const SpriteSheetTexture: Story = {
     pivot: { x: 0, y: 0 },
     scale: { x: -1 },
     anchor: { x: 0 },
-    onDraw: fn(),
   },
 };
 
 export const SpriteTexture: Story = {
   args: {
     texture: "/assets/logo_64x_transparent.png",
-    onDraw: fn(),
   },
 };
