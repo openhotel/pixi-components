@@ -19,7 +19,12 @@ export type DisplayObjectProps<DisplayRef> = {
   onPointerDown?: (event: PointerEvent) => void;
 };
 
-export type DisplayObjectRefProps = {
+export type DisplayObjectRefProps<PixiDisplay> = {
+  /**
+   * Prevent the use of this in favor of adding more props!
+   * @deprecated
+   */
+  component: PixiDisplay;
   //
   readonly position: Readonly<Point>;
   readonly pivot: Readonly<Point>;
@@ -31,14 +36,9 @@ export type DisplayObjectRefProps = {
   readonly alpha?: Readonly<number>;
   readonly zIndex?: Readonly<number>;
   readonly sortableChildren?: Readonly<boolean>;
-};
+} & DisplayObjectRefFunctions;
 
-export type DisplayObjectRefFunctions<PixiDisplay> = {
-  /**
-   * Prevent the use of this in favor of adding more props!
-   * @deprecated
-   */
-  component: PixiDisplay;
+export type DisplayObjectRefFunctions = {
 
   readonly position: Readonly<Point>;
 

@@ -10,7 +10,7 @@ import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { Sprite } from "pixi.js";
 import { useTextures, useDisplayObject } from "../../hooks";
-import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
+import {DisplayObjectProps, DisplayObjectRefProps} from "../../types";
 import { getDisplayObjectRefFunctions } from "../../utils";
 
 extend({
@@ -19,7 +19,7 @@ extend({
 
 export type SpriteRef = {
   texture: Texture;
-} & DisplayObjectRefFunctions<Sprite>;
+} & DisplayObjectRefProps<Sprite>;
 
 export type SpriteProps = {
   spriteSheet?: string;
@@ -50,19 +50,19 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
   const getRefProps = useCallback(
     (): SpriteRef => ({
       ...getDisplayObjectRefFunctions(spriteRef.current),
+      ...$props,
       component: spriteRef.current,
       texture: $texture,
     }),
-    [$texture, spriteRef.current],
+    [$texture, spriteRef.current, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
 
   useEffect(() => {
-    const refProps = getRefProps();
-    if (!$texture || !refProps.component) return;
-    spriteRef.current.parent.emit("child-loaded", refProps);
-  }, [getRefProps, $texture]);
+    if (!$texture || !spriteRef.current) return;
+    spriteRef.current.parent.emit("child-loaded", null);
+  }, [spriteRef.current, $texture]);
 
   return <pixiSprite ref={spriteRef} {...$props} texture={$texture} />;
 };

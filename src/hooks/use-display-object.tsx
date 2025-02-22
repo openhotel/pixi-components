@@ -7,7 +7,7 @@ export const useDisplayObject = ({
   scale,
   anchor,
   ...props
-}: DisplayObjectProps<unknown>): DisplayObjectRefProps => {
+}: DisplayObjectProps<unknown>): DisplayObjectRefProps<unknown> => {
   const $position = useMemo(
     () => ({
       x: Math.round(position?.x ?? 0),
@@ -51,5 +51,5 @@ export const useDisplayObject = ({
     anchor: $anchor,
 
     ...props,
-  } as DisplayObjectRefProps;
+  } as DisplayObjectRefProps<unknown>;
 };

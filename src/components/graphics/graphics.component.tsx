@@ -1,7 +1,7 @@
 import React, { useCallback, useImperativeHandle, useRef } from "react";
 import { extend } from "@pixi/react";
 import { Graphics } from "pixi.js";
-import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
+import { DisplayObjectProps } from "../../types";
 import { useDisplayObject } from "../../hooks";
 import { GraphicType } from "../../enums";
 import { getDisplayObjectRefFunctions } from "../../utils";
@@ -10,7 +10,7 @@ extend({
   Graphics,
 });
 
-export type GraphicsRef = {} & DisplayObjectRefFunctions<Graphics>;
+export type GraphicsRef = {} & DisplayObjectProps<Graphics>;
 
 export type GraphicsProps = {
   type: GraphicType;
@@ -38,9 +38,10 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
   const getRefProps = useCallback(
     (): GraphicsRef => ({
       ...getDisplayObjectRefFunctions(graphicsRef.current),
+      ...$props,
       component: graphicsRef.current,
     }),
-    [graphicsRef.current],
+    [graphicsRef.current, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
@@ -74,7 +75,7 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
           break;
       }
     },
-    [type, polygon, radius, length, width, height, getRefProps],
+    [type, polygon, radius, length, width, height],
   );
 
   return <pixiGraphics ref={graphicsRef} draw={$onDraw} {...$props} />;

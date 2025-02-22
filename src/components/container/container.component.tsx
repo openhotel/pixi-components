@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import { DisplayObjectProps, DisplayObjectRefFunctions } from "../../types";
+import {DisplayObjectProps, DisplayObjectRefProps} from "../../types";
 import { useDisplayObject } from "../../hooks";
 import { getDisplayObjectRefFunctions } from "../../utils";
 
@@ -18,7 +18,7 @@ extend({
   Container,
 });
 
-export type ContainerRef = {} & DisplayObjectRefFunctions<Container<any>>;
+export type ContainerRef = {} & DisplayObjectRefProps<Container<any>>;
 
 export type ContainerProps = {
   children?: ReactNode;
@@ -42,19 +42,20 @@ export const ContainerComponent: React.FC<ContainerProps> = ({
   const getRefProps = useCallback(
     (): ContainerRef => ({
       ...getDisplayObjectRefFunctions($ref.current),
+      ...$props,
       component: $ref.current,
     }),
-    [$ref.current],
+    [$ref.current, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
 
   const $onChildLoaded = useCallback(
     (ref) => {
-      $ref.current.parent.emit("child-loaded", getRefProps());
+      $ref.current.parent.emit("child-loaded", null);
       onChildLoaded?.(ref);
     },
-    [$ref.current, onChildLoaded, getRefProps],
+    [$ref.current, onChildLoaded],
   );
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export const ContainerComponent: React.FC<ContainerProps> = ({
     return () => {
       $ref?.current?.off("child-loaded", $onChildLoaded);
     };
-  }, [onChildLoaded, $ref.current]);
+  }, [$ref.current]);
 
   // Render the mask into the PixiJS tree and capture its ref
   const renderedMask = useMemo(() => {
