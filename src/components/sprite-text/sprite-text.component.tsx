@@ -165,7 +165,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
       {...containerProps}
     >
       {textSprites}
-      {(backgroundAlpha && !Array.isArray(backgroundColor)) ||
+      {(backgroundColor && !Array.isArray(backgroundColor)) ||
       (backgroundAlpha && !Array.isArray(backgroundAlpha)) ? (
         <GraphicsComponent
           type={GraphicType.RECTANGLE}

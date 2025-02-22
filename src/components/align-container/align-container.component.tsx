@@ -43,27 +43,32 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
     let x = 0;
     let y = 0;
 
+    const $boxSize = {
+      width: width ?? windowSize.width,
+      height: height ?? windowSize.height,
+    };
+
     switch (verticalAlign) {
       case VerticalAlign.MIDDLE:
-        y = windowSize.height / 2 - $size.height / 2;
+        y = $boxSize.height / 2 - $size.height / 2;
         break;
       case VerticalAlign.BOTTOM:
-        y = windowSize.height - $size.height;
+        y = $boxSize.height - $size.height;
         break;
     }
     switch (horizontalAlign) {
       case HorizontalAlign.CENTER:
-        x = windowSize.width / 2 - $size.width / 2;
+        x = $boxSize.width / 2 - $size.width / 2;
         break;
       case HorizontalAlign.RIGHT:
-        x = windowSize.width - $size.width;
+        x = $boxSize.width - $size.width;
         break;
     }
     return {
       x,
       y,
     };
-  }, [windowSize, $size, $bounds]);
+  }, [windowSize, $size, $bounds, width, height]);
 
   return (
     <ContainerComponent {...props}>
