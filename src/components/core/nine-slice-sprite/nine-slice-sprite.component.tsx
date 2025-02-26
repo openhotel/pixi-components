@@ -12,7 +12,6 @@ import { NineSliceSprite } from "pixi.js";
 import { useTextures, useDisplayObject } from "../../../hooks";
 import { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
 import { getDisplayObjectRefFunctions } from "../../../utils";
-import { ContainerComponent, ContainerRef } from "../container";
 
 extend({
   NineSliceSprite,

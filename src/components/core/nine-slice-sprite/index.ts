@@ -1,1 +1,1 @@
-export * from "src/components/core/nine-slice-sprite/nine-slice-sprite.component";
+export * from "./nine-slice-sprite.component";
