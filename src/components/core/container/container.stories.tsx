@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { ContainerComponent } from "./container.component";
 import { fn } from "@storybook/test";
-import { Cursor, EventMode, GraphicType } from "../../enums";
+import { Cursor, EventMode, GraphicType } from "../../../enums";
 import { GraphicsComponent, SpriteComponent } from "..";
 
 const meta: Meta<typeof ContainerComponent> = {
-  title: "Components/Container",
+  title: "Components/Core/Container",
   component: ContainerComponent,
   parameters: {
     layout: "fullscreen",

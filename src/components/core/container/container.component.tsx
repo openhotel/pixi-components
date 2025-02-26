@@ -10,9 +10,9 @@ import React, {
 } from "react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import {DisplayObjectProps, DisplayObjectRefProps} from "../../types";
-import { useDisplayObject } from "../../hooks";
-import { getDisplayObjectRefFunctions } from "../../utils";
+import { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
+import { useDisplayObject } from "../../../hooks";
+import { getDisplayObjectRefFunctions } from "../../../utils";
 
 extend({
   Container,

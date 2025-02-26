@@ -1,10 +1,13 @@
-import { ContainerComponent, ContainerProps } from "../container";
+import {
+  ContainerComponent,
+  ContainerProps,
+  SpriteComponent,
+  GraphicsComponent,
+} from "../../core";
 import React, { ReactNode, useEffect, useState } from "react";
-import { SpriteComponent } from "../sprite";
-import { useTextures } from "../../hooks";
-import { GraphicsComponent } from "../graphics";
-import { GraphicType, HorizontalAlign } from "../../enums";
-import { Sides, Size } from "../../types";
+import { useTextures } from "../../../hooks";
+import { GraphicType, HorizontalAlign } from "../../../enums";
+import { Sides, Size } from "../../../types";
 
 export type SpriteTextProps = {
   spriteSheet: string;

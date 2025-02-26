@@ -1,9 +1,8 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { SpriteComponent } from "./sprite.component";
-import { fn } from "@storybook/test";
 
 const meta: Meta<typeof SpriteComponent> = {
-  title: "Components/Sprite",
+  title: "Components/Core/Sprite",
   component: SpriteComponent,
   parameters: {
     layout: "fullscreen",

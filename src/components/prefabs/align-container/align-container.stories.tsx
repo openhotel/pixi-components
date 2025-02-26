@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { AlignContainerComponent } from "./align-container.component";
-import { GraphicType, HorizontalAlign, VerticalAlign } from "../../enums";
-import { GraphicsComponent, SpriteComponent, SpriteTextComponent } from "..";
+import { GraphicType, HorizontalAlign, VerticalAlign } from "../../../enums";
+import { GraphicsComponent, SpriteComponent, SpriteTextComponent } from "../..";
 
 const meta: Meta<typeof AlignContainerComponent> = {
-  title: "Components/Align Container",
+  title: "Components/Prefabs/Align Container",
   component: AlignContainerComponent,
   parameters: {
     layout: "fullscreen",

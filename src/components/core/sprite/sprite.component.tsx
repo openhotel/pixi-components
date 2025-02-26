@@ -9,9 +9,9 @@ import React, {
 import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
 import { Sprite } from "pixi.js";
-import { useTextures, useDisplayObject } from "../../hooks";
-import {DisplayObjectProps, DisplayObjectRefProps} from "../../types";
-import { getDisplayObjectRefFunctions } from "../../utils";
+import { useTextures, useDisplayObject } from "../../../hooks";
+import { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
+import { getDisplayObjectRefFunctions } from "../../../utils";
 
 extend({
   Sprite,
@@ -35,17 +35,13 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
   const spriteRef = useRef<Sprite>(null);
 
   const $props = useDisplayObject(props);
-  const { getTexture, getSpriteSheet } = useTextures();
+  const { getTexture } = useTextures();
 
-  const [$texture, $setTexture] = useState<Texture>(undefined);
+  const [$texture, $setTexture] = useState<Texture>(Texture.EMPTY);
 
   useEffect(() => {
-    if (spriteSheet)
-      getSpriteSheet(spriteSheet).then((spriteSheet) =>
-        $setTexture(spriteSheet.textures[texture]),
-      );
-    else getTexture(texture).then($setTexture);
-  }, [spriteSheet, texture, getSpriteSheet, getTexture, $setTexture]);
+    getTexture({ spriteSheet, texture }).then($setTexture);
+  }, [spriteSheet, texture, getTexture, $setTexture]);
 
   const getRefProps = useCallback(
     (): SpriteRef => ({
@@ -64,5 +60,6 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
     spriteRef.current.parent.emit("child-loaded", null);
   }, [spriteRef.current, $texture]);
 
+  console.log($texture);
   return <pixiSprite ref={spriteRef} {...$props} texture={$texture} />;
 };

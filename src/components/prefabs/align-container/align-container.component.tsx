@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { HorizontalAlign, VerticalAlign } from "../../enums";
-import { ContainerComponent, ContainerProps, ContainerRef } from "..";
-import { Bounds, Size } from "../../types";
-import { useWindow } from "../../hooks";
+import { HorizontalAlign, VerticalAlign } from "../../../enums";
+import { ContainerComponent, ContainerProps, ContainerRef } from "../../core";
+import { Bounds, Size } from "../../../types";
+import { useWindow } from "../../../hooks";
 
 export type AlignContainerProps = {
   verticalAlign?: VerticalAlign;

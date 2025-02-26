@@ -1,10 +1,10 @@
 import React, { useCallback, useImperativeHandle, useRef } from "react";
 import { extend } from "@pixi/react";
 import { Graphics } from "pixi.js";
-import { DisplayObjectProps } from "../../types";
-import { useDisplayObject } from "../../hooks";
-import { GraphicType } from "../../enums";
-import { getDisplayObjectRefFunctions } from "../../utils";
+import { DisplayObjectProps } from "../../../types";
+import { useDisplayObject } from "../../../hooks";
+import { GraphicType } from "../../../enums";
+import { getDisplayObjectRefFunctions } from "../../../utils";
 
 extend({
   Graphics,

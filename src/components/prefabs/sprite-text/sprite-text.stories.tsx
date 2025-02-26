@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextComponent } from "./sprite-text.component";
 
 const meta: Meta<typeof SpriteTextComponent> = {
-  title: "Components/Sprite Text",
+  title: "Components/Prefabs/Sprite Text",
   component: SpriteTextComponent,
   parameters: {
     layout: "fullscreen",

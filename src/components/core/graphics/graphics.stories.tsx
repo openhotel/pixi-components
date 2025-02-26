@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { GraphicsComponent } from "./graphics.component";
-import { GraphicType } from "../../enums";
+import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof GraphicsComponent> = {
-  title: "Components/Graphics",
+  title: "Components/Core/Graphics",
   component: GraphicsComponent,
   parameters: {
     layout: "fullscreen",

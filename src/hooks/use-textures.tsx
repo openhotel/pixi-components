@@ -1,9 +1,11 @@
 import React, { ReactNode, useCallback, useContext, useState } from "react";
 import { Spritesheet, Texture } from "pixi.js";
 
+type TextureProps = { texture: string; spriteSheet?: string };
+
 type TexturesState = {
   getSpriteSheet: (name: string) => Promise<Spritesheet<any>>;
-  getTexture: (name: string) => Promise<Texture>;
+  getTexture: (data: TextureProps) => Promise<Texture>;
 };
 
 const TexturesContext = React.createContext<TexturesState>(undefined);
@@ -20,26 +22,15 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
     Record<string, Spritesheet<any>>
   >({});
 
-  const getTexture = useCallback(
-    (name: string): Promise<Texture> => {
-      return new Promise(async (resolve) => {
-        if (textureMap[name]) return resolve(textureMap[name]);
-
+  const getRawTexture = useCallback(
+    (name: string) =>
+      new Promise<Texture>(async (resolve) => {
         const data = await fetch(name);
         const blob = await data.blob();
         const imageBitmap = await createImageBitmap(blob);
-        const texture = Texture.from(imageBitmap);
-
-        setTextureMap((map) => {
-          return {
-            ...map,
-            [name]: texture,
-          };
-        });
-        resolve(texture);
-      });
-    },
-    [setTextureMap],
+        resolve(Texture.from(imageBitmap, true));
+      }),
+    [],
   );
 
   const getSpriteSheet = useCallback(
@@ -50,8 +41,9 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
         fetch(name)
           .then((data) => data.json())
           .then(async (data) => {
-            const imagePath = name.replace(/([\w-]+\.json)/, data.meta.image);
-            const texture = await getTexture(imagePath);
+            const spritePath = name.replace(/([\w-]+\.json)/, data.meta.image);
+            const texture = await getRawTexture(spritePath);
+
             const $spriteSheet = new Spritesheet(texture, data);
             await $spriteSheet.parse();
 
@@ -65,7 +57,34 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
           });
       });
     },
-    [setSpriteSheetMap, getTexture],
+    [setSpriteSheetMap, spriteSheetMap, getRawTexture],
+  );
+
+  const getTexture = useCallback(
+    ({
+      texture: textureName,
+      spriteSheet: spriteSheetName,
+    }: TextureProps): Promise<Texture> => {
+      return new Promise(async (resolve) => {
+        if (spriteSheetName) {
+          const spriteSheet = await getSpriteSheet(spriteSheetName);
+          return resolve(spriteSheet.textures[textureName]);
+        }
+
+        if (textureMap[textureName]) return resolve(textureMap[textureName]);
+
+        const texture = await getRawTexture(textureName);
+
+        setTextureMap((map) => {
+          return {
+            ...map,
+            [textureName]: texture,
+          };
+        });
+        resolve(texture);
+      });
+    },
+    [setTextureMap, textureMap, getSpriteSheet, getRawTexture],
   );
 
   return (
