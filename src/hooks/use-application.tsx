@@ -2,6 +2,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -13,7 +14,14 @@ import {
   Renderer,
   TextureSource,
 } from "pixi.js";
-import { WindowProvider, TexturesProvider, EventsProvider } from ".";
+import {
+  WindowProvider,
+  TexturesProvider,
+  EventsProvider,
+  CursorProvider,
+  useEvents,
+} from ".";
+import { Event } from "../enums";
 
 type ApplicationState = {
   application: PixiApplication<Renderer>;
@@ -29,11 +37,69 @@ type ApplicationProps = {
 
   scale?: number;
   contextMenuDisabled?: boolean;
+  backgroundColor?: number;
+};
+
+const WrapperApplicationProvider: React.FC<
+  ApplicationProps & ApplicationState
+> = ({ children, scale, application, ...props }) => {
+  const { emit } = useEvents();
+
+  useEffect(() => {
+    let $lastUpdate = 0;
+    let $fps: number = 0;
+    let $lastFPS: number = 0;
+    let $frames = 0;
+    let $prevTime = 0;
+
+    const update = (currentUpdate: number) => {
+      currentUpdate *= 0.01; // convert to ms
+      let deltaTime = currentUpdate - $lastUpdate;
+      $lastUpdate = currentUpdate;
+
+      emit(Event.TICK, deltaTime);
+      application.render();
+
+      // FPS
+      $frames++;
+
+      let time = (performance || Date).now();
+
+      if (time >= $prevTime + 1000) {
+        const fps = ($frames * 1000) / (time - $prevTime);
+        $prevTime = time;
+        $frames = 0;
+        $fps = Math.round(fps);
+      }
+
+      if ($fps !== $lastFPS) {
+        emit(Event.FPS, $fps);
+        $lastFPS = $fps;
+      }
+      requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
+  }, []);
+
+  return (
+    <ApplicationContext.Provider
+      value={{
+        application,
+        ...props,
+      }}
+    >
+      <WindowProvider scale={scale}>
+        <CursorProvider>
+          <TexturesProvider>{children}</TexturesProvider>
+        </CursorProvider>
+      </WindowProvider>
+    </ApplicationContext.Provider>
+  );
 };
 
 export const ApplicationProvider: React.FC<ApplicationProps> = ({
-  children,
-  scale,
+  backgroundColor,
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -45,7 +111,7 @@ export const ApplicationProvider: React.FC<ApplicationProps> = ({
       application.stage.eventMode = "static";
 
       application.ticker.autoStart = false;
-      // application.ticker.stop();
+      application.ticker.stop();
 
       // Renders crisp pixel sprites
       TextureSource.defaultOptions.scaleMode = "nearest";
@@ -63,22 +129,20 @@ export const ApplicationProvider: React.FC<ApplicationProps> = ({
   );
 
   return (
-    <Application ref={$application} onInit={onInit} antialias={true}>
-      <ApplicationContext.Provider
-        value={{
-          application,
-          ...props,
-        }}
+    <EventsProvider contextMenuDisabled={props.contextMenuDisabled}>
+      <Application
+        ref={$application}
+        sharedTicker={false}
+        preference="webgpu"
+        onInit={onInit}
+        antialias={true}
+        backgroundColor={backgroundColor}
       >
         {isLoaded ? (
-          <EventsProvider>
-            <WindowProvider scale={scale}>
-              <TexturesProvider>{children}</TexturesProvider>
-            </WindowProvider>
-          </EventsProvider>
+          <WrapperApplicationProvider {...props} application={application} />
         ) : null}
-      </ApplicationContext.Provider>
-    </Application>
+      </Application>
+    </EventsProvider>
   );
 };
 

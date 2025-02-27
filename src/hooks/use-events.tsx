@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { Event } from "../enums";
 import { EVENT_MAP } from "../consts/events.consts";
-import { useApplication } from "./use-application";
 
 type Callback<Data extends unknown> = (data?: Data) => void | Promise<void>;
 
@@ -23,13 +22,13 @@ const EventsContext = React.createContext<EventsState>(undefined);
 
 type EventsProps = {
   children: ReactNode;
+  contextMenuDisabled?: boolean;
 };
 
 export const EventsProvider: React.FunctionComponent<EventsProps> = ({
   children,
+  contextMenuDisabled,
 }) => {
-  const { contextMenuDisabled } = useApplication();
-
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [eventMap, setEventMap] = useState<
     Record<Event, ((data?: any) => void)[]>

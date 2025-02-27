@@ -14,6 +14,8 @@ type WindowState = {
   scale: number;
   setScale: (scale: number) => void;
 
+  normalizeValue: (value: number) => number;
+
   size: Size;
 };
 
@@ -73,6 +75,11 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     application.renderer.resize($size.width, $size.height);
   }, [$scale, application, setSize, $getSize, emit]);
 
+  const normalizeValue = useCallback(
+    (value: number) => Math.round(value / scale),
+    [scale],
+  );
+
   useEffect(() => {
     window.addEventListener("resize", $resize);
 
@@ -89,8 +96,10 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
   return (
     <WindowContext.Provider
       value={{
-        scale: $scale,
+        scale,
         setScale: $setScale,
+
+        normalizeValue,
 
         size,
       }}

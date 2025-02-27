@@ -1,8 +1,9 @@
 export enum Event {
   //Fired when window is resized
   RESIZE,
-
   CURSOR_MOVE,
+  TICK,
+  FPS,
 
   //*** events from EVENT_MAP ***//
   KEY_DOWN,

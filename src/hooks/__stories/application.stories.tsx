@@ -7,15 +7,17 @@ const ApplicationStory = () => {
   const { application } = useApplication();
 
   return (
-    <SpriteComponent
-      spriteSheet={"/assets/human/human.json"}
-      texture={"head_n"}
-      eventMode={EventMode.STATIC}
-      cursor={Cursor.POINTER}
-      onPointerDown={() => {
-        application.stage.tint = 0xff00ff;
-      }}
-    />
+    <>
+      <SpriteComponent
+        spriteSheet={"/assets/human/human.json"}
+        texture={"head_n"}
+        eventMode={EventMode.STATIC}
+        cursor={Cursor.POINTER}
+        onPointerDown={() => {
+          application.stage.tint = 0xff00ff;
+        }}
+      />
+    </>
   );
 };
 

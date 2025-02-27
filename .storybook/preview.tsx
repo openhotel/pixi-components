@@ -1,6 +1,13 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./style.css";
-import { ApplicationProvider } from "../src";
+import {
+  AlignContainerComponent,
+  ApplicationProvider,
+  Event,
+  HorizontalAlign,
+  SpriteTextComponent,
+  useEvents,
+} from "../src";
 import { withConsole } from "@storybook/addon-console";
 
 /** @type { import('@storybook/react').Preview } */
@@ -52,13 +59,41 @@ const preview = {
 
 export default preview;
 
+const ApplicationWrapper = ({ children }) => {
+  const { on } = useEvents();
+
+  const [fps, setfps] = useState<number>(0);
+
+  useEffect(() => {
+    on<number>(Event.FPS, setfps);
+  }, [on, setfps]);
+
+  return (
+    <>
+      {children}
+      <AlignContainerComponent
+        position={{ x: -4, y: 4 }}
+        horizontalAlign={HorizontalAlign.RIGHT}
+      >
+        <SpriteTextComponent
+          spriteSheet={"/assets/fonts/default-font.json"}
+          text={`${fps}FPS`}
+        />
+      </AlignContainerComponent>
+    </>
+  );
+};
+
 export const decorators = [
   (renderStory, props) => {
     const scale = useMemo(() => props.globals.scale, [props]);
     // const isConsole = useMemo(() => props.globals.console, [props]);
+
     return (
       <ApplicationProvider scale={scale}>
-        {withConsole()(renderStory)(props)}
+        <ApplicationWrapper>
+          {withConsole()(renderStory)(props)}
+        </ApplicationWrapper>
       </ApplicationProvider>
     );
   },
