@@ -13,19 +13,28 @@ import {
   Renderer,
   TextureSource,
 } from "pixi.js";
+import { WindowProvider, TexturesProvider, EventsProvider } from ".";
 
 type ApplicationState = {
   application: PixiApplication<Renderer>;
+
+  scale?: number;
+  contextMenuDisabled?: boolean;
 };
 
 const ApplicationContext = React.createContext<ApplicationState>(undefined);
 
 type ApplicationProps = {
   children: ReactNode;
+
+  scale?: number;
+  contextMenuDisabled?: boolean;
 };
 
 export const ApplicationProvider: React.FC<ApplicationProps> = ({
   children,
+  scale,
+  ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const $application = useRef<ApplicationRef>(null);
@@ -58,9 +67,17 @@ export const ApplicationProvider: React.FC<ApplicationProps> = ({
       <ApplicationContext.Provider
         value={{
           application,
+          ...props,
         }}
-        children={isLoaded ? children : null}
-      />
+      >
+        {isLoaded ? (
+          <EventsProvider>
+            <WindowProvider scale={scale}>
+              <TexturesProvider>{children}</TexturesProvider>
+            </WindowProvider>
+          </EventsProvider>
+        ) : null}
+      </ApplicationContext.Provider>
     </Application>
   );
 };

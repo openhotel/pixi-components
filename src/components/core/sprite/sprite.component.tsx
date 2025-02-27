@@ -60,6 +60,5 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
     spriteRef.current.parent.emit("child-loaded", null);
   }, [spriteRef.current, $texture]);
 
-  console.log($texture);
   return <pixiSprite ref={spriteRef} {...$props} texture={$texture} />;
 };

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import "./style.css";
-import { ApplicationProvider, TexturesProvider, WindowProvider } from "../src";
+import { ApplicationProvider } from "../src";
 import { withConsole } from "@storybook/addon-console";
 
 /** @type { import('@storybook/react').Preview } */
@@ -35,6 +35,18 @@ const preview = {
         dynamicTitle: true,
       },
     },
+    console: {
+      description: "console on screen",
+      defaultValue: false,
+      toolbar: {
+        title: "Console off",
+        items: [
+          { value: false, title: "Console off" },
+          { value: true, title: "Console on" },
+        ],
+        dynamicTitle: true,
+      },
+    },
   },
 };
 
@@ -43,13 +55,10 @@ export default preview;
 export const decorators = [
   (renderStory, props) => {
     const scale = useMemo(() => props.globals.scale, [props]);
+    // const isConsole = useMemo(() => props.globals.console, [props]);
     return (
-      <ApplicationProvider>
-        <WindowProvider scale={scale}>
-          <TexturesProvider>
-            {withConsole()(renderStory)(props)}
-          </TexturesProvider>
-        </WindowProvider>
+      <ApplicationProvider scale={scale}>
+        {withConsole()(renderStory)(props)}
       </ApplicationProvider>
     );
   },

@@ -7,6 +7,8 @@ import React, {
 } from "react";
 import { useApplication } from "./use-application";
 import { Size } from "../types";
+import { useEvents } from "./use-events";
+import { Event } from "../enums";
 
 type WindowState = {
   scale: number;
@@ -30,6 +32,7 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
   scale = 2,
 }) => {
   const { application } = useApplication();
+  const { emit } = useEvents();
 
   const [size, setSize] = useState<Size>({ width: 0, height: 0 });
   const [$scale, $setScale] = useState<number>(1);
@@ -60,6 +63,7 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
 
     const $size = $getSize();
     setSize($size);
+    emit<Size>(Event.RESIZE, $size);
 
     application.renderer.resolution = $scale * Math.round(devicePixelRatio);
     application.canvas.style.display = "absolute";
@@ -67,7 +71,7 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     application.canvas.style.height = `${Math.round($size.height * $scale)}px`;
 
     application.renderer.resize($size.width, $size.height);
-  }, [$scale, application, setSize, $getSize]);
+  }, [$scale, application, setSize, $getSize, emit]);
 
   useEffect(() => {
     window.addEventListener("resize", $resize);
