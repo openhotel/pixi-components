@@ -22,6 +22,24 @@ export const Polygon: Story = {
   },
 };
 
+export const PolygonWithMask: Story = {
+  args: {
+    tint: 0xff00ff,
+    type: GraphicType.POLYGON,
+    polygon: [0, 0, 0, 100, 100, 100, 100, 0],
+    mask: (
+      <GraphicsComponent
+        position={{
+          x: 10,
+        }}
+        type={GraphicType.RECTANGLE}
+        width={40}
+        height={50}
+      />
+    ),
+  },
+};
+
 export const Circle: Story = {
   args: {
     tint: 0xff00ff,

@@ -42,14 +42,14 @@ const preview = {
         dynamicTitle: true,
       },
     },
-    console: {
-      description: "console on screen",
+    fps: {
+      description: "show fps",
       defaultValue: false,
       toolbar: {
-        title: "Console off",
+        title: "FPS off",
         items: [
-          { value: false, title: "Console off" },
-          { value: true, title: "Console on" },
+          { value: false, title: "FPS off" },
+          { value: true, title: "FPS on" },
         ],
         dynamicTitle: true,
       },
@@ -59,27 +59,32 @@ const preview = {
 
 export default preview;
 
-const ApplicationWrapper = ({ children }) => {
+const ApplicationWrapper = ({ children, props }) => {
+  const showFPS = useMemo(() => props.globals.fps, [props]);
+
   const { on } = useEvents();
 
   const [fps, setfps] = useState<number>(0);
 
   useEffect(() => {
-    on<number>(Event.FPS, setfps);
-  }, [on, setfps]);
+    if (!showFPS) return;
+    return on<number>(Event.FPS, setfps);
+  }, [on, setfps, showFPS]);
 
   return (
     <>
       {children}
-      <AlignContainerComponent
-        position={{ x: -4, y: 4 }}
-        horizontalAlign={HorizontalAlign.RIGHT}
-      >
-        <SpriteTextComponent
-          spriteSheet={"/assets/fonts/default-font.json"}
-          text={`${fps}FPS`}
-        />
-      </AlignContainerComponent>
+      {showFPS ? (
+        <AlignContainerComponent
+          position={{ x: -4, y: 4 }}
+          horizontalAlign={HorizontalAlign.RIGHT}
+        >
+          <SpriteTextComponent
+            spriteSheet={"/assets/fonts/default-font.json"}
+            text={`${fps}FPS`}
+          />
+        </AlignContainerComponent>
+      ) : null}
     </>
   );
 };
@@ -91,7 +96,7 @@ export const decorators = [
 
     return (
       <ApplicationProvider scale={scale}>
-        <ApplicationWrapper>
+        <ApplicationWrapper props={props}>
           {withConsole()(renderStory)(props)}
         </ApplicationWrapper>
       </ApplicationProvider>

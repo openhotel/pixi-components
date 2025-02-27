@@ -29,10 +29,11 @@ export type DisplayObjectRefProps<PixiDisplay> = {
    */
   component: PixiDisplay;
   //
+  readonly label: Readonly<string>;
+
   readonly mask?: Container<any>;
   readonly maskRender?: ReactNode;
 
-  readonly label: Readonly<string>;
   readonly position: Readonly<Point>;
   readonly pivot: Readonly<Point>;
   readonly scale: Readonly<Point>;

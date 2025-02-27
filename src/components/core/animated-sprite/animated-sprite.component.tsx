@@ -43,7 +43,7 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
 }) => {
   const animatedSpriteRef = useRef<AnimatedSprite>(null);
 
-  const { renderedMask, ...$props } = useDisplayObject(props);
+  const $props = useDisplayObject(props);
   const { getSpriteSheet } = useTextures();
 
   const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
@@ -97,7 +97,7 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
 
   return (
     <>
-      {renderedMask}
+      {$props.maskRender}
       <pixiAnimatedSprite
         ref={animatedSpriteRef}
         {...$props}

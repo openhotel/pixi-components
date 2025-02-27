@@ -34,7 +34,7 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
 }) => {
   const graphicsRef = useRef<Graphics>(null);
 
-  const { renderedMask, ...$props } = useDisplayObject(props);
+  const $props = useDisplayObject(props);
 
   const getRefProps = useCallback(
     (): GraphicsRef => ({
@@ -82,7 +82,7 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
 
   return (
     <>
-      {renderedMask}
+      {$props.maskRender}
       <pixiGraphics
         ref={graphicsRef}
         label={label}

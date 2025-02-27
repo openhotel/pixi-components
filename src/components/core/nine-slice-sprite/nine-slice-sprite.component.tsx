@@ -65,7 +65,7 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
 }) => {
   const spriteRef = useRef<NineSliceSprite>(null);
 
-  const { renderedMask, ...$props } = useDisplayObject(props);
+  const $props = useDisplayObject(props);
   const { getTexture } = useTextures();
 
   const [$texture, $setTexture] = useState<Texture>(null);
@@ -96,7 +96,7 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
 
   return (
     <>
-      {renderedMask}
+      {$props.maskRender}
       <pixiNineSliceSprite
         ref={spriteRef}
         {...$props}

@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { NineSliceSpriteComponent } from "./nine-slice-sprite.component";
+import { GraphicsComponent } from "../graphics";
+import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof NineSliceSpriteComponent> = {
   title: "Components/Core/NineSliceSprite",
@@ -22,6 +24,21 @@ export const SlicedSprite: Story = {
     bottomHeight: 5,
     width: 80,
     height: 50,
+  },
+};
+
+export const SlicedSpriteWithMask: Story = {
+  args: {
+    texture: "/assets/9sprite2.png",
+    leftWidth: 7,
+    rightWidth: 4,
+    topHeight: 7,
+    bottomHeight: 5,
+    width: 80,
+    height: 50,
+    mask: (
+      <GraphicsComponent type={GraphicType.RECTANGLE} width={40} height={50} />
+    ),
   },
 };
 

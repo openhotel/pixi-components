@@ -35,7 +35,7 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
 }) => {
   const spriteRef = useRef<Sprite>(null);
 
-  const { renderedMask, ...$props } = useDisplayObject(props);
+  const $props = useDisplayObject(props);
   const { getTexture } = useTextures();
 
   const [$texture, $setTexture] = useState<Texture>(Texture.EMPTY);
@@ -64,7 +64,7 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
 
   return (
     <>
-      {renderedMask}
+      {$props.maskRender}
       <pixiSprite
         ref={spriteRef}
         label={label}
