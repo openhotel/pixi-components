@@ -13,14 +13,14 @@ export default meta;
 
 type Story = StoryObj<typeof NineSliceSpriteComponent>;
 
-export const SpriteTexture: Story = {
+export const SlicedSprite: Story = {
   args: {
     texture: "/assets/9sprite2.png",
     leftWidth: 7,
-    topHeight: 4,
-    rightWidth: 7,
+    rightWidth: 4,
+    topHeight: 7,
     bottomHeight: 5,
-    width: 70,
+    width: 80,
     height: 50,
   },
 };

@@ -26,8 +26,8 @@ export type NineSliceSpriteProps = {
   texture: string;
 
   leftWidth: number;
-  topHeight: number;
   rightWidth: number;
+  topHeight: number;
   bottomHeight: number;
   width?: number;
   height?: number;
@@ -36,8 +36,8 @@ export type NineSliceSpriteProps = {
 //TODO Not working as expected because this https://github.com/pixijs/pixijs/issues/11309
 /**
  * A: leftWidth
- * B: topHeight
- * C: rightWidth
+ * B: rightWidth
+ * C: topHeight
  * D: bottomHeight
  *
  *       A                          B
