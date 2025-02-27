@@ -1,11 +1,14 @@
-import { useMemo } from "react";
+import { ReactNode, useMemo, useRef, useState } from "react";
 import { DisplayObjectProps, DisplayObjectRefProps } from "../types";
+import { Container } from "pixi.js";
 
 export const useDisplayObject = ({
+  label,
   position,
   pivot,
   scale,
   anchor,
+  mask,
   ...props
 }: DisplayObjectProps<unknown>): DisplayObjectRefProps<unknown> => {
   const $position = useMemo(
@@ -44,11 +47,33 @@ export const useDisplayObject = ({
     };
   }, [anchor, $scale]);
 
+  const [isMaskReady, setIsMaskReady] = useState<boolean>(false);
+  const maskRef = useRef<Container<any>>(null);
+  const maskRender = useMemo((): ReactNode => {
+    if (!mask) return null;
+    return (
+      <pixiContainer
+        ref={(instance) => {
+          maskRef.current = instance;
+          setIsMaskReady(true);
+        }}
+        position={$position}
+        pivot={$pivot}
+      >
+        {mask}
+      </pixiContainer>
+    );
+  }, [mask, $position, $pivot, maskRef, setIsMaskReady]);
+
+  console.log(mask, isMaskReady, maskRef.current);
   return {
     position: $position,
     pivot: $pivot,
     scale: $scale,
     anchor: $anchor,
+
+    mask: maskRef?.current,
+    maskRender: isMaskReady ? maskRender : null,
 
     ...props,
   } as DisplayObjectRefProps<unknown>;

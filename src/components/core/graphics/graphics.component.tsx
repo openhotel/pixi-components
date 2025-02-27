@@ -23,6 +23,7 @@ export type GraphicsProps = {
 
 export const GraphicsComponent: React.FC<GraphicsProps> = ({
   ref,
+  label = "graphics",
   type,
   polygon,
   radius,
@@ -33,15 +34,16 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
 }) => {
   const graphicsRef = useRef<Graphics>(null);
 
-  const $props = useDisplayObject(props);
+  const { renderedMask, ...$props } = useDisplayObject(props);
 
   const getRefProps = useCallback(
     (): GraphicsRef => ({
       ...getDisplayObjectRefFunctions(graphicsRef.current),
       ...$props,
+      label,
       component: graphicsRef.current,
     }),
-    [graphicsRef.current, $props],
+    [graphicsRef.current, label, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
@@ -78,5 +80,15 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
     [type, polygon, radius, length, width, height],
   );
 
-  return <pixiGraphics ref={graphicsRef} draw={$onDraw} {...$props} />;
+  return (
+    <>
+      {renderedMask}
+      <pixiGraphics
+        ref={graphicsRef}
+        label={label}
+        draw={$onDraw}
+        {...$props}
+      />
+    </>
+  );
 };

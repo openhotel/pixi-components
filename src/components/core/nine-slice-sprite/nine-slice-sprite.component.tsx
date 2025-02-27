@@ -58,13 +58,14 @@ export type NineSliceSpriteProps = {
  */
 export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
   ref,
+  label = "nine-slice-sprite",
   spriteSheet,
   texture,
   ...props
 }) => {
   const spriteRef = useRef<NineSliceSprite>(null);
 
-  const $props = useDisplayObject(props);
+  const { renderedMask, ...$props } = useDisplayObject(props);
   const { getTexture } = useTextures();
 
   const [$texture, $setTexture] = useState<Texture>(null);
@@ -77,10 +78,11 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
     (): NineSliceSpriteRef => ({
       ...getDisplayObjectRefFunctions(spriteRef.current),
       ...$props,
+      label,
       component: spriteRef.current,
       texture: $texture,
     }),
-    [$texture, spriteRef.current, $props],
+    [$texture, spriteRef.current, label, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
@@ -93,11 +95,15 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
   if (!$texture) return null;
 
   return (
-    <pixiNineSliceSprite
-      ref={spriteRef}
-      {...$props}
-      texture={$texture}
-      roundPixels={true}
-    />
+    <>
+      {renderedMask}
+      <pixiNineSliceSprite
+        ref={spriteRef}
+        {...$props}
+        label={label}
+        texture={$texture}
+        roundPixels={true}
+      />
+    </>
   );
 };

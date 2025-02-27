@@ -1,13 +1,21 @@
 import {
   ContainerComponent,
-  ContainerProps,
   SpriteComponent,
   GraphicsComponent,
+  SpriteRef,
 } from "../../core";
 import React, { ReactNode, useEffect, useState } from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
-import { Sides, Size } from "../../../types";
+import { DisplayObjectProps, Sides, Size } from "../../../types";
+
+export type TextProps = {
+  color?: number | number[];
+  backgroundColor?: number | number[];
+  backgroundAlpha?: number | number[];
+  padding?: Partial<Sides>;
+  alpha?: number | number[];
+};
 
 export type SpriteTextProps = {
   spriteSheet: string;
@@ -17,13 +25,8 @@ export type SpriteTextProps = {
   wrap?: boolean;
 
   horizontalAlign?: HorizontalAlign;
-
-  color?: number | number[];
-  backgroundColor?: number | number[];
-  backgroundAlpha?: number | number[];
-  padding?: Partial<Sides>;
-  alpha?: number | number[];
-} & Omit<ContainerProps, "alpha">;
+} & TextProps &
+  Omit<DisplayObjectProps<SpriteRef>, "alpha">;
 
 export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   spriteSheet,
@@ -36,6 +39,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   backgroundAlpha,
   padding,
   alpha,
+  label = "sprite-text",
   ...containerProps
 }) => {
   const { getSpriteSheet } = useTextures();
@@ -165,6 +169,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
         ) : null
       }
       sortableChildren={true}
+      label={label}
       {...containerProps}
     >
       {textSprites}

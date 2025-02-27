@@ -24,6 +24,9 @@ import {
 import { Event } from "../enums";
 
 type ApplicationState = {
+  /**
+   * @deprecated Prevent the use of application in favor of adding more props
+   */
   application: PixiApplication<Renderer>;
 
   scale?: number;

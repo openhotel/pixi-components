@@ -7,11 +7,14 @@ import React, {
 } from "react";
 import { useWindow } from "./use-window";
 import { useEvents } from "./use-events";
-import { Event } from "../enums";
+import { Cursor, Event } from "../enums";
 import { Point } from "../types";
+import { useApplication } from "./use-application";
 
 type CursorState = {
   position: Point;
+
+  setCursor: (cursor: Cursor) => void;
 };
 
 const CursorContext = React.createContext<CursorState>(undefined);
@@ -23,6 +26,7 @@ type CursorProps = {
 export const CursorProvider: React.FunctionComponent<CursorProps> = ({
   children,
 }) => {
+  const { application } = useApplication();
   const { normalizeValue } = useWindow();
   const { on, emit } = useEvents();
 
@@ -57,6 +61,13 @@ export const CursorProvider: React.FunctionComponent<CursorProps> = ({
     [normalizeValue, on, emit],
   );
 
+  const setCursor = useCallback(
+    (cursor: Cursor) => {
+      application.canvas.style.cursor = cursor;
+    },
+    [application],
+  );
+
   useEffect(() => {
     const onRemovePointerMove = on<MouseEvent | TouchEvent>(
       Event.POINTER_MOVE,
@@ -72,6 +83,7 @@ export const CursorProvider: React.FunctionComponent<CursorProps> = ({
     <CursorContext.Provider
       value={{
         position,
+        setCursor,
       }}
       children={children}
     />

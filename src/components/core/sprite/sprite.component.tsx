@@ -28,13 +28,14 @@ export type SpriteProps = {
 
 export const SpriteComponent: React.FC<SpriteProps> = ({
   ref,
+  label = "sprite",
   spriteSheet,
   texture,
   ...props
 }) => {
   const spriteRef = useRef<Sprite>(null);
 
-  const $props = useDisplayObject(props);
+  const { renderedMask, ...$props } = useDisplayObject(props);
   const { getTexture } = useTextures();
 
   const [$texture, $setTexture] = useState<Texture>(Texture.EMPTY);
@@ -47,10 +48,11 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
     (): SpriteRef => ({
       ...getDisplayObjectRefFunctions(spriteRef.current),
       ...$props,
+      label,
       component: spriteRef.current,
       texture: $texture,
     }),
-    [$texture, spriteRef.current, $props],
+    [$texture, spriteRef.current, label, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
@@ -60,5 +62,15 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
     spriteRef.current.parent.emit("child-loaded", null);
   }, [spriteRef.current, $texture]);
 
-  return <pixiSprite ref={spriteRef} {...$props} texture={$texture} />;
+  return (
+    <>
+      {renderedMask}
+      <pixiSprite
+        ref={spriteRef}
+        label={label}
+        {...$props}
+        texture={$texture}
+      />
+    </>
+  );
 };

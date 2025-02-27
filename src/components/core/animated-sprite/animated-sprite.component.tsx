@@ -35,6 +35,7 @@ export type AnimatedSpriteProps = {
 
 export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
   ref,
+  label = "animated-sprite",
   spriteSheet,
   animation,
   playStatus = PlayStatus.PLAY_AND_STOP,
@@ -42,7 +43,7 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
 }) => {
   const animatedSpriteRef = useRef<AnimatedSprite>(null);
 
-  const $props = useDisplayObject(props);
+  const { renderedMask, ...$props } = useDisplayObject(props);
   const { getSpriteSheet } = useTextures();
 
   const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
@@ -55,10 +56,11 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
     (): AnimatedSpriteRef => ({
       ...getDisplayObjectRefFunctions(animatedSpriteRef.current),
       ...$props,
+      label,
       component: animatedSpriteRef.current,
       spriteSheet: $spriteSheet,
     }),
-    [$spriteSheet, animatedSpriteRef.current, $props],
+    [$spriteSheet, animatedSpriteRef.current, label, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
@@ -94,10 +96,14 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
   }, [isReady, playStatus, animation]);
 
   return (
-    <pixiAnimatedSprite
-      ref={animatedSpriteRef}
-      {...$props}
-      textures={$spriteSheet?.animations?.[animation] ?? [Texture.EMPTY]}
-    />
+    <>
+      {renderedMask}
+      <pixiAnimatedSprite
+        ref={animatedSpriteRef}
+        {...$props}
+        label={label}
+        textures={$spriteSheet?.animations?.[animation] ?? [Texture.EMPTY]}
+      />
+    </>
   );
 };

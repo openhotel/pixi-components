@@ -1,10 +1,14 @@
-import { Ref } from "react";
+import { ReactNode, Ref } from "react";
 import { Cursor, EventMode } from "../enums";
 import { Point, Size, Bounds } from ".";
+import { Container } from "pixi.js";
 
 export type DisplayObjectProps<DisplayRef> = {
   ref?: Ref<DisplayRef>;
 
+  label?: string;
+
+  mask?: ReactNode;
   position?: Partial<Point>;
   pivot?: Partial<Point>;
   scale?: Partial<Point>;
@@ -14,7 +18,6 @@ export type DisplayObjectProps<DisplayRef> = {
   tint?: number;
   alpha?: number;
   zIndex?: number;
-  sortableChildren?: boolean;
 
   onPointerDown?: (event: PointerEvent) => void;
 };
@@ -26,6 +29,10 @@ export type DisplayObjectRefProps<PixiDisplay> = {
    */
   component: PixiDisplay;
   //
+  readonly mask?: Container<any>;
+  readonly maskRender?: ReactNode;
+
+  readonly label: Readonly<string>;
   readonly position: Readonly<Point>;
   readonly pivot: Readonly<Point>;
   readonly scale: Readonly<Point>;
@@ -35,11 +42,9 @@ export type DisplayObjectRefProps<PixiDisplay> = {
   readonly tint?: Readonly<number>;
   readonly alpha?: Readonly<number>;
   readonly zIndex?: Readonly<number>;
-  readonly sortableChildren?: Readonly<boolean>;
 } & DisplayObjectRefFunctions;
 
 export type DisplayObjectRefFunctions = {
-
   readonly position: Readonly<Point>;
 
   getBounds: () => Bounds;

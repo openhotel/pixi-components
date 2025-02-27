@@ -16,7 +16,7 @@ export default meta;
 
 type Story = StoryObj<typeof ContainerComponent>;
 
-export const Primary: Story = {
+export const ContainerWithMask: Story = {
   args: {
     children: (
       <SpriteComponent

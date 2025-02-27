@@ -17,6 +17,7 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
   width,
   height,
   children,
+  label = "align-container",
   ...props
 }) => {
   const { size: windowSize } = useWindow();
@@ -71,7 +72,7 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
   }, [windowSize, $size, $bounds, width, height]);
 
   return (
-    <ContainerComponent {...props}>
+    <ContainerComponent label={label} {...props}>
       <ContainerComponent
         ref={container}
         onChildLoaded={onChildLoaded}
