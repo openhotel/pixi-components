@@ -4,10 +4,11 @@ import {
   GraphicsComponent,
   SpriteRef,
 } from "../../core";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
 import { DisplayObjectProps, Sides, Size } from "../../../types";
+import { Spritesheet } from "pixi.js";
 
 export type TextProps = {
   color?: number | number[];
@@ -45,9 +46,15 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   const { getSpriteSheet } = useTextures();
 
   const [size, setSize] = useState<Size>({ width: 0, height: 0 });
-  const [textSprites, setTextSprites] = useState<ReactNode[]>([]);
+  const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
 
   useEffect(() => {
+    getSpriteSheet(spriteSheet).then($setSpriteSheet);
+  }, [spriteSheet, $setSpriteSheet, getSpriteSheet]);
+
+  const textSprites = useMemo(() => {
+    if (!$spriteSheet) return null;
+
     const isWrapEnabled = wrap && maxWidth;
     const $padding = {
       left: isWrapEnabled ? 0 : (padding?.left ?? 0),
@@ -56,94 +63,92 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
       bottom: isWrapEnabled ? 0 : (padding?.bottom ?? 0),
     };
 
-    getSpriteSheet(spriteSheet).then(($spriteSheet) => {
-      let list = [];
-      let lastX = $padding?.left ?? 0;
-      let lastY = $padding?.top ?? 0;
+    let list = [];
+    let lastX = $padding?.left ?? 0;
+    let lastY = $padding?.top ?? 0;
 
-      let jumps = 1;
+    let jumps = 1;
 
-      const chars = text.split("");
-      for (let index = 0; index < chars.length; index++) {
-        const isFirst = index === 0;
-        const isLast = index === chars.length - 1;
+    const chars = text.split("");
+    for (let index = 0; index < chars.length; index++) {
+      const isFirst = index === 0;
+      const isLast = index === chars.length - 1;
 
-        const char = chars[index];
-        const charData = $spriteSheet.textures[char];
-        list.push(
-          <React.Fragment key={index + char}>
-            <SpriteComponent
-              spriteSheet={spriteSheet}
-              texture={char}
+      const char = chars[index];
+      const charData = $spriteSheet.textures[char];
+      list.push(
+        <React.Fragment key={index + char}>
+          <SpriteComponent
+            spriteSheet={spriteSheet}
+            texture={char}
+            tint={
+              Array.isArray(color)
+                ? (color[index] ?? color[color.length - 1] ?? 0xffffff)
+                : color
+            }
+            alpha={
+              Array.isArray(alpha)
+                ? (alpha[index] ?? alpha[alpha.length - 1] ?? 1)
+                : alpha
+            }
+            zIndex={1}
+            position={{
+              x: lastX,
+              y: lastY,
+            }}
+          />
+          {(backgroundColor && Array.isArray(backgroundColor)) ||
+          (backgroundAlpha && Array.isArray(backgroundAlpha)) ? (
+            <GraphicsComponent
+              type={GraphicType.RECTANGLE}
+              width={
+                charData.width +
+                1 +
+                (isFirst ? $padding.left : 0) +
+                (isLast ? $padding.right : 0)
+              }
+              height={charData.height + $padding.top + $padding.bottom + 1}
               tint={
-                Array.isArray(color)
-                  ? (color[index] ?? color[color.length - 1] ?? 0xffffff)
-                  : color
+                Array.isArray(backgroundColor)
+                  ? (backgroundColor[index] ??
+                    backgroundColor[backgroundColor.length - 1] ??
+                    0xffffff)
+                  : backgroundColor
               }
               alpha={
-                Array.isArray(alpha)
-                  ? (alpha[index] ?? alpha[alpha.length - 1] ?? 1)
-                  : alpha
+                Array.isArray(backgroundAlpha)
+                  ? (backgroundAlpha[index] ??
+                    backgroundAlpha[backgroundAlpha.length - 1] ??
+                    1)
+                  : backgroundAlpha
               }
-              zIndex={1}
+              zIndex={0}
               position={{
-                x: lastX,
-                y: lastY,
+                x: lastX - (isFirst ? $padding.left : 0),
+                y: lastY - $padding.top,
               }}
             />
-            {(backgroundColor && Array.isArray(backgroundColor)) ||
-            (backgroundAlpha && Array.isArray(backgroundAlpha)) ? (
-              <GraphicsComponent
-                type={GraphicType.RECTANGLE}
-                width={
-                  charData.width +
-                  1 +
-                  (isFirst ? $padding.left : 0) +
-                  (isLast ? $padding.right : 0)
-                }
-                height={charData.height + $padding.top + $padding.bottom + 1}
-                tint={
-                  Array.isArray(backgroundColor)
-                    ? (backgroundColor[index] ??
-                      backgroundColor[backgroundColor.length - 1] ??
-                      0xffffff)
-                    : backgroundColor
-                }
-                alpha={
-                  Array.isArray(backgroundAlpha)
-                    ? (backgroundAlpha[index] ??
-                      backgroundAlpha[backgroundAlpha.length - 1] ??
-                      1)
-                    : backgroundAlpha
-                }
-                zIndex={0}
-                position={{
-                  x: lastX - (isFirst ? $padding.left : 0),
-                  y: lastY - $padding.top,
-                }}
-              />
-            ) : null}
-          </React.Fragment>,
-        );
-        lastX += charData.width + 1;
+          ) : null}
+        </React.Fragment>,
+      );
+      lastX += charData.width + 1;
 
-        if (
-          wrap &&
-          maxWidth &&
-          lastX + $spriteSheet?.textures?.[chars?.[index + 1]]?.width + 1 >=
-            maxWidth
-        ) {
-          lastX = $padding?.left ?? 0;
-          lastY += charData.height + 1;
-          jumps++;
-        }
+      if (
+        wrap &&
+        maxWidth &&
+        lastX + $spriteSheet?.textures?.[chars?.[index + 1]]?.width + 1 >=
+          maxWidth
+      ) {
+        lastX = $padding?.left ?? 0;
+        lastY += charData.height + 1;
+        jumps++;
       }
-      setTextSprites(list);
-      setSize({
-        width: maxWidth ?? lastX,
-        height: ($spriteSheet.textures[" "].height + 1) * jumps,
-      });
+    }
+    setSize({
+      width: maxWidth ?? lastX,
+      height: ($spriteSheet.textures[" "].height + 1) * jumps,
     });
+    return list;
   }, [
     getSpriteSheet,
     setSize,

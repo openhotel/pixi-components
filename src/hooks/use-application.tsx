@@ -49,6 +49,7 @@ const WrapperApplicationProvider: React.FC<
   const { emit } = useEvents();
 
   useEffect(() => {
+    let requestAnimationId: number;
     let $lastUpdate = 0;
     let $fps: number = 0;
     let $lastFPS: number = 0;
@@ -79,10 +80,12 @@ const WrapperApplicationProvider: React.FC<
         emit(Event.FPS, $fps);
         $lastFPS = $fps;
       }
-      requestAnimationFrame(update);
+      requestAnimationId = requestAnimationFrame(update);
     };
 
-    requestAnimationFrame(update);
+    requestAnimationId = requestAnimationFrame(update);
+
+    return () => cancelAnimationFrame(requestAnimationId);
   }, []);
 
   return (
