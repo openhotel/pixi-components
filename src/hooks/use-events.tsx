@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Event } from "../enums";
-import { EVENT_MAP } from "../consts/events.consts";
+import { EVENT_MAP } from "../consts";
 
 type Callback<Data extends unknown> = (data?: Data) => void | Promise<void>;
 
@@ -29,7 +29,6 @@ export const EventsProvider: React.FunctionComponent<EventsProps> = ({
   children,
   contextMenuDisabled,
 }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [eventMap, setEventMap] = useState<
     Record<Event, ((data?: any) => void)[]>
   >({} as any);
@@ -64,27 +63,25 @@ export const EventsProvider: React.FunctionComponent<EventsProps> = ({
   );
 
   useEffect(() => {
-    if (isLoaded) return;
-
     let callbackMap = {};
     for (const [nativeEvent, customEvent, preventDefault] of EVENT_MAP) {
-      callbackMap[nativeEvent] = (event: KeyboardEvent) => {
-        if (
-          nativeEvent === "contextmenu" ? contextMenuDisabled : preventDefault
-        )
-          event.preventDefault();
+      callbackMap[nativeEvent] = (event: any) => {
+        console.log(nativeEvent);
+        // if (
+        //   nativeEvent === "contextmenu" ? contextMenuDisabled : preventDefault
+        // )
+        //   event?.preventDefault?.();
         emit(customEvent, event);
       };
       window.addEventListener(nativeEvent, callbackMap[nativeEvent]);
     }
 
-    setIsLoaded(true);
     return () => {
       for (const [nativeEvent] of EVENT_MAP) {
         window.removeEventListener(nativeEvent, callbackMap[nativeEvent]);
       }
     };
-  }, [contextMenuDisabled, emit, setIsLoaded]);
+  }, [contextMenuDisabled, emit]);
 
   return (
     <EventsContext.Provider

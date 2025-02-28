@@ -5,3 +5,4 @@ export * from "./graphics.enum";
 export * from "./align.enum";
 export * from "./animated-sprite.enum";
 export * from "./events.enum";
+export * from "./accents.enum";
