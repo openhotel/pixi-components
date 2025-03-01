@@ -16,7 +16,7 @@ type Story = StoryObj<typeof SpriteTextComponent>;
 export const Primary: Story = {
   args: {
     spriteSheet: "/assets/fonts/default-font.json",
-    text: "abc123",
+    text: "abc123 ábé©@",
     color: [0xffffff, 0xff00ff, 0x00ff00, 0x0000ff],
     backgroundColor: [0xff0000, 0xffffff, 0x0000ff, 0xff00ff],
     backgroundAlpha: [1, 0.5, 0.25, 1],

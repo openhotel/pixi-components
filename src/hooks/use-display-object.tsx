@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { DisplayObjectProps, DisplayObjectRefProps } from "../types";
 import { Container } from "pixi.js";
 
@@ -56,6 +56,8 @@ export const useDisplayObject = ({
       </pixiContainer>
     );
   }, [mask, $position, $pivot, $setMask]);
+
+  useEffect(() => {}, []);
 
   return {
     label,

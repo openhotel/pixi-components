@@ -20,6 +20,7 @@ import {
   EventsProvider,
   CursorProvider,
   useEvents,
+  ContextProvider,
 } from ".";
 import { Event } from "../enums";
 
@@ -30,7 +31,6 @@ type ApplicationState = {
   application: PixiApplication<Renderer>;
 
   scale?: number;
-  contextMenuDisabled?: boolean;
 };
 
 const ApplicationContext = React.createContext<ApplicationState>(undefined);
@@ -39,7 +39,6 @@ type ApplicationProps = {
   children: ReactNode;
 
   scale?: number;
-  contextMenuDisabled?: boolean;
   backgroundColor?: number;
 };
 
@@ -97,7 +96,9 @@ const WrapperApplicationProvider: React.FC<
     >
       <WindowProvider scale={scale}>
         <CursorProvider>
-          <TexturesProvider>{children}</TexturesProvider>
+          <ContextProvider>
+            <TexturesProvider>{children}</TexturesProvider>
+          </ContextProvider>
         </CursorProvider>
       </WindowProvider>
     </ApplicationContext.Provider>
@@ -135,7 +136,7 @@ export const ApplicationProvider: React.FC<ApplicationProps> = ({
   );
 
   return (
-    <EventsProvider contextMenuDisabled={props.contextMenuDisabled}>
+    <EventsProvider>
       <Application
         ref={$application}
         sharedTicker={false}

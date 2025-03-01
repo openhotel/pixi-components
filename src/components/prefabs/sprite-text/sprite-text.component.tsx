@@ -76,6 +76,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
 
       const char = chars[index];
       const charData = $spriteSheet.textures[char];
+      if (!charData) continue;
       list.push(
         <React.Fragment key={index + char}>
           <SpriteComponent

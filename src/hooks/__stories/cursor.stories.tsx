@@ -1,15 +1,24 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextComponent } from "../../components";
 import { useCursor } from "../../hooks";
+import { useEffect, useState } from "react";
 
 const CursorStory = () => {
-  const { position } = useCursor();
+  const { getPosition } = useCursor();
+
+  const [pos, setPos] = useState(getPosition());
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPos(getPosition());
+    }, 500);
+  }, [getPosition, setPos]);
 
   return (
     <>
       <SpriteTextComponent
         spriteSheet={"/assets/fonts/default-font.json"}
-        text={`${position.x}..${position.y}`}
+        text={`${pos.x}..${pos.y}`}
       />
     </>
   );

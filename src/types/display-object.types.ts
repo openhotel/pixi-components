@@ -1,7 +1,9 @@
 import { ReactNode, Ref } from "react";
 import { Cursor, EventMode } from "../enums";
 import { Point, Size, Bounds } from ".";
-import { Container } from "pixi.js";
+import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js";
+
+export type DisplayObject = AnimatedSprite | Sprite | Container | Graphics;
 
 export type DisplayObjectProps<DisplayRef> = {
   ref?: Ref<DisplayRef>;
@@ -18,8 +20,11 @@ export type DisplayObjectProps<DisplayRef> = {
   tint?: number;
   alpha?: number;
   zIndex?: number;
+  visible?: boolean;
 
   onPointerDown?: (event: PointerEvent) => void;
+  onPointerEnter?: (event: PointerEvent) => void;
+  onPointerLeave?: (event: PointerEvent) => void;
 };
 
 export type DisplayObjectRefProps<PixiDisplay> = {
@@ -43,6 +48,7 @@ export type DisplayObjectRefProps<PixiDisplay> = {
   readonly tint?: Readonly<number>;
   readonly alpha?: Readonly<number>;
   readonly zIndex?: Readonly<number>;
+  readonly visible?: Readonly<boolean>;
 } & DisplayObjectRefFunctions;
 
 export type DisplayObjectRefFunctions = {

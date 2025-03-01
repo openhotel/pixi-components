@@ -3,7 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useState,
+  useRef,
 } from "react";
 import { useWindow } from "./use-window";
 import { useEvents } from "./use-events";
@@ -12,7 +12,7 @@ import { Point } from "../types";
 import { useApplication } from "./use-application";
 
 type CursorState = {
-  position: Point;
+  getPosition: () => Point;
 
   setCursor: (cursor: Cursor) => void;
 };
@@ -30,7 +30,7 @@ export const CursorProvider: React.FunctionComponent<CursorProps> = ({
   const { normalizeValue } = useWindow();
   const { on, emit } = useEvents();
 
-  const [position, setPosition] = useState<Point>({ x: 0, y: 0 });
+  const position = useRef<Point>({ x: 0, y: 0 });
 
   const onPointerMove = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -51,15 +51,17 @@ export const CursorProvider: React.FunctionComponent<CursorProps> = ({
         y: normalizeValue(targetY),
       };
 
-      setPosition((position) => {
-        if (position.x === targetX && position.y === targetY) return position;
+      if (position.current.x === targetX && position.current.y === targetY)
+        return;
 
-        emit(Event.CURSOR_MOVE, $position);
-        return $position;
-      });
+      position.current = $position;
+      emit(Event.CURSOR_MOVE, $position);
     },
     [normalizeValue, on, emit],
   );
+  const onPointerDown = useCallback(() => {
+    emit(Event.CURSOR_DOWN, position.current);
+  }, [emit]);
 
   const setCursor = useCallback(
     (cursor: Cursor) => {
@@ -68,21 +70,28 @@ export const CursorProvider: React.FunctionComponent<CursorProps> = ({
     [application],
   );
 
+  const getPosition = useCallback(() => position.current, []);
+
   useEffect(() => {
     const onRemovePointerMove = on<MouseEvent | TouchEvent>(
       Event.POINTER_MOVE,
       onPointerMove,
     );
+    const onRemovePointerDown = on<MouseEvent | TouchEvent>(
+      Event.POINTER_DOWN,
+      onPointerDown,
+    );
 
     return () => {
       onRemovePointerMove();
+      onRemovePointerDown();
     };
-  }, [onPointerMove]);
+  }, [onPointerMove, onPointerDown]);
 
   return (
     <CursorContext.Provider
       value={{
-        position,
+        getPosition,
         setCursor,
       }}
       children={children}

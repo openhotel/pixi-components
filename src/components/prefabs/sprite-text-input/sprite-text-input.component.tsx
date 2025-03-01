@@ -1,12 +1,16 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   SpriteTextComponent,
   SpriteTextProps,
   TextProps,
 } from "../sprite-text";
-import { ContainerComponent, GraphicsComponent } from "../../core";
+import {
+  ContainerComponent,
+  ContainerRef,
+  GraphicsComponent,
+} from "../../core";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
-import { useEvents } from "../../../hooks";
+import { useComponentContext, useEvents } from "../../../hooks";
 import { combineAccentAndChar, getAccentCode } from "../../../utils";
 
 export type SpriteTextInputProps = {
@@ -45,36 +49,66 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   ...containerProps
 }) => {
   const { on } = useEvents();
+
+  //input
+  const containerRef = useRef<ContainerRef>(null);
+  const isFocusedRef = useRef<boolean>(false);
   const [value, setValue] = useState(defaultValue);
 
-  const onPointerDown = useCallback((event: PointerEvent) => {
-    console.log(event);
-  }, []);
+  //cursor
+  const currentAccentCodeRef = useRef<string>(null);
+  const cursorBlinkIntervalRef = useRef<number>(null);
+  const [cursorVisible, setCursorVisible] = useState<boolean>(false);
 
-  let currentAccentCode;
+  const startCursorBlink = useCallback(() => {
+    clearInterval(cursorBlinkIntervalRef.current);
+    cursorBlinkIntervalRef.current = setInterval(() => {
+      setCursorVisible((visible) => !visible);
+    }, 530);
+    setCursorVisible(true);
+  }, [setCursorVisible]);
+
+  const stopCursorBlink = useCallback(() => {
+    clearInterval(cursorBlinkIntervalRef.current);
+    setCursorVisible(false);
+  }, [setCursorVisible]);
+
   const onKeyDown = useCallback(
     ({ key, metaKey, ctrlKey, code, shiftKey }: KeyboardEvent) => {
-      console.log(key);
+      if (!isFocusedRef.current) return;
+
       if (key === "Tab") return;
       if ((metaKey || ctrlKey) && key.toLowerCase() === "v") return;
 
       const accentCode = getAccentCode(code, shiftKey);
       if (accentCode) {
-        currentAccentCode = accentCode;
+        currentAccentCodeRef.current = accentCode;
         return;
       }
-      if (currentAccentCode) {
-        const combinedChar = combineAccentAndChar(currentAccentCode, key);
+      if (currentAccentCodeRef.current) {
+        const combinedChar = combineAccentAndChar(
+          currentAccentCodeRef.current,
+          key,
+        );
         if (combinedChar) key = combinedChar;
-        currentAccentCode = "";
+        currentAccentCodeRef.current = "";
       }
       if (key.length !== 1) return;
 
+      stopCursorBlink();
       setValue((value) => value + key);
     },
-    [setValue],
+    [stopCursorBlink, setValue],
   );
-  const onKeyUp = useCallback((event: KeyboardEvent) => {}, []);
+
+  const onKeyUp = useCallback(
+    (event: KeyboardEvent) => {
+      if (!isFocusedRef.current) return;
+
+      startCursorBlink();
+    },
+    [startCursorBlink],
+  );
 
   useEffect(() => {
     const removeOnKeyDown = on<unknown>(Event.KEY_DOWN, onKeyDown);
@@ -84,15 +118,33 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
       removeOnKeyDown();
       removeOnKeyUp();
     };
-  }, [on]);
+  }, [on, onKeyDown, onKeyUp]);
+
+  //<<<<<<<<<<<<<<<
+
+  const onFocus = useCallback(() => {
+    isFocusedRef.current = true;
+    startCursorBlink();
+  }, []);
+  const onBlur = useCallback(() => {
+    isFocusedRef.current = false;
+    stopCursorBlink();
+  }, []);
+
+  const { focus, blur, ...componentContext } = useComponentContext({
+    containerRef,
+    onBlur,
+    onFocus,
+  });
 
   return (
     <ContainerComponent
       label={label}
+      ref={containerRef}
       {...containerProps}
       eventMode={EventMode.STATIC}
-      onPointerDown={onPointerDown}
       cursor={Cursor.POINTER}
+      {...componentContext}
     >
       <GraphicsComponent
         type={GraphicType.RECTANGLE}
@@ -108,6 +160,16 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
           x: padding?.left ?? 0,
           y: padding?.top ?? 0,
         }}
+      />
+      {/* cursor */}
+      <GraphicsComponent
+        type={GraphicType.RECTANGLE}
+        width={1}
+        height={9}
+        tint={color}
+        pivot={{ x: -padding?.left + 1, y: -padding?.top + 2 }}
+        eventMode={EventMode.NONE}
+        visible={cursorVisible}
       />
     </ContainerComponent>
   );

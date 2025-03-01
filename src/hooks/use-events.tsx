@@ -3,7 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useState,
+  useRef,
 } from "react";
 import { Event } from "../enums";
 import { EVENT_MAP } from "../consts";
@@ -22,55 +22,45 @@ const EventsContext = React.createContext<EventsState>(undefined);
 
 type EventsProps = {
   children: ReactNode;
-  contextMenuDisabled?: boolean;
 };
 
 export const EventsProvider: React.FunctionComponent<EventsProps> = ({
   children,
-  contextMenuDisabled,
 }) => {
-  const [eventMap, setEventMap] = useState<
-    Record<Event, ((data?: any) => void)[]>
-  >({} as any);
+  const eventMapRef = useRef<Record<Event, ((data?: any) => void)[]>>(
+    //@ts-ignore
+    {},
+  );
 
   const on = useCallback(
     (event: Event | string, callback: Callback<unknown>) => {
       let callbackId = null;
-      setEventMap((eventMap) => {
-        if (!eventMap[event]) eventMap[event] = [];
-        callbackId = eventMap[event].push(callback) - 1;
-        return eventMap;
-      });
+
+      if (!eventMapRef.current[event]) eventMapRef.current[event] = [];
+
+      callbackId = eventMapRef.current[event].push(callback) - 1;
 
       return () =>
-        setEventMap((eventMap) => {
-          eventMap[event] = eventMap[event].map((callback, $callbackId) =>
+        (eventMapRef.current[event] = eventMapRef.current[event].map(
+          (callback, $callbackId) =>
             $callbackId === callbackId ? null : callback,
-          );
-          return eventMap;
-        });
+        ));
     },
-    [setEventMap],
+    [],
   );
 
-  const emit = useCallback(
-    (event: Event | string, data?: any) => {
-      if (!eventMap[event]) return;
+  const emit = useCallback((event: Event | string, data?: any) => {
+    if (!eventMapRef.current[event]) return;
 
-      for (const callback of eventMap[event].filter(Boolean)) callback(data);
-    },
-    [eventMap],
-  );
+    for (const callback of eventMapRef.current[event].filter(Boolean))
+      callback(data);
+  }, []);
 
   useEffect(() => {
     let callbackMap = {};
     for (const [nativeEvent, customEvent, preventDefault] of EVENT_MAP) {
       callbackMap[nativeEvent] = (event: any) => {
-        console.log(nativeEvent);
-        // if (
-        //   nativeEvent === "contextmenu" ? contextMenuDisabled : preventDefault
-        // )
-        //   event?.preventDefault?.();
+        if (preventDefault) event?.stopPropagation?.();
         emit(customEvent, event);
       };
       window.addEventListener(nativeEvent, callbackMap[nativeEvent]);
@@ -81,7 +71,7 @@ export const EventsProvider: React.FunctionComponent<EventsProps> = ({
         window.removeEventListener(nativeEvent, callbackMap[nativeEvent]);
       }
     };
-  }, [contextMenuDisabled, emit]);
+  }, [emit]);
 
   return (
     <EventsContext.Provider
