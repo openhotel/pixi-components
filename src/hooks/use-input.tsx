@@ -35,12 +35,10 @@ export const InputProvider: React.FunctionComponent<InputProps> = ({
   useEffect(() => {
     const input = document.createElement("input");
     input.style.position = "absolute";
-    // input.style.left = "-20px";
-    // input.style.top = "-20px";
-    // input.style.zIndex = "-10";
+    input.style.left = "-20px";
+    input.style.top = "-20px";
+    input.style.zIndex = "-10";
     document.body.append(input);
-    input.style.left = "30px";
-    input.style.top = "30px";
 
     input.addEventListener("paste", onPaste);
     return () => {
