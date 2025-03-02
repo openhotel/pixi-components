@@ -2,8 +2,8 @@ import { Event } from "../enums";
 
 //eventName, Event, stopPropagation, preventDefault
 export const EVENT_MAP: [string, Event, boolean, boolean][] = [
-  ["keydown", Event.KEY_DOWN, false, true],
-  ["keyup", Event.KEY_UP, true, true],
+  ["keydown", Event.KEY_DOWN, false, false],
+  ["keyup", Event.KEY_UP, true, false],
   ["contextmenu", Event.RIGHT_CLICK, true, true],
   //
   ["mousemove", Event.POINTER_MOVE, true, false],

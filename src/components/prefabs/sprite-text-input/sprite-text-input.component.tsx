@@ -13,6 +13,7 @@ import { Cursor, Event, EventMode, GraphicType, OS } from "../../../enums";
 import {
   useComponentContext,
   useEvents,
+  useInput,
   useText,
   useUpdate,
 } from "../../../hooks";
@@ -61,6 +62,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 }) => {
   const { on } = useEvents();
   const { update } = useUpdate();
+  const { focus: focusInput, blur: blurInput } = useInput();
   //input
   const containerRef = useRef<ContainerRef>(null);
   const isFocusedRef = useRef<boolean>(false);
@@ -221,7 +223,19 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         key === "ArrowRight" &&
         cursorIndexRef.current < textRef.current?.length
       ) {
-        cursorIndexRef.current++;
+        for (
+          let charIndex = 0;
+          charIndex < textArrayFromEnd.length;
+          charIndex++
+        ) {
+          const char = textArrayFromEnd[charIndex];
+          if (char === " " && charIndex !== 0) break;
+          if (char === " ") {
+            cursorIndexRef.current++;
+            break;
+          }
+          cursorIndexRef.current++;
+        }
         return;
       }
     },
@@ -265,25 +279,38 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     [startCursorBlink],
   );
 
+  const onPaste = useCallback(
+    (text: string) => {
+      textRef.current = (textRef.current + text).substring(0, maxLength);
+      cursorIndexRef.current = textRef.current.length;
+      update();
+    },
+    [maxLength, update],
+  );
+
   useEffect(() => {
     const removeOnKeyDown = on<unknown>(Event.KEY_DOWN, onKeyDown);
     const removeOnKeyUp = on<unknown>(Event.KEY_UP, onKeyUp);
+    const removeOnPaste = on<unknown>(Event.PASTE, onPaste);
 
     return () => {
       removeOnKeyDown();
       removeOnKeyUp();
+      removeOnPaste();
     };
-  }, [on, onKeyDown, onKeyUp]);
+  }, [on, onKeyDown, onKeyUp, onPaste]);
 
   const onFocus = useCallback(() => {
     isFocusedRef.current = true;
     startCursorBlink();
-  }, []);
+    focusInput();
+  }, [focusInput]);
 
   const onBlur = useCallback(() => {
     isFocusedRef.current = false;
     stopCursorBlink();
-  }, []);
+    blurInput();
+  }, [blurInput]);
 
   const { focus, blur, ...componentContext } = useComponentContext({
     containerRef,

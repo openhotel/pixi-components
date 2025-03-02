@@ -21,6 +21,7 @@ import {
   CursorProvider,
   useEvents,
   ContextProvider,
+  InputProvider,
 } from ".";
 import { Event } from "../enums";
 
@@ -97,7 +98,9 @@ const WrapperApplicationProvider: React.FC<
       <WindowProvider scale={scale}>
         <CursorProvider>
           <ContextProvider>
-            <TexturesProvider>{children}</TexturesProvider>
+            <InputProvider>
+              <TexturesProvider>{children}</TexturesProvider>
+            </InputProvider>
           </ContextProvider>
         </CursorProvider>
       </WindowProvider>

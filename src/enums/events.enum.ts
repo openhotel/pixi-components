@@ -5,6 +5,7 @@ export enum Event {
   CURSOR_DOWN,
   TICK,
   FPS,
+  PASTE,
 
   //*** events from EVENT_MAP ***//
   KEY_DOWN,

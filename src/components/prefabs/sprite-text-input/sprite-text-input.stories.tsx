@@ -21,7 +21,7 @@ export const Primary: Story = {
     defaultValue: "test",
     backgroundColor: 0xff00ff,
     backgroundAlpha: 0.5,
-    width: 40,
+    width: 80,
     height: 7,
     padding: {
       left: 7,
