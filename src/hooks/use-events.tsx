@@ -58,9 +58,15 @@ export const EventsProvider: React.FunctionComponent<EventsProps> = ({
 
   useEffect(() => {
     let callbackMap = {};
-    for (const [nativeEvent, customEvent, preventDefault] of EVENT_MAP) {
+    for (const [
+      nativeEvent,
+      customEvent,
+      stopPropagation,
+      preventDefault,
+    ] of EVENT_MAP) {
       callbackMap[nativeEvent] = (event: any) => {
-        if (preventDefault) event?.stopPropagation?.();
+        if (stopPropagation) event?.stopPropagation?.();
+        if (preventDefault) event?.preventDefault?.();
         emit(customEvent, event);
       };
       window.addEventListener(nativeEvent, callbackMap[nativeEvent]);

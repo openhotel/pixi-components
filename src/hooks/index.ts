@@ -7,3 +7,4 @@ export * from "./use-cursor";
 export * from "./use-context";
 export * from "./use-pointer-outside";
 export * from "./use-component-context";
+export * from "./use-update";

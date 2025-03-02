@@ -2,7 +2,7 @@ import {
   ContainerComponent,
   SpriteComponent,
   GraphicsComponent,
-  SpriteRef,
+  ContainerRef,
 } from "../../core";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTextures } from "../../../hooks";
@@ -27,7 +27,7 @@ export type SpriteTextProps = {
 
   horizontalAlign?: HorizontalAlign;
 } & TextProps &
-  Omit<DisplayObjectProps<SpriteRef>, "alpha">;
+  Omit<DisplayObjectProps<ContainerRef>, "alpha">;
 
 export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   spriteSheet,

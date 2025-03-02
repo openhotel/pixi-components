@@ -29,5 +29,6 @@ export const Primary: Story = {
       right: 7,
       bottom: 4,
     },
+    onValueChange: console.info,
   },
 };
