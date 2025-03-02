@@ -9,9 +9,14 @@ import {
   ContainerRef,
   GraphicsComponent,
 } from "../../core";
-import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
-import { useComponentContext, useEvents, useUpdate } from "../../../hooks";
-import { combineAccentAndChar, getAccentCode } from "../../../utils";
+import { Cursor, Event, EventMode, GraphicType, OS } from "../../../enums";
+import {
+  useComponentContext,
+  useEvents,
+  useText,
+  useUpdate,
+} from "../../../hooks";
+import { combineAccentAndChar, getAccentCode, getOS } from "../../../utils";
 
 export type SpriteTextInputProps = {
   color?: number;
@@ -36,7 +41,7 @@ export type SpriteTextInputProps = {
 export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   //sprite-text
   spriteSheet,
-  color,
+  color = 0,
   horizontalAlign,
   alpha,
   // input
@@ -46,6 +51,9 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   defaultValue,
   padding,
   onValueChange,
+  maxLength,
+  placeholder,
+  placeholderProps,
   // display
   label = "sprite-text-input",
   // container
@@ -56,15 +64,15 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   //input
   const containerRef = useRef<ContainerRef>(null);
   const isFocusedRef = useRef<boolean>(false);
-  const textRef = useRef<string>(defaultValue);
-  // const [$text, $setText] = useState(defaultValue);
+  const textRef = useRef<string>(defaultValue ?? "");
 
   //cursor
   const currentAccentCodeRef = useRef<string>(null);
   const cursorBlinkIntervalRef = useRef<number>(null);
-  const cursorTextRef = useRef<ContainerRef>(null);
-  const cursorIndexRef = useRef<number>(textRef.current.length);
+  const cursorIndexRef = useRef<number>(textRef?.current?.length);
   const cursorVisibleRef = useRef<boolean>(false);
+
+  const { getTextLength } = useText(spriteSheet);
 
   const startCursorBlink = useCallback(() => {
     clearInterval(cursorBlinkIntervalRef.current);
@@ -86,6 +94,8 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     (key: string) => {
       if (key.length !== 1) return;
 
+      if (textRef?.current?.length + 1 >= maxLength) return;
+
       textRef.current =
         textRef.current.slice(0, cursorIndexRef.current) +
         key +
@@ -94,18 +104,53 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 
       cursorIndexRef.current++;
     },
-    [onValueChange],
+    [update, onValueChange, maxLength],
   );
 
   const makeActions = useCallback(
-    (key: string) => {
-      if (!textRef.current.length) return;
+    (key: string, specialKey: boolean) => {
+      if (!textRef.current?.length) return;
+
+      const textArrayFromStart = specialKey
+        ? textRef.current
+            .substring(0, cursorIndexRef.current)
+            .split("")
+            .toReversed()
+        : [];
+      const textArrayFromEnd = specialKey
+        ? textRef.current.substring(cursorIndexRef.current).split("")
+        : [];
 
       if (
         key === "Backspace" &&
         cursorIndexRef.current > 0 &&
-        textRef.current.length > 0
+        textRef.current?.length > 0
       ) {
+        if (specialKey) {
+          let sliced = 0;
+          for (
+            let charIndex = 0;
+            charIndex < textArrayFromStart.length;
+            charIndex++
+          ) {
+            const char = textArrayFromStart[charIndex];
+            if (char === " " && charIndex !== 0) break;
+            if (char === " ") {
+              sliced++;
+              break;
+            }
+            sliced++;
+          }
+
+          textRef.current =
+            textRef.current.slice(0, cursorIndexRef.current - sliced) +
+            textRef.current.slice(cursorIndexRef.current);
+          onValueChange?.(textRef.current);
+
+          cursorIndexRef.current -= sliced;
+          return;
+        }
+
         textRef.current =
           textRef.current.slice(0, cursorIndexRef.current - 1) +
           textRef.current.slice(cursorIndexRef.current);
@@ -117,9 +162,32 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 
       if (
         key === "Delete" &&
-        cursorIndexRef.current < textRef.current.length &&
-        textRef.current.length > 0
+        cursorIndexRef.current < textRef.current?.length &&
+        textRef.current?.length > 0
       ) {
+        if (specialKey) {
+          let sliced = 0;
+          for (
+            let charIndex = 0;
+            charIndex < textArrayFromEnd.length;
+            charIndex++
+          ) {
+            const char = textArrayFromEnd[charIndex];
+            if (char === " " && charIndex !== 0) break;
+            if (char === " ") {
+              sliced++;
+              break;
+            }
+            sliced++;
+          }
+
+          textRef.current =
+            textRef.current.slice(0, cursorIndexRef.current) +
+            textRef.current.slice(cursorIndexRef.current + sliced);
+          onValueChange?.(textRef.current);
+          return;
+        }
+
         textRef.current =
           textRef.current.slice(0, cursorIndexRef.current) +
           textRef.current.slice(cursorIndexRef.current + 1);
@@ -129,13 +197,29 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
       }
 
       if (key === "ArrowLeft" && cursorIndexRef.current > 0) {
+        if (specialKey) {
+          for (
+            let charIndex = 0;
+            charIndex < textArrayFromStart.length;
+            charIndex++
+          ) {
+            const char = textArrayFromStart[charIndex];
+            if (char === " " && charIndex !== 0) break;
+            if (char === " ") {
+              cursorIndexRef.current--;
+              break;
+            }
+            cursorIndexRef.current--;
+          }
+          return;
+        }
         cursorIndexRef.current--;
         return;
       }
 
       if (
         key === "ArrowRight" &&
-        cursorIndexRef.current < textRef.current.length
+        cursorIndexRef.current < textRef.current?.length
       ) {
         cursorIndexRef.current++;
         return;
@@ -145,7 +229,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   );
 
   const onKeyDown = useCallback(
-    ({ key, metaKey, ctrlKey, code, shiftKey }: KeyboardEvent) => {
+    ({ key, metaKey, ctrlKey, code, shiftKey, altKey }: KeyboardEvent) => {
       if (!isFocusedRef.current) return;
 
       if (key === "Tab") return;
@@ -165,12 +249,11 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         currentAccentCodeRef.current = "";
       }
 
-      stopCursorBlink();
       writeChar(key);
-      makeActions(key);
-      update();
+      makeActions(key, getOS() === OS.DARWIN ? altKey : shiftKey);
+      startCursorBlink();
     },
-    [stopCursorBlink, writeChar, makeActions, update],
+    [startCursorBlink, writeChar, makeActions, update],
   );
 
   const onKeyUp = useCallback(
@@ -208,9 +291,22 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     onFocus,
   });
 
-  let textCursorOverflowX =
-    (cursorTextRef?.current?.getSize?.()?.width ?? 0) - width;
+  const cursorTextWidth =
+    getTextLength(textRef.current?.slice(0, cursorIndexRef.current)) - 1;
+
+  let textCursorOverflowX = cursorTextWidth - width;
   textCursorOverflowX = textCursorOverflowX > 0 ? textCursorOverflowX : 0;
+
+  const mask = (
+    <GraphicsComponent
+      type={GraphicType.RECTANGLE}
+      width={width}
+      height={height}
+      position={{
+        x: textCursorOverflowX,
+      }}
+    />
+  );
 
   return (
     <ContainerComponent
@@ -229,6 +325,17 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
       />
       <SpriteTextComponent
         spriteSheet={spriteSheet}
+        text={placeholder}
+        position={{
+          x: padding?.left ?? 0,
+          y: padding?.top ?? 0,
+        }}
+        mask={mask}
+        {...placeholderProps}
+        visible={!textRef.current?.length}
+      />
+      <SpriteTextComponent
+        spriteSheet={spriteSheet}
         text={textRef?.current ?? ""}
         color={color}
         pivot={{
@@ -238,16 +345,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
           x: padding?.left ?? 0,
           y: padding?.top ?? 0,
         }}
-        mask={
-          <GraphicsComponent
-            type={GraphicType.RECTANGLE}
-            width={width}
-            height={height}
-            position={{
-              x: textCursorOverflowX,
-            }}
-          />
-        }
+        mask={mask}
       />
       {/* cursor */}
       <GraphicsComponent
@@ -255,25 +353,15 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         width={1}
         height={9}
         tint={color}
-        pivot={{ x: -padding?.left + 1, y: -padding?.top + 2 }}
+        pivot={{ x: -(padding?.left ?? 0) + 1, y: -(padding?.top ?? 0) + 2 }}
         position={{
           x:
-            cursorTextRef?.current?.getSize?.()?.width +
-            1 -
-            textCursorOverflowX,
+            cursorIndexRef.current === 0
+              ? 0
+              : cursorTextWidth + 1 - textCursorOverflowX,
         }}
         eventMode={EventMode.NONE}
         visible={cursorVisibleRef.current}
-      />
-      <SpriteTextComponent
-        ref={cursorTextRef}
-        spriteSheet={spriteSheet}
-        text={textRef.current.slice(0, cursorIndexRef.current)}
-        alpha={0}
-        position={{
-          x: padding?.left ?? 0,
-          y: padding?.top ?? 0,
-        }}
       />
     </ContainerComponent>
   );

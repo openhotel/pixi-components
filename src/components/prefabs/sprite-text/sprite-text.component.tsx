@@ -31,7 +31,7 @@ export type SpriteTextProps = {
 
 export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   spriteSheet,
-  text,
+  text = "",
   maxWidth,
   wrap = true,
   horizontalAlign = HorizontalAlign.LEFT,

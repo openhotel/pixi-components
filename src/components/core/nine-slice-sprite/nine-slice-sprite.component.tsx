@@ -63,7 +63,7 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
   texture,
   ...props
 }) => {
-  const spriteRef = useRef<NineSliceSprite>(null);
+  const nineSliceSpriteRef = useRef<NineSliceSprite>(null);
 
   const $props = useDisplayObject(props);
   const { getTexture } = useTextures();
@@ -76,21 +76,21 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
 
   const getRefProps = useCallback(
     (): NineSliceSpriteRef => ({
-      ...getDisplayObjectRefFunctions(spriteRef.current),
+      ...getDisplayObjectRefFunctions(nineSliceSpriteRef.current),
       ...$props,
       label,
-      component: spriteRef.current,
+      component: nineSliceSpriteRef.current,
       texture: $texture,
     }),
-    [$texture, spriteRef.current, label, $props],
+    [$texture, nineSliceSpriteRef.current, label, $props],
   );
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
 
   useEffect(() => {
-    if (!$texture || !spriteRef.current) return;
-    spriteRef.current.parent.emit("child-loaded", null);
-  }, [spriteRef.current, $texture]);
+    if (!$texture || !nineSliceSpriteRef.current) return;
+    nineSliceSpriteRef.current.parent.emit("child-loaded", null);
+  }, [nineSliceSpriteRef.current, $texture]);
 
   if (!$texture) return null;
 
@@ -98,7 +98,7 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
     <>
       {$props.maskRender}
       <pixiNineSliceSprite
-        ref={spriteRef}
+        ref={nineSliceSpriteRef}
         {...$props}
         label={label}
         texture={$texture}

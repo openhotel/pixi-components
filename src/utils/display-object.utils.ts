@@ -3,7 +3,7 @@ import { Container } from "pixi.js/lib/scene/container/Container";
 
 export const getDisplayObjectRefFunctions = <PixiDisplay extends Container>(
   component: PixiDisplay,
-): DisplayObjectRefFunctions<unknown> => {
+): DisplayObjectRefFunctions => {
   if (!component) return null;
 
   const getBounds = (): Bounds => {
@@ -28,5 +28,5 @@ export const getDisplayObjectRefFunctions = <PixiDisplay extends Container>(
     getSize,
 
     position,
-  } as DisplayObjectRefFunctions<unknown>;
+  } as DisplayObjectRefFunctions;
 };

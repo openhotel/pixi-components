@@ -29,6 +29,52 @@ export const Primary: Story = {
       right: 7,
       bottom: 4,
     },
+    maxLength: 16,
     onValueChange: console.info,
   },
+};
+
+export const Placeholder: Story = {
+  args: {
+    spriteSheet: "/assets/fonts/default-font.json",
+    color: 0xffffff,
+    //
+    placeholder: "placeholder",
+    placeholderProps: {
+      alpha: 0.5,
+    },
+    backgroundColor: 0xff00ff,
+    backgroundAlpha: 0.5,
+    width: 40,
+    height: 7,
+    padding: {
+      left: 7,
+      top: 5,
+      right: 7,
+      bottom: 4,
+    },
+    maxLength: 16,
+    onValueChange: console.info,
+  },
+};
+
+export const Multiple = () => {
+  return (
+    <>
+      <SpriteTextInputComponent
+        height={10}
+        width={50}
+        backgroundColor={0xff00ff}
+        spriteSheet="/assets/fonts/default-font.json"
+      />
+      <SpriteTextInputComponent
+        height={10}
+        width={50}
+        position={{
+          y: 12,
+        }}
+        spriteSheet="/assets/fonts/default-font.json"
+      />
+    </>
+  );
 };
