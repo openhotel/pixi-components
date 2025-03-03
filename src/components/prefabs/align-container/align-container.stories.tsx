@@ -36,8 +36,10 @@ export const Align: Story = {
     ),
     horizontalAlign: HorizontalAlign.CENTER,
     verticalAlign: VerticalAlign.MIDDLE,
-    width: 300,
-    height: 160,
+    size: {
+      width: 300,
+      height: 160,
+    },
   },
 };
 

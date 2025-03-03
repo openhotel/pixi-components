@@ -7,15 +7,13 @@ import { useWindow } from "../../../hooks";
 export type AlignContainerProps = {
   verticalAlign?: VerticalAlign;
   horizontalAlign?: HorizontalAlign;
-  width?: number;
-  height?: number;
+  size?: Size;
 } & ContainerProps;
 
 export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
   verticalAlign = VerticalAlign.TOP,
   horizontalAlign = HorizontalAlign.LEFT,
-  width,
-  height,
+  size,
   children,
   label = "align-container",
   ...props
@@ -47,8 +45,8 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
     const windowSize = getSize();
 
     const $boxSize = {
-      width: width ?? windowSize.width,
-      height: height ?? windowSize.height,
+      width: size?.width ?? windowSize.width,
+      height: size?.height ?? windowSize.height,
     };
 
     switch (verticalAlign) {
@@ -71,7 +69,7 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
       x,
       y,
     };
-  }, [getSize, $size, $bounds, width, height]);
+  }, [getSize, $size, $bounds, size]);
 
   return (
     <ContainerComponent label={label} {...props}>
