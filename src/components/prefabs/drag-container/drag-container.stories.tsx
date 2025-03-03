@@ -15,7 +15,7 @@ type Story = StoryObj<typeof DragContainerComponent>;
 
 export const DragWindowsSize: Story = {
   args: {
-    dragPolygon: [0, 0, 10, 0, 10, 10, 0, 10],
+    dragPolygon: [5, 35, 50, 10, 60, 30, 20, 55],
     children: (
       <>
         <SpriteComponent
@@ -29,7 +29,7 @@ export const DragWindowsSize: Story = {
 
 export const DragFixedSize: Story = {
   args: {
-    dragPolygon: [0, 0, 10, 0, 10, 10, 0, 10],
+    dragPolygon: [5, 35, 50, 10, 60, 30, 20, 55],
     size: { width: 300, height: 100 },
     children: (
       <>
