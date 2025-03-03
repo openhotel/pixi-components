@@ -161,6 +161,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
     color,
     maxWidth,
     wrap,
+    $spriteSheet,
   ]);
 
   return (

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useContext, useState } from "react";
+import React, { ReactNode, useCallback, useContext, useRef } from "react";
 import { Spritesheet, Texture } from "pixi.js";
 
 type TextureProps = { texture: string; spriteSheet?: string };
@@ -17,10 +17,8 @@ type ProviderProps = {
 export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
   children,
 }) => {
-  const [textureMap, setTextureMap] = useState<Record<string, Texture>>({});
-  const [spriteSheetMap, setSpriteSheetMap] = useState<
-    Record<string, Spritesheet<any>>
-  >({});
+  const textureMapRef = useRef<Record<string, Texture>>({});
+  const spriteSheetMapRef = useRef<Record<string, Spritesheet<any>>>({});
 
   const getRawTexture = useCallback(
     (name: string) =>
@@ -36,7 +34,8 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
   const getSpriteSheet = useCallback(
     (name: string): Promise<Spritesheet<any>> => {
       return new Promise((resolve) => {
-        if (spriteSheetMap[name]) return resolve(spriteSheetMap[name]);
+        if (spriteSheetMapRef.current[name])
+          return resolve(spriteSheetMapRef.current[name]);
 
         fetch(name)
           .then((data) => data.json())
@@ -47,17 +46,12 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
             const $spriteSheet = new Spritesheet(texture, data);
             await $spriteSheet.parse();
 
-            setSpriteSheetMap((map) => {
-              return {
-                ...map,
-                [name]: $spriteSheet,
-              };
-            });
+            spriteSheetMapRef.current[name] = $spriteSheet;
             resolve($spriteSheet);
           });
       });
     },
-    [setSpriteSheetMap, spriteSheetMap, getRawTexture],
+    [getRawTexture],
   );
 
   const getTexture = useCallback(
@@ -71,20 +65,15 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
           return resolve(spriteSheet.textures[textureName]);
         }
 
-        if (textureMap[textureName]) return resolve(textureMap[textureName]);
+        if (textureMapRef.current[textureName])
+          return resolve(textureMapRef.current[textureName]);
 
         const texture = await getRawTexture(textureName);
-
-        setTextureMap((map) => {
-          return {
-            ...map,
-            [textureName]: texture,
-          };
-        });
+        textureMapRef.current[textureName] = texture;
         resolve(texture);
       });
     },
-    [setTextureMap, textureMap, getSpriteSheet, getRawTexture],
+    [getSpriteSheet, getRawTexture],
   );
 
   return (
