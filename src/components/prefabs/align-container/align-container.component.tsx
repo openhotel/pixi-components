@@ -20,7 +20,7 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
   label = "align-container",
   ...props
 }) => {
-  const { size: windowSize } = useWindow();
+  const { getSize } = useWindow();
   const container = useRef<ContainerRef>(null);
 
   const [$bounds, $setBounds] = useState<Bounds>({
@@ -43,6 +43,8 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
   const pivot = useMemo(() => {
     let x = 0;
     let y = 0;
+
+    const windowSize = getSize();
 
     const $boxSize = {
       width: width ?? windowSize.width,
@@ -69,7 +71,7 @@ export const AlignContainerComponent: React.FC<AlignContainerProps> = ({
       x,
       y,
     };
-  }, [windowSize, $size, $bounds, width, height]);
+  }, [getSize, $size, $bounds, width, height]);
 
   return (
     <ContainerComponent label={label} {...props}>

@@ -11,12 +11,12 @@ import { useEvents } from "./use-events";
 import { Event } from "../enums";
 
 type WindowState = {
-  scale: number;
+  getScale: () => number;
   setScale: (scale: number) => void;
 
   normalizeValue: (value: number) => number;
 
-  size: Size;
+  getSize: () => Size;
 };
 
 const WindowContext = React.createContext<WindowState>(undefined);
@@ -93,15 +93,18 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     $setScale(scale);
   }, [scale, $setScale]);
 
+  const getScale = useCallback(() => scale, [scale]);
+  const getSize = useCallback(() => size, [size]);
+
   return (
     <WindowContext.Provider
       value={{
-        scale,
+        getScale,
         setScale: $setScale,
 
         normalizeValue,
 
-        size,
+        getSize,
       }}
       children={children}
     />
