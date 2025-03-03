@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import "./style.css";
 import {
-  AlignContainerComponent,
   ApplicationProvider,
   Event,
-  HorizontalAlign,
+  FLEX_JUSTIFY,
+  FlexContainerComponent,
   SpriteTextComponent,
   useEvents,
 } from "../src";
@@ -75,15 +75,15 @@ const ApplicationWrapper = ({ children, props }) => {
     <>
       {children}
       {showFPS ? (
-        <AlignContainerComponent
+        <FlexContainerComponent
+          justify={FLEX_JUSTIFY.END}
           position={{ x: -4, y: 4 }}
-          horizontalAlign={HorizontalAlign.RIGHT}
         >
           <SpriteTextComponent
             spriteSheet={"/assets/fonts/default-font.json"}
             text={`${fps}FPS`}
           />
-        </AlignContainerComponent>
+        </FlexContainerComponent>
       ) : null}
     </>
   );

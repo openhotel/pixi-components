@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useApplication } from "./use-application";
@@ -36,8 +37,8 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
   const { application } = useApplication();
   const { emit } = useEvents();
 
-  const [size, setSize] = useState<Size>({ width: 0, height: 0 });
-  const [$scale, $setScale] = useState<number>(1);
+  const sizeRef = useRef<Size>({ width: 0, height: 0 });
+  const [$scale, setScale] = useState<number>(scale);
 
   const $getSize = useCallback(() => {
     const { offsetHeight, offsetWidth } = application.canvas.parentElement;
@@ -64,7 +65,7 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     // "calc(100vh - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))";
 
     const $size = $getSize();
-    setSize($size);
+    sizeRef.current = $size;
     emit<Size>(Event.RESIZE, $size);
 
     application.renderer.resolution = $scale * Math.round(devicePixelRatio);
@@ -73,7 +74,7 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     application.canvas.style.height = `${Math.round($size.height * $scale)}px`;
 
     application.renderer.resize($size.width, $size.height);
-  }, [$scale, application, setSize, $getSize, emit]);
+  }, [application, $getSize, emit]);
 
   const normalizeValue = useCallback(
     (value: number) => Math.round(value / scale),
@@ -89,18 +90,18 @@ export const WindowProvider: React.FunctionComponent<WindowProps> = ({
     };
   }, [$resize]);
 
-  useEffect(() => {
-    $setScale(scale);
-  }, [scale, $setScale]);
+  const getScale = useCallback(() => $scale, [$scale]);
+  const getSize = useCallback(() => sizeRef.current, []);
 
-  const getScale = useCallback(() => scale, [scale]);
-  const getSize = useCallback(() => size, [size]);
+  useEffect(() => {
+    setScale(scale);
+  }, [scale]);
 
   return (
     <WindowContext.Provider
       value={{
         getScale,
-        setScale: $setScale,
+        setScale,
 
         normalizeValue,
 

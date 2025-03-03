@@ -8,7 +8,11 @@ import React, {
 } from "react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
+import {
+  DisplayObject,
+  DisplayObjectProps,
+  DisplayObjectRefProps,
+} from "../../../types";
 import { useDisplayObject } from "../../../hooks";
 import { getDisplayObjectRefFunctions } from "../../../utils";
 
@@ -18,6 +22,8 @@ extend({
 
 export type ContainerRef = {
   readonly sortableChildren?: Readonly<boolean>;
+
+  getChildren: () => DisplayObject[];
 } & DisplayObjectRefProps<Container<any>>;
 
 export type ContainerProps = {
@@ -43,6 +49,8 @@ export const ContainerComponent: React.FC<ContainerProps> = ({
       ...$props,
       label,
       component: $ref.current,
+
+      getChildren: () => $ref.current.children,
     }),
     [$ref.current, label, $props],
   );

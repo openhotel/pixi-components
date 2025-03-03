@@ -7,3 +7,4 @@ export * from "./animated-sprite.enum";
 export * from "./events.enum";
 export * from "./accents.enum";
 export * from "./os.enum";
+export * from "./flex.enums";
