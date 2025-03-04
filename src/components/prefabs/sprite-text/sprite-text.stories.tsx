@@ -37,6 +37,12 @@ export const Secondary: Story = {
     color: [0xffffff, 0xff00ff, 0x00ff00, 0x0000ff],
     backgroundColor: 0xff00ff,
     alpha: [1, 1, 0.4, 0.5, 0.75],
+    padding: {
+      left: 6,
+      top: 7,
+      right: 5,
+      bottom: 2,
+    },
   },
 };
 

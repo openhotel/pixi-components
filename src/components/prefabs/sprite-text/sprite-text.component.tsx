@@ -106,7 +106,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
                 charData.width +
                 1 +
                 (isFirst ? $padding.left : 0) +
-                (isLast ? $padding.right : 0)
+                (!isLast ? $padding.right : 0)
               }
               height={charData.height + $padding.top + $padding.bottom + 1}
               tint={
@@ -184,8 +184,8 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
       (backgroundAlpha && !Array.isArray(backgroundAlpha)) ? (
         <GraphicsComponent
           type={GraphicType.RECTANGLE}
-          width={size.width}
-          height={size.height}
+          width={size.width + (padding.left ?? 0) + (padding.right ?? 0)}
+          height={size.height + (padding.top ?? 0) + (padding.bottom ?? 0)}
           tint={backgroundColor as number}
           alpha={backgroundAlpha as number}
           zIndex={0}
