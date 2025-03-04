@@ -23,6 +23,7 @@
     "@types/react": "19.0.8",
     "@vitejs/plugin-react": "4.3.3",
     "jsr": "0.13.2",
+    "nodemon": "^3.1.9",
     "prettier": "3.3.3",
     "prop-types": "15.8.1",
     "storybook": "8.5.1",
@@ -45,6 +46,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build": "vite build",
+    "build:watch": "nodemon",
     "publish": "npx jsr publish --allow-dirty --allow-slow-types",
     "publish:check": "npx jsr publish --allow-dirty  --dry-run"
   }

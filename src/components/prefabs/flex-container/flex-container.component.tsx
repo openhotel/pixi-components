@@ -7,7 +7,7 @@ import { Size } from "../../../types";
 type FlexContainerProps = {
   align?: FLEX_ALIGN;
   justify?: FLEX_JUSTIFY;
-  size?: Size;
+  size?: Partial<Size>;
   direction?: "x" | "y";
 } & ContainerProps;
 
@@ -29,10 +29,12 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
     const reverseDirection = direction === "x" ? "y" : "x";
     const reverseSizeName = direction === "x" ? "height" : "width";
 
-    const $size = size ?? getSize();
+    const $size = {
+      width: size?.width ?? getSize().width,
+      height: size?.height ?? getSize().height,
+    };
 
     const childList = containerRef.current?.getChildren();
-
     const positionForChildren = $size[sizeName] / childList.length;
 
     const totalItemSize = childList.reduce(
@@ -53,34 +55,41 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
 
       switch (justify) {
         case FLEX_JUSTIFY.START:
-          child.position[direction] = lastItemPosition;
+          child.position[direction] = Math.round(lastItemPosition);
           lastItemPosition = lastItemPosition + itemSizeW;
           break;
         case FLEX_JUSTIFY.END:
-          child.position[direction] =
-            $size[sizeName] - itemSizeW - lastItemPosition;
+          child.position[direction] = Math.round(
+            $size[sizeName] - itemSizeW - lastItemPosition,
+          );
           lastItemPosition += itemSizeW;
           break;
         case FLEX_JUSTIFY.CENTER:
-          child.position[direction] = lastItemPosition + totalEmptySize / 2;
+          child.position[direction] = Math.round(
+            lastItemPosition + totalEmptySize / 2,
+          );
           lastItemPosition += itemSizeW;
           break;
         case FLEX_JUSTIFY.SPACE_EVENLY:
-          child.position[direction] =
+          child.position[direction] = Math.round(
             positionForChildren / 2 +
-            positionForChildren * childIndex -
-            itemSizeW / 2;
+              positionForChildren * childIndex -
+              itemSizeW / 2,
+          );
 
           break;
       }
 
       switch (align) {
         case FLEX_ALIGN.BOTTOM:
-          child.position[reverseDirection] = $size[reverseSizeName] - itemSizeH;
+          child.position[reverseDirection] = Math.round(
+            $size[reverseSizeName] - itemSizeH,
+          );
           break;
         case FLEX_ALIGN.CENTER:
-          child.position[reverseDirection] =
-            $size[reverseSizeName] / 2 - itemSizeH / 2;
+          child.position[reverseDirection] = Math.round(
+            $size[reverseSizeName] / 2 - itemSizeH / 2,
+          );
           break;
       }
     }

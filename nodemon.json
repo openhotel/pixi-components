@@ -1,0 +1,10 @@
+{
+  "verbose": true,
+  "watch": ["src/**/*"],
+  "exec": "yarn run build",
+  "legacyWatch": true,
+  "pollingInterval": 1000,
+  "delay": 2,
+  "spawn": true,
+  "ext": "ts,tsx,js,json"
+}

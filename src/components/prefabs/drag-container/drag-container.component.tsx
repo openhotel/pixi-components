@@ -37,12 +37,14 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = ({
 
   const onPointerDown = useCallback(() => {
     pointerDownRef.current = true;
+    containerRef.current.component.zIndex = Number.MAX_SAFE_INTEGER;
 
     $firstPosition.current = { ...containerRef.current.position };
     $firstCursorPosition.current = getCursorPosition();
   }, [getCursorPosition, getScale]);
   const onPointerUp = useCallback((event: PointerEvent) => {
     pointerDownRef.current = false;
+    containerRef.current.component.zIndex = 0;
   }, []);
   const onCursorMove = useCallback(
     (cursorPosition: Point) => {
