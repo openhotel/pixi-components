@@ -33,7 +33,6 @@ export type NineSliceSpriteProps = {
   height?: number;
 } & DisplayObjectProps<NineSliceSpriteRef>;
 
-//TODO Not working as expected because this https://github.com/pixijs/pixijs/issues/11309
 /**
  * A: leftWidth
  * B: rightWidth
