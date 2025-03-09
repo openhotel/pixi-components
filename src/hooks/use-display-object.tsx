@@ -11,28 +11,28 @@ export const useDisplayObject = ({
   mask,
   ...props
 }: DisplayObjectProps<unknown>): DisplayObjectRefProps<unknown> => {
-  const $position = useMemo(
-    () => ({
-      x: Math.round(position?.x ?? 0),
-      y: Math.round(position?.y ?? 0),
-    }),
-    [position],
-  );
-
-  const $pivot = useMemo(
-    () => ({
-      x: Math.round(pivot?.x ?? 0),
-      y: Math.round(pivot?.y ?? 0),
-    }),
-    [pivot],
-  );
-
   const $scale = useMemo(
     () => ({
       x: scale?.x ?? 1,
       y: scale?.y ?? 1,
     }),
     [scale],
+  );
+
+  const $position = useMemo(
+    () => ({
+      x: Math.round($scale.x > 0 ? (position?.x ?? 0) : -(position?.x ?? 0)),
+      y: Math.round($scale.y > 0 ? (position?.y ?? 0) : -(position?.y ?? 0)),
+    }),
+    [position, $scale],
+  );
+
+  const $pivot = useMemo(
+    () => ({
+      x: Math.round($scale.x > 0 ? (pivot?.x ?? 0) : -(pivot?.x ?? 0)),
+      y: Math.round($scale.y > 0 ? (pivot?.y ?? 0) : -(pivot?.y ?? 0)),
+    }),
+    [pivot, $scale],
   );
 
   const $anchor = useMemo(() => {
