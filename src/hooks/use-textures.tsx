@@ -4,8 +4,11 @@ import { Spritesheet, Texture } from "pixi.js";
 type TextureProps = { texture: string; spriteSheet?: string };
 
 type TexturesState = {
-  getSpriteSheet: (name: string) => Promise<Spritesheet<any>>;
-  getTexture: (data: TextureProps) => Promise<Texture>;
+  loadSpriteSheet: (name: string) => Promise<void>;
+  loadTexture: (name: string) => Promise<void>;
+
+  getSpriteSheet: (name: string) => Spritesheet<any>;
+  getTexture: (data: TextureProps) => Texture;
 };
 
 const TexturesContext = React.createContext<TexturesState>(undefined);
@@ -31,11 +34,14 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
     [],
   );
 
-  const getSpriteSheet = useCallback(
-    (name: string): Promise<Spritesheet<any>> => {
-      return new Promise((resolve) => {
-        if (spriteSheetMapRef.current[name])
-          return resolve(spriteSheetMapRef.current[name]);
+  const loadSpriteSheet = useCallback(
+    (name: string): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        if (spriteSheetMapRef.current[name]) {
+          console.warn(`SpriteSheet with name '${name}' already loaded!`);
+          resolve();
+          return;
+        }
 
         fetch(name)
           .then((data) => data.json())
@@ -47,38 +53,59 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
             await $spriteSheet.parse();
 
             spriteSheetMapRef.current[name] = $spriteSheet;
-            resolve($spriteSheet);
-          });
+            resolve();
+          })
+          .catch(reject);
       });
     },
     [getRawTexture],
   );
 
+  const loadTexture = useCallback(
+    (name: string): Promise<void> => {
+      return new Promise(async (resolve, reject) => {
+        if (textureMapRef.current[name]) {
+          console.warn(`Texture with name '${name}' already loaded!`);
+          resolve();
+          return;
+        }
+
+        try {
+          textureMapRef.current[name] = await getRawTexture(name);
+          resolve();
+        } catch (e) {
+          reject();
+        }
+      });
+    },
+    [getRawTexture],
+  );
+
+  const getSpriteSheet = useCallback((spriteSheetName: string): Spritesheet => {
+    return spriteSheetMapRef.current[spriteSheetName] ?? null;
+  }, []);
+
   const getTexture = useCallback(
     ({
       texture: textureName,
       spriteSheet: spriteSheetName,
-    }: TextureProps): Promise<Texture> => {
-      return new Promise(async (resolve) => {
-        if (spriteSheetName) {
-          const spriteSheet = await getSpriteSheet(spriteSheetName);
-          return resolve(spriteSheet.textures[textureName]);
-        }
+    }: TextureProps): Texture => {
+      if (spriteSheetName && getSpriteSheet(spriteSheetName))
+        return getSpriteSheet(spriteSheetName)?.textures?.[textureName] ?? null;
 
-        if (textureMapRef.current[textureName])
-          return resolve(textureMapRef.current[textureName]);
+      if (textureMapRef.current[textureName])
+        return textureMapRef.current[textureName];
 
-        const texture = await getRawTexture(textureName);
-        textureMapRef.current[textureName] = texture;
-        resolve(texture);
-      });
+      return null;
     },
-    [getSpriteSheet, getRawTexture],
+    [getSpriteSheet],
   );
 
   return (
     <TexturesContext.Provider
       value={{
+        loadSpriteSheet,
+        loadTexture,
         getSpriteSheet,
         getTexture,
       }}

@@ -4,7 +4,6 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState,
 } from "react";
 
 import { extend } from "@pixi/react";
@@ -46,11 +45,10 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
   const $props = useDisplayObject(props);
   const { getSpriteSheet } = useTextures();
 
-  const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
-
-  useEffect(() => {
-    getSpriteSheet(spriteSheet).then($setSpriteSheet);
-  }, [spriteSheet, $setSpriteSheet]);
+  const $spriteSheet = useMemo(
+    () => getSpriteSheet(spriteSheet),
+    [getSpriteSheet, spriteSheet],
+  );
 
   const getRefProps = useCallback(
     (): AnimatedSpriteRef => ({
@@ -65,18 +63,13 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
 
   useImperativeHandle(ref, getRefProps, [getRefProps]);
 
-  const isReady = useMemo(
-    () => animatedSpriteRef.current && $spriteSheet,
-    [animatedSpriteRef.current, $spriteSheet],
-  );
-
   useEffect(() => {
-    if (!isReady) return;
+    if (!$spriteSheet) return;
     animatedSpriteRef.current.parent.emit("child-loaded", null);
-  }, [animatedSpriteRef.current, isReady]);
+  }, [animatedSpriteRef.current, $spriteSheet]);
 
   useEffect(() => {
-    if (!isReady) return;
+    if (!$spriteSheet) return;
 
     const animatedSprite = animatedSpriteRef.current;
 
@@ -93,7 +86,7 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
         animatedSprite.play();
         break;
     }
-  }, [isReady, playStatus, animation]);
+  }, [$spriteSheet, playStatus, animation]);
 
   return (
     <>

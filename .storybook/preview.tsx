@@ -7,6 +7,7 @@ import {
   FlexContainerComponent,
   SpriteTextComponent,
   useEvents,
+  useTextures,
 } from "../src";
 import { withConsole } from "@storybook/addon-console";
 
@@ -60,16 +61,34 @@ const preview = {
 export default preview;
 
 const ApplicationWrapper = ({ children, props }) => {
-  const showFPS = useMemo(() => props.globals.fps, [props]);
-
+  const { loadSpriteSheet, loadTexture } = useTextures();
   const { on } = useEvents();
 
+  const [loading, setLoading] = useState(true);
+
   const [fps, setfps] = useState<number>(0);
+
+  const showFPS = useMemo(() => props.globals.fps, [props]);
 
   useEffect(() => {
     if (!showFPS) return;
     return on<number>(Event.FPS, setfps);
   }, [on, setfps, showFPS]);
+
+  useEffect(() => {
+    Promise.all([
+      ...[
+        "/assets/fonts/default-font.json",
+        "/assets/human/human.json",
+        "/assets/fighter/fighter.json",
+      ].map(loadSpriteSheet),
+      ...["/assets/9sprite2.png", "/assets/logo_64x_transparent.png"].map(
+        loadTexture,
+      ),
+    ]).then(() => setLoading(false));
+  }, [loadSpriteSheet, loadTexture, setLoading]);
+
+  if (loading) return null;
 
   return (
     <>

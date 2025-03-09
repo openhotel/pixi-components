@@ -26,7 +26,6 @@ export const InputProvider: React.FunctionComponent<InputProps> = ({
   const onPaste = useCallback(
     ({ clipboardData }: ClipboardEvent) => {
       const pastedText = clipboardData.getData("text/plain");
-      console.log("<<<", pastedText);
       emit(Event.PASTE, pastedText);
     },
     [emit],

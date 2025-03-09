@@ -2,8 +2,8 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
-  useState,
 } from "react";
 
 import { extend } from "@pixi/react";
@@ -38,11 +38,10 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
   const $props = useDisplayObject(props);
   const { getTexture } = useTextures();
 
-  const [$texture, $setTexture] = useState<Texture>(Texture.EMPTY);
-
-  useEffect(() => {
-    getTexture({ spriteSheet, texture }).then($setTexture);
-  }, [spriteSheet, texture, getTexture, $setTexture]);
+  const $texture = useMemo(
+    () => getTexture({ spriteSheet, texture }),
+    [getTexture, spriteSheet, texture],
+  );
 
   const getRefProps = useCallback(
     (): SpriteRef => ({

@@ -773,7 +773,7 @@ __metadata:
   resolution: "@oh/pixi-components@workspace:."
   dependencies:
     "@chromatic-com/storybook": "npm:3.2.4"
-    "@pixi/react": "npm:8.0.0-beta.24"
+    "@pixi/react": "npm:8.0.0"
     "@storybook/addon-actions": "npm:^8.5.8"
     "@storybook/addon-console": "npm:^3.0.0"
     "@storybook/addon-essentials": "npm:^8.5.1"
@@ -810,16 +810,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pixi/react@npm:8.0.0-beta.24":
-  version: 8.0.0-beta.24
-  resolution: "@pixi/react@npm:8.0.0-beta.24"
+"@pixi/react@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@pixi/react@npm:8.0.0"
   dependencies:
     its-fine: "npm:^1.2.5"
     react-reconciler: "npm:0.31.0"
   peerDependencies:
     pixi.js: ^8.2.6
     react: ">=19.0.0"
-  checksum: 10c0/8e47f98377de64fcff70f4314a882258d68f9fefc175bac589377e8e6af622100d54df1fd4b44565e8f3b4a2e642cd437384a8075a5d52f1cc690b66122fb03e
+  checksum: 10c0/f015c4bc3ecd597dc59416c3cbf36e8a71c6a646db12dc0de041ef961de1418ae5d518b1b2e13bc42d7c35ead92d98460efc7abd582f7d912ee5eb0aa0b483f5
   languageName: node
   linkType: hard
 

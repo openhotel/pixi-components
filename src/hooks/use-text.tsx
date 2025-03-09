@@ -1,11 +1,13 @@
 import { useTextures } from ".";
-import { useCallback, useEffect, useState } from "react";
-import { Spritesheet } from "pixi.js";
+import { useCallback, useMemo } from "react";
 
 export const useText = (spriteSheet: string) => {
   const { getSpriteSheet } = useTextures();
 
-  const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
+  const $spriteSheet = useMemo(
+    () => getSpriteSheet(spriteSheet),
+    [getSpriteSheet, spriteSheet],
+  );
 
   const getTextLength = useCallback(
     (text: string) => {
@@ -16,10 +18,6 @@ export const useText = (spriteSheet: string) => {
     },
     [$spriteSheet],
   );
-
-  useEffect(() => {
-    getSpriteSheet(spriteSheet).then($setSpriteSheet);
-  }, [spriteSheet, getSpriteSheet, $setSpriteSheet]);
 
   return {
     getTextLength,

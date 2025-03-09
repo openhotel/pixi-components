@@ -4,11 +4,10 @@ import {
   GraphicsComponent,
   ContainerRef,
 } from "../../core";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
 import { DisplayObjectProps, Sides, Size } from "../../../types";
-import { Spritesheet } from "pixi.js";
 
 export type TextProps = {
   color?: number | number[];
@@ -46,11 +45,11 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
   const { getSpriteSheet } = useTextures();
 
   const [size, setSize] = useState<Size>({ width: 0, height: 0 });
-  const [$spriteSheet, $setSpriteSheet] = useState<Spritesheet>(null);
 
-  useEffect(() => {
-    getSpriteSheet(spriteSheet).then($setSpriteSheet);
-  }, [spriteSheet, $setSpriteSheet, getSpriteSheet]);
+  const $spriteSheet = useMemo(
+    () => getSpriteSheet(spriteSheet),
+    [getSpriteSheet, spriteSheet],
+  );
 
   const textSprites = useMemo(() => {
     if (!$spriteSheet) return null;
