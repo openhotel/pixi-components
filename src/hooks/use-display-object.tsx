@@ -21,8 +21,8 @@ export const useDisplayObject = ({
 
   const $position = useMemo(
     () => ({
-      x: Math.round($scale.x > 0 ? (position?.x ?? 0) : -(position?.x ?? 0)),
-      y: Math.round($scale.y > 0 ? (position?.y ?? 0) : -(position?.y ?? 0)),
+      x: Math.round(position?.x ?? 0),
+      y: Math.round(position?.y ?? 0),
     }),
     [position, $scale],
   );
