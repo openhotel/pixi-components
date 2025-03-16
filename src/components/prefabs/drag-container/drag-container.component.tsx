@@ -21,11 +21,12 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = ({
   size,
 }) => {
   const { on } = useEvents();
-  const { getPosition: getCursorPosition } = useCursor();
+  const { getPosition: getCursorPosition, setCursor } = useCursor();
   const { getScale, getSize } = useWindow();
 
   const containerRef = useRef<ContainerRef>(null);
   const pointerDownRef = useRef<boolean>(false);
+  const pointerEnterRef = useRef<boolean>(false);
 
   const $firstPosition = useRef<Point>(null);
   const $firstCursorPosition = useRef<Point>(null);
@@ -35,17 +36,35 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = ({
     y: position.y ?? 0,
   });
 
+  const onPointerEnter = useCallback(() => {
+    pointerEnterRef.current = true;
+  }, []);
+
+  const onPointerLeave = useCallback(() => {
+    pointerEnterRef.current = false;
+  }, []);
+
   const onPointerDown = useCallback(() => {
     pointerDownRef.current = true;
     containerRef.current.component.zIndex = Number.MAX_SAFE_INTEGER;
 
     $firstPosition.current = { ...containerRef.current.position };
     $firstCursorPosition.current = getCursorPosition();
+    setCursor(Cursor.GRABBING);
   }, [getCursorPosition, getScale]);
-  const onPointerUp = useCallback((event: PointerEvent) => {
-    pointerDownRef.current = false;
-    containerRef.current.component.zIndex = 0;
-  }, []);
+
+  const onPointerUp = useCallback(
+    (event: PointerEvent) => {
+      if (!pointerDownRef.current) return;
+
+      pointerDownRef.current = false;
+      containerRef.current.component.zIndex = 0;
+
+      setCursor(pointerEnterRef.current ? Cursor.GRAB : Cursor.DEFAULT);
+    },
+    [setCursor],
+  );
+
   const onCursorMove = useCallback(
     (cursorPosition: Point) => {
       if (!pointerDownRef.current) return;
@@ -115,15 +134,17 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = ({
   return (
     <ContainerComponent
       ref={containerRef}
-      sortableChildren={true}
+      sortableChildren
       position={$position}
     >
       <GraphicsComponent
         type={GraphicType.POLYGON}
         polygon={dragPolygon}
-        cursor={Cursor.POINTER}
+        cursor={Cursor.GRAB}
         eventMode={EventMode.STATIC}
         onPointerDown={onPointerDown}
+        onPointerEnter={onPointerEnter}
+        onPointerLeave={onPointerLeave}
         zIndex={10}
         alpha={0}
       />
