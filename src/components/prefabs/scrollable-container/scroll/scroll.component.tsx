@@ -9,9 +9,8 @@ import {
   ContainerComponent,
   ContainerProps,
   ContainerRef,
-  GraphicsComponent,
 } from "../../../core";
-import { Cursor, Event, EventMode, GraphicType } from "../../../../enums";
+import { Cursor, Event, EventMode } from "../../../../enums";
 import { useEvents } from "../../../../hooks";
 
 type Props = {
@@ -51,8 +50,6 @@ export const ScrollComponent: React.FC<Props> = ({
   const renderBottomRef = useRef<ContainerRef>(null);
   const renderScrollBarRef = useRef<ContainerRef>(null);
 
-  const [width, setWidth] = useState<number>(0);
-
   const [topHeight, setTopHeight] = useState<number>(0);
   const [bottomHeight, setBottomHeight] = useState<number>(0);
   const [scrollBarHeight, setScrollBarHeight] = useState<number>(0);
@@ -70,14 +67,12 @@ export const ScrollComponent: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    const { width, height } = renderTopRef.current.getSize();
-    setWidth(width);
+    const { height } = renderTopRef.current.getSize();
     setTopHeight(height);
     setBottomHeight(renderBottomRef.current.getSize().height);
     if (renderScrollBarRef.current)
       setScrollBarHeight(renderScrollBarRef.current.getSize().height);
   }, [
-    setWidth,
     setTopHeight,
     setBottomHeight,
     setScrollBarHeight,
@@ -135,8 +130,8 @@ export const ScrollComponent: React.FC<Props> = ({
     const interval = setInterval(() => {
       if (!goDown && !goUp) return;
 
-      scroll(() => (goUp ? -20 : goDown ? 20 : 0));
-    }, 200);
+      scroll(() => (goUp ? -10 : goDown ? 10 : 0));
+    }, 20);
 
     const removeOnWheel = on(Event.WHEEL, onWheel);
     const removeOnPointerMove = on(Event.POINTER_MOVE, onPointerMove);
@@ -148,17 +143,7 @@ export const ScrollComponent: React.FC<Props> = ({
       removeOnPointerMove();
       removeOnPointerUp();
     };
-  }, [
-    height,
-    maxHeight,
-    canScroll,
-    scrollBarHeight,
-    goDown,
-    goUp,
-    scrollHeight,
-    setScrollYPosition,
-    onPointerMove,
-  ]);
+  }, [goDown, goUp, onPointerMove, scroll]);
 
   const onPointerDownTop = useCallback(() => {
     if (!canScroll) return;
