@@ -94,7 +94,6 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
 
   return (
     <>
-      {$props.maskRender}
       <pixiNineSliceSprite
         ref={nineSliceSpriteRef}
         {...$props}
@@ -102,6 +101,7 @@ export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
         texture={$texture}
         roundPixels={true}
       />
+      {$props.maskRender}
     </>
   );
 };

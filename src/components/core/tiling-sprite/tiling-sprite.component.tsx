@@ -70,7 +70,6 @@ export const TilingSpriteComponent: React.FC<TilingSpriteProps> = ({
 
   return (
     <>
-      {$props.maskRender}
       <pixiTilingSprite
         //@ts-ignore
         ref={tilingSpriteRef}
@@ -80,6 +79,7 @@ export const TilingSpriteComponent: React.FC<TilingSpriteProps> = ({
         //@ts-ignore
         texture={$texture}
       />
+      {$props.maskRender}
     </>
   );
 };

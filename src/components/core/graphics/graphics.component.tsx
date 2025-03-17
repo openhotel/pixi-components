@@ -81,13 +81,13 @@ export const GraphicsComponent: React.FC<GraphicsProps> = ({
   );
   return (
     <>
-      {$props.maskRender}
       <pixiGraphics
         ref={graphicsRef}
         label={label}
         draw={$onDraw}
         {...$props}
       />
+      {$props.maskRender}
     </>
   );
 };

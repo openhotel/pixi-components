@@ -63,13 +63,13 @@ export const SpriteComponent: React.FC<SpriteProps> = ({
 
   return (
     <>
-      {$props.maskRender}
       <pixiSprite
         ref={spriteRef}
         label={label}
         {...$props}
         texture={$texture}
       />
+      {$props.maskRender}
     </>
   );
 };

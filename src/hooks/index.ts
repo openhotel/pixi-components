@@ -10,3 +10,4 @@ export * from "./use-component-context";
 export * from "./use-update";
 export * from "./use-text";
 export * from "./use-input";
+export * from "./use-cursor-inside";

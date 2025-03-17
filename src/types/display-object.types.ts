@@ -23,6 +23,7 @@ export type DisplayObjectProps<DisplayRef> = {
   visible?: boolean;
 
   onPointerDown?: (event: PointerEvent) => void;
+  onPointerUp?: (event: PointerEvent) => void;
   onPointerEnter?: (event: PointerEvent) => void;
   onPointerLeave?: (event: PointerEvent) => void;
 };

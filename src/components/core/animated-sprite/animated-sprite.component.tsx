@@ -90,13 +90,13 @@ export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
 
   return (
     <>
-      {$props.maskRender}
       <pixiAnimatedSprite
         ref={animatedSpriteRef}
         {...$props}
         label={label}
         textures={$spriteSheet?.animations?.[animation] ?? [Texture.EMPTY]}
       />
+      {$props.maskRender}
     </>
   );
 };
