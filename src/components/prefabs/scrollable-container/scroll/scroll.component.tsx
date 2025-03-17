@@ -12,6 +12,7 @@ import {
 } from "../../../core";
 import { Cursor, Event, EventMode } from "../../../../enums";
 import { useEvents } from "../../../../hooks";
+import { Point } from "../../../../types";
 
 type Props = {
   height: number;
@@ -22,6 +23,7 @@ type Props = {
   renderScrollBar: React.FC;
   renderBottom: React.FC;
 
+  scrollYPosition: number;
   onScroll: (yPosition: number) => void;
 
   isCursorInside: () => boolean;
@@ -36,6 +38,7 @@ export const ScrollComponent: React.FC<Props> = ({
   renderScrollBar: RenderScrollBar,
   renderBottom: RenderBottom,
 
+  scrollYPosition,
   onScroll,
 
   isCursorInside,
@@ -53,8 +56,6 @@ export const ScrollComponent: React.FC<Props> = ({
   const [topHeight, setTopHeight] = useState<number>(0);
   const [bottomHeight, setBottomHeight] = useState<number>(0);
   const [scrollBarHeight, setScrollBarHeight] = useState<number>(0);
-
-  const [scrollYPosition, setScrollYPosition] = useState<number>(0);
 
   const [goDown, setGoDown] = useState<boolean>(false);
   const [goUp, setGoUp] = useState<boolean>(false);
@@ -82,38 +83,35 @@ export const ScrollComponent: React.FC<Props> = ({
   ]);
 
   const scroll = useCallback(
-    (amount: () => number) => {
+    (amount: number) => {
       if (!canScroll) return;
 
-      setScrollYPosition((positionY) => {
-        let target = Math.round(positionY + amount());
+      let target = Math.round(scrollYPosition + amount);
 
-        if (0 >= target) target = 0;
-        if (target > scrollHeight - scrollBarHeight)
-          target = scrollHeight - scrollBarHeight;
+      if (0 >= target) target = 0;
+      if (target > scrollHeight - scrollBarHeight)
+        target = scrollHeight - scrollBarHeight;
 
-        onScroll(target);
-        return target;
-      });
+      onScroll(target);
     },
-    [onScroll, canScroll, scrollBarHeight, scrollHeight, setScrollYPosition],
+    [onScroll, canScroll, scrollBarHeight, scrollHeight, scrollYPosition],
   );
 
   const onWheel = useCallback(
     (event: WheelEvent) => {
       if (!isCursorInside()) return;
-      scroll(() => event.deltaY);
+      scroll(event.deltaY);
     },
     [scroll, isCursorInside],
   );
 
   const lastPointMoveY = useRef<number>(0);
 
-  const onPointerMove = useCallback(
-    (event: PointerEvent) => {
+  const onCursorMove = useCallback(
+    (position: Point) => {
       if (isPointerDownScrollBarRef.current)
-        scroll(() => event.clientY - lastPointMoveY.current);
-      lastPointMoveY.current = event.clientY;
+        scroll(position.y - lastPointMoveY.current);
+      lastPointMoveY.current = position.y;
     },
     [scroll, scrollYPosition],
   );
@@ -130,26 +128,26 @@ export const ScrollComponent: React.FC<Props> = ({
     const interval = setInterval(() => {
       if (!goDown && !goUp) return;
 
-      scroll(() => (goUp ? -10 : goDown ? 10 : 0));
+      scroll(goUp ? -10 : goDown ? 10 : 0);
     }, 20);
 
     const removeOnWheel = on(Event.WHEEL, onWheel);
-    const removeOnPointerMove = on(Event.POINTER_MOVE, onPointerMove);
+    const removeOnCursorMove = on(Event.CURSOR_MOVE, onCursorMove);
     const removeOnPointerUp = on(Event.POINTER_UP, onPointerUp);
 
     return () => {
       clearInterval(interval);
       removeOnWheel();
-      removeOnPointerMove();
+      removeOnCursorMove();
       removeOnPointerUp();
     };
-  }, [goDown, goUp, onPointerMove, scroll]);
+  }, [goDown, goUp, onCursorMove, scroll]);
 
   const onPointerDownTop = useCallback(() => {
     if (!canScroll) return;
 
     setGoUp(true);
-    scroll(() => -20);
+    scroll(-20);
   }, [canScroll, setGoUp, scroll]);
 
   const onPointerTopUp = useCallback(() => {
@@ -162,7 +160,7 @@ export const ScrollComponent: React.FC<Props> = ({
     if (!canScroll) return;
 
     setGoDown(true);
-    scroll(() => 20);
+    scroll(20);
   }, [canScroll, setGoDown, scroll]);
 
   const onPointerBottomUp = useCallback(() => {

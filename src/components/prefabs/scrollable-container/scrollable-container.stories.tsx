@@ -58,12 +58,13 @@ export const Primary: Story = {
     children: (
       <>
         <GraphicsComponent
-          type={GraphicType.CIRCLE}
+          type={GraphicType.RECTANGLE}
           tint={0xff00ff}
-          radius={50}
+          height={350}
+          width={100}
           position={{
             x: 10,
-            y: 200,
+            y: 50,
           }}
         />
       </>

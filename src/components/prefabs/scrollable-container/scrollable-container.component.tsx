@@ -5,7 +5,7 @@ import {
   GraphicsComponent,
 } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
-import { Event, GraphicType } from "../../../enums";
+import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import { Size } from "../../../types";
 import { ScrollComponent } from "./scroll";
 
@@ -28,6 +28,8 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
   const contentRef = useRef<ContainerRef>(null);
 
   const { isCursorInside, ...cursorInsideProps } = useCursorInside();
+  const { isCursorInside: isCursorInsideContent, ...cursorInsideContentProps } =
+    useCursorInside();
 
   const [scrollYPosition, setScrollYPosition] = useState<number>(0);
   const [maxHeight, setMaxHeight] = useState<number>(size.height);
@@ -41,6 +43,7 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
     const removeOnPointerDown = on(Event.POINTER_DOWN, onPointerDown);
     const removeOnPointerUp = on(Event.POINTER_UP, onPointerDown);
 
+    console.log(contentRef.current.getBounds());
     setMaxHeight(contentRef.current.getBounds().maxY);
 
     return () => {
@@ -71,10 +74,13 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
         maxHeight={maxHeight}
         onScroll={onScroll}
         isCursorInside={isCursorInside}
+        scrollYPosition={scrollYPosition}
         {...scrollbar}
       />
       <ContainerComponent
         ref={contentRef}
+        eventMode={EventMode.STATIC}
+        cursor={Cursor.POINTER}
         mask={
           <GraphicsComponent
             type={GraphicType.RECTANGLE}
@@ -88,6 +94,7 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
         pivot={{
           y: scrollYPosition,
         }}
+        {...cursorInsideContentProps}
       >
         {children}
       </ContainerComponent>
