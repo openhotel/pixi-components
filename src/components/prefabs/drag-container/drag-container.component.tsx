@@ -6,20 +6,35 @@ import {
 } from "../../core";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
-import { useCursor, useEvents, useWindow } from "../../../hooks";
+import {
+  DragContainerProvider,
+  useCursor,
+  useDragContainer,
+  useEvents,
+  useWindow,
+} from "../../../hooks";
 import { Point, Size } from "../../../types";
 
 export type DragContainerComponentProps = {
-  dragPolygon: number[];
   size?: Size;
 } & ContainerProps;
 
-export const DragContainerComponent: React.FC<DragContainerComponentProps> = ({
-  dragPolygon = [],
+export const DragContainerComponent: React.FC<DragContainerComponentProps> = (
+  props,
+) => {
+  return (
+    <DragContainerProvider>
+      <DragContainerComponentWrapper {...props} />
+    </DragContainerProvider>
+  );
+};
+
+const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
   children,
   position = { x: 0, y: 0 },
   size,
 }) => {
+  const { dragPolygon } = useDragContainer();
   const { on } = useEvents();
   const { getPosition: getCursorPosition, setCursor } = useCursor();
   const { getScale, getSize } = useWindow();
