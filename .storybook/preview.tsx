@@ -113,8 +113,19 @@ export const decorators = [
     const scale = useMemo(() => props.globals.scale, [props]);
     // const isConsole = useMemo(() => props.globals.console, [props]);
 
+    const backgroundColor = useMemo(() => {
+      const { backgrounds } = props.parameters;
+
+      return (
+        props?.globals?.backgrounds?.value ??
+        backgrounds.values?.find(({ name }) => backgrounds.default === name)
+          ?.value ??
+        0x1
+      );
+    }, [props]);
+
     return (
-      <ApplicationProvider scale={scale}>
+      <ApplicationProvider scale={scale} backgroundColor={backgroundColor}>
         <ApplicationWrapper props={props}>
           {withConsole()(renderStory)(props)}
         </ApplicationWrapper>

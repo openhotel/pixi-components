@@ -9,6 +9,7 @@ type FlexContainerProps = {
   justify?: FLEX_JUSTIFY;
   size?: Partial<Size>;
   direction?: "x" | "y";
+  gap?: number;
 } & ContainerProps;
 
 export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
@@ -18,6 +19,7 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
   justify = FLEX_JUSTIFY.START,
   direction = "x",
   onChildLoaded,
+  gap = 0,
   ...containerProps
 }) => {
   const { on } = useEvents();
@@ -56,19 +58,19 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
       switch (justify) {
         case FLEX_JUSTIFY.START:
           child.position[direction] = Math.round(lastItemPosition);
-          lastItemPosition = lastItemPosition + itemSizeW;
+          lastItemPosition = lastItemPosition + itemSizeW + gap;
           break;
         case FLEX_JUSTIFY.END:
           child.position[direction] = Math.round(
             $size[sizeName] - itemSizeW - lastItemPosition,
           );
-          lastItemPosition += itemSizeW;
+          lastItemPosition += itemSizeW + gap;
           break;
         case FLEX_JUSTIFY.CENTER:
           child.position[direction] = Math.round(
-            lastItemPosition + totalEmptySize / 2,
+            lastItemPosition + totalEmptySize / 2 - gap,
           );
-          lastItemPosition += itemSizeW;
+          lastItemPosition += itemSizeW + gap;
           break;
         case FLEX_JUSTIFY.SPACE_EVENLY:
           child.position[direction] = Math.round(
@@ -93,7 +95,7 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
           break;
       }
     }
-  }, [children, getSize, size, justify, align, direction]);
+  }, [children, getSize, size, justify, align, direction, gap]);
 
   const onResize = useCallback(() => {
     rePosition();

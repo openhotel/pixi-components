@@ -138,6 +138,12 @@ export const ApplicationProvider: React.FC<ApplicationProps> = ({
     [$application?.current],
   );
 
+  useEffect(() => {
+    if (!application || !backgroundColor) return;
+
+    application.renderer.background.color = backgroundColor;
+  }, [backgroundColor, application]);
+
   return (
     <EventsProvider>
       <Application

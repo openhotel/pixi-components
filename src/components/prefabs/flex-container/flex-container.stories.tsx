@@ -26,6 +26,7 @@ export const FlexJustifyStart: Story = {
         <SpriteComponent texture="/assets/logo_64x_transparent.png" />
       </>
     ),
+    gap: 20,
   },
 };
 
@@ -41,6 +42,7 @@ export const FlexJustifyEnd: Story = {
         <SpriteComponent texture="/assets/logo_64x_transparent.png" />
       </>
     ),
+    gap: 20,
   },
 };
 
@@ -59,6 +61,7 @@ export const FlexJustifyCenter: Story = {
         <SpriteComponent texture="/assets/logo_64x_transparent.png" />
       </>
     ),
+    gap: 20,
   },
 };
 
