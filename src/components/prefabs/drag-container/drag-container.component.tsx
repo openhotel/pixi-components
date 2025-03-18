@@ -33,6 +33,7 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
   children,
   position = { x: 0, y: 0 },
   size,
+  ...containerProps
 }) => {
   const { dragPolygon } = useDragContainer();
   const { on } = useEvents();
@@ -50,6 +51,13 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
     x: position.x ?? 0,
     y: position.y ?? 0,
   });
+
+  useEffect(() => {
+    $setPosition({
+      x: position.x ?? 0,
+      y: position.y ?? 0,
+    });
+  }, [position]);
 
   const onPointerEnter = useCallback(() => {
     pointerEnterRef.current = true;
@@ -151,6 +159,7 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
       ref={containerRef}
       sortableChildren
       position={$position}
+      {...containerProps}
     >
       <GraphicsComponent
         type={GraphicType.POLYGON}
