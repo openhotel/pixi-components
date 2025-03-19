@@ -31,6 +31,7 @@ export const Primary: Story = {
     },
     maxLength: 16,
     onValueChange: console.info,
+    onEnter: console.info,
   },
 };
 

@@ -33,7 +33,10 @@ export type SpriteTextInputProps = {
   placeholderProps?: TextProps;
   maxLength?: number;
 
+  clearOnEnter?: boolean;
+
   onValueChange?: (value: string) => void;
+  onEnter?: (value: string) => void;
 } & Omit<
   SpriteTextProps,
   "text" | "wrap" | "color" | "backgroundAlpha" | "backgroundColor"
@@ -51,10 +54,13 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   height,
   defaultValue,
   padding,
-  onValueChange,
   maxLength,
   placeholder,
   placeholderProps,
+  clearOnEnter = false,
+  //
+  onValueChange,
+  onEnter,
   // display
   label = "sprite-text-input",
   // container
@@ -122,6 +128,13 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
       const textArrayFromEnd = specialKey
         ? textRef.current.substring(cursorIndexRef.current).split("")
         : [];
+
+      if (key === "Enter") {
+        onEnter?.(textRef.current);
+        if (clearOnEnter) textRef.current = "";
+        update();
+        return;
+      }
 
       if (
         key === "Backspace" &&
@@ -267,7 +280,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
       makeActions(key, getOS() === OS.DARWIN ? altKey : shiftKey);
       startCursorBlink();
     },
-    [startCursorBlink, writeChar, makeActions, update],
+    [startCursorBlink, writeChar, makeActions, update, onEnter],
   );
 
   const onKeyUp = useCallback(
