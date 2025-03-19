@@ -236,17 +236,21 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         key === "ArrowRight" &&
         cursorIndexRef.current < textRef.current?.length
       ) {
-        for (
-          let charIndex = 0;
-          charIndex < textArrayFromEnd.length;
-          charIndex++
-        ) {
-          const char = textArrayFromEnd[charIndex];
-          if (char === " " && charIndex !== 0) break;
-          if (char === " ") {
+        if (specialKey) {
+          for (
+            let charIndex = 0;
+            charIndex < textArrayFromEnd.length;
+            charIndex++
+          ) {
+            const char = textArrayFromEnd[charIndex];
+            if (char === " " && charIndex !== 0) break;
+            if (char === " ") {
+              cursorIndexRef.current++;
+              break;
+            }
             cursorIndexRef.current++;
-            break;
           }
+        } else {
           cursorIndexRef.current++;
         }
         return;

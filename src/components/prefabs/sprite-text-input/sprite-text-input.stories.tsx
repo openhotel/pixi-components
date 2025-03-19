@@ -56,6 +56,7 @@ export const Placeholder: Story = {
     },
     maxLength: 16,
     onValueChange: console.info,
+    clearOnEnter: true,
   },
 };
 
