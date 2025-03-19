@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { SpriteComponent } from "./sprite.component";
-import { fn } from "@storybook/test";
+import { GraphicsComponent } from "../graphics";
+import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof SpriteComponent> = {
-  title: "Components/Sprite",
+  title: "Components/Core/Sprite",
   component: SpriteComponent,
   parameters: {
     layout: "fullscreen",
@@ -22,13 +23,20 @@ export const SpriteSheetTexture: Story = {
     pivot: { x: 0, y: 0 },
     scale: { x: -1 },
     anchor: { x: 0 },
-    onDraw: fn(),
   },
 };
 
 export const SpriteTexture: Story = {
   args: {
     texture: "/assets/logo_64x_transparent.png",
-    onDraw: fn(),
+  },
+};
+
+export const SpriteTextureWithMask: Story = {
+  args: {
+    texture: "/assets/logo_64x_transparent.png",
+    mask: (
+      <GraphicsComponent type={GraphicType.RECTANGLE} width={40} height={50} />
+    ),
   },
 };

@@ -1,2 +1,2 @@
-export * from "./container";
-export * from "./sprite";
+export * from "./core";
+export * from "./prefabs";

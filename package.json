@@ -17,12 +17,15 @@
     "@storybook/addon-links": "8.5.1",
     "@storybook/addon-onboarding": "8.5.1",
     "@storybook/blocks": "8.5.1",
+    "@storybook/manager-api": "^8.5.8",
     "@storybook/react": "8.5.1",
     "@storybook/react-vite": "8.5.1",
     "@storybook/test": "8.5.1",
+    "@storybook/theming": "^8.5.8",
     "@types/react": "19.0.8",
     "@vitejs/plugin-react": "4.3.3",
     "jsr": "0.13.2",
+    "nodemon": "^3.1.9",
     "prettier": "3.3.3",
     "prop-types": "15.8.1",
     "storybook": "8.5.1",
@@ -31,9 +34,7 @@
     "vite-plugin-dts": "4.3.0"
   },
   "dependencies": {
-    "@pixi/react": "8.0.0-beta.24",
-    "@storybook/manager-api": "^8.5.8",
-    "@storybook/theming": "^8.5.8",
+    "@pixi/react": "8.0.0",
     "dayjs": "1.11.13",
     "pixi.js": "^8.8.0",
     "react": "19.0.0",
@@ -45,7 +46,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build": "vite build",
+    "build:watch": "nodemon",
     "publish": "npx jsr publish --allow-dirty --allow-slow-types",
-    "publish:check": "npx jsr publish --allow-dirty  --dry-run"
+    "publish:check": "npx jsr publish --allow-dirty  --dry-run",
+    "link": "npm link"
   }
 }

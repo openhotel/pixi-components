@@ -1,35 +1,38 @@
-import { useMemo } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { DisplayObjectProps, DisplayObjectRefProps } from "../types";
+import { Container } from "pixi.js";
 
 export const useDisplayObject = ({
+  label,
   position,
   pivot,
   scale,
   anchor,
+  mask,
   ...props
-}: DisplayObjectProps<unknown>): DisplayObjectRefProps => {
-  const $position = useMemo(
-    () => ({
-      x: Math.round(position?.x ?? 0),
-      y: Math.round(position?.y ?? 0),
-    }),
-    [position],
-  );
-
-  const $pivot = useMemo(
-    () => ({
-      x: Math.round(pivot?.x ?? 0),
-      y: Math.round(pivot?.y ?? 0),
-    }),
-    [pivot],
-  );
-
+}: DisplayObjectProps<unknown>): DisplayObjectRefProps<unknown> => {
   const $scale = useMemo(
     () => ({
       x: scale?.x ?? 1,
       y: scale?.y ?? 1,
     }),
     [scale],
+  );
+
+  const $position = useMemo(
+    () => ({
+      x: Math.round(position?.x ?? 0),
+      y: Math.round(position?.y ?? 0),
+    }),
+    [position, $scale],
+  );
+
+  const $pivot = useMemo(
+    () => ({
+      x: Math.round($scale.x > 0 ? (pivot?.x ?? 0) : -(pivot?.x ?? 0)),
+      y: Math.round($scale.y > 0 ? (pivot?.y ?? 0) : -(pivot?.y ?? 0)),
+    }),
+    [pivot, $scale],
   );
 
   const $anchor = useMemo(() => {
@@ -44,11 +47,28 @@ export const useDisplayObject = ({
     };
   }, [anchor, $scale]);
 
+  const [$mask, $setMask] = useState<Container<any>>(null);
+  const maskRender = useMemo((): ReactNode => {
+    if (!mask) return null;
+    return (
+      <pixiContainer ref={$setMask} position={$position} pivot={$pivot}>
+        {mask}
+      </pixiContainer>
+    );
+  }, [mask, $position, $pivot, $setMask]);
+
+  useEffect(() => {}, []);
+
   return {
+    label,
     position: $position,
     pivot: $pivot,
     scale: $scale,
     anchor: $anchor,
+
+    mask: $mask,
+    maskRender,
+
     ...props,
-  };
+  } as DisplayObjectRefProps<unknown>;
 };

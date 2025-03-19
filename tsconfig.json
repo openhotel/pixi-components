@@ -13,7 +13,7 @@
     "noUnusedLocals": true,
     "lib": ["dom", "esnext"],
     "outDir": "dist",
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

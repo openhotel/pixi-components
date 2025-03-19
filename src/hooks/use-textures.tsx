@@ -1,9 +1,14 @@
-import React, { ReactNode, useCallback, useContext, useState } from "react";
+import React, { ReactNode, useCallback, useContext, useRef } from "react";
 import { Spritesheet, Texture } from "pixi.js";
 
+type TextureProps = { texture: string; spriteSheet?: string };
+
 type TexturesState = {
-  getSpriteSheet: (name: string) => Promise<Spritesheet<any>>;
-  getTexture: (name: string) => Promise<Texture>;
+  loadSpriteSheet: (name: string) => Promise<void>;
+  loadTexture: (name: string) => Promise<void>;
+
+  getSpriteSheet: (name: string) => Spritesheet<any>;
+  getTexture: (data: TextureProps) => Texture;
 };
 
 const TexturesContext = React.createContext<TexturesState>(undefined);
@@ -15,62 +20,92 @@ type ProviderProps = {
 export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
   children,
 }) => {
-  const [textureMap, setTextureMap] = useState<Record<string, Texture>>({});
-  const [spriteSheetMap, setSpriteSheetMap] = useState<
-    Record<string, Spritesheet<any>>
-  >({});
+  const textureMapRef = useRef<Record<string, Texture>>({});
+  const spriteSheetMapRef = useRef<Record<string, Spritesheet<any>>>({});
 
-  const getTexture = useCallback(
-    (name: string): Promise<Texture> => {
-      return new Promise(async (resolve) => {
-        if (textureMap[name]) return resolve(textureMap[name]);
-
+  const getRawTexture = useCallback(
+    (name: string) =>
+      new Promise<Texture>(async (resolve) => {
         const data = await fetch(name);
         const blob = await data.blob();
         const imageBitmap = await createImageBitmap(blob);
-        const texture = Texture.from(imageBitmap);
-
-        setTextureMap((map) => {
-          return {
-            ...map,
-            [name]: texture,
-          };
-        });
-        resolve(texture);
-      });
-    },
-    [setTextureMap],
+        resolve(Texture.from(imageBitmap, true));
+      }),
+    [],
   );
 
-  const getSpriteSheet = useCallback(
-    (name: string): Promise<Spritesheet<any>> => {
-      return new Promise((resolve) => {
-        if (spriteSheetMap[name]) return resolve(spriteSheetMap[name]);
+  const loadSpriteSheet = useCallback(
+    (name: string): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        if (spriteSheetMapRef.current[name]) {
+          console.warn(`SpriteSheet with name '${name}' already loaded!`);
+          resolve();
+          return;
+        }
 
         fetch(name)
           .then((data) => data.json())
           .then(async (data) => {
-            const imagePath = name.replace(/([\w-]+\.json)/, data.meta.image);
-            const texture = await getTexture(imagePath);
+            const spritePath = name.replace(/([\w-]+\.json)/, data.meta.image);
+            const texture = await getRawTexture(spritePath);
+
             const $spriteSheet = new Spritesheet(texture, data);
             await $spriteSheet.parse();
 
-            setSpriteSheetMap((map) => {
-              return {
-                ...map,
-                [name]: $spriteSheet,
-              };
-            });
-            resolve($spriteSheet);
-          });
+            spriteSheetMapRef.current[name] = $spriteSheet;
+            resolve();
+          })
+          .catch(reject);
       });
     },
-    [setSpriteSheetMap, getTexture],
+    [getRawTexture],
+  );
+
+  const loadTexture = useCallback(
+    (name: string): Promise<void> => {
+      return new Promise(async (resolve, reject) => {
+        if (textureMapRef.current[name]) {
+          console.warn(`Texture with name '${name}' already loaded!`);
+          resolve();
+          return;
+        }
+
+        try {
+          textureMapRef.current[name] = await getRawTexture(name);
+          resolve();
+        } catch (e) {
+          reject();
+        }
+      });
+    },
+    [getRawTexture],
+  );
+
+  const getSpriteSheet = useCallback((spriteSheetName: string): Spritesheet => {
+    return spriteSheetMapRef.current[spriteSheetName] ?? null;
+  }, []);
+
+  const getTexture = useCallback(
+    ({
+      texture: textureName,
+      spriteSheet: spriteSheetName,
+    }: TextureProps): Texture => {
+      if (spriteSheetName && getSpriteSheet(spriteSheetName))
+        return getSpriteSheet(spriteSheetName)?.textures?.[textureName] ?? null;
+
+      if (textureMapRef.current[textureName])
+        return textureMapRef.current[textureName];
+
+      return null;
+    },
+    [getSpriteSheet],
   );
 
   return (
     <TexturesContext.Provider
       value={{
+        loadSpriteSheet,
+        loadTexture,
         getSpriteSheet,
         getTexture,
       }}
