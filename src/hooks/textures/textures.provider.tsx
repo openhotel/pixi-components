@@ -1,27 +1,21 @@
-import React, { ReactNode, useCallback, useContext, useRef } from "react";
+import React, { ReactNode, useCallback } from "react";
+import { TextureProps, TexturesContext } from "./textures.context";
 import { Spritesheet, Texture } from "pixi.js";
+import { useTexturesStore } from "./textures.store";
 
-type TextureProps = { texture: string; spriteSheet?: string };
-
-type TexturesState = {
-  loadSpriteSheet: (name: string) => Promise<void>;
-  loadTexture: (name: string) => Promise<void>;
-
-  getSpriteSheet: (name: string) => Spritesheet<any>;
-  getTexture: (data: TextureProps) => Texture;
-};
-
-const TexturesContext = React.createContext<TexturesState>(undefined);
-
-type ProviderProps = {
+type TexturesProps = {
   children: ReactNode;
 };
 
-export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
+export const TexturesProvider: React.FunctionComponent<TexturesProps> = ({
   children,
 }) => {
-  const textureMapRef = useRef<Record<string, Texture>>({});
-  const spriteSheetMapRef = useRef<Record<string, Spritesheet<any>>>({});
+  const {
+    getTexture: $getTexture,
+    getSpriteSheet: $getSpriteSheet,
+    setSpriteSheet,
+    setTexture,
+  } = useTexturesStore();
 
   const getRawTexture = useCallback(
     (name: string) =>
@@ -37,7 +31,7 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
   const loadSpriteSheet = useCallback(
     (name: string): Promise<void> => {
       return new Promise((resolve, reject) => {
-        if (spriteSheetMapRef.current[name]) {
+        if ($getSpriteSheet(name)) {
           console.warn(`SpriteSheet with name '${name}' already loaded!`);
           resolve();
           return;
@@ -52,53 +46,57 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
             const $spriteSheet = new Spritesheet(texture, data);
             await $spriteSheet.parse();
 
-            spriteSheetMapRef.current[name] = $spriteSheet;
+            setSpriteSheet(name, $spriteSheet);
             resolve();
           })
           .catch(reject);
       });
     },
-    [getRawTexture],
+    [getRawTexture, $getSpriteSheet, setSpriteSheet],
   );
 
   const loadTexture = useCallback(
     (name: string): Promise<void> => {
       return new Promise(async (resolve, reject) => {
-        if (textureMapRef.current[name]) {
+        if ($getTexture(name)) {
           console.warn(`Texture with name '${name}' already loaded!`);
           resolve();
           return;
         }
 
         try {
-          textureMapRef.current[name] = await getRawTexture(name);
+          setTexture(name, await getRawTexture(name));
           resolve();
         } catch (e) {
           reject();
         }
       });
     },
-    [getRawTexture],
+    [getRawTexture, $getTexture, setTexture],
   );
 
-  const getSpriteSheet = useCallback((spriteSheetName: string): Spritesheet => {
-    return spriteSheetMapRef.current[spriteSheetName] ?? null;
-  }, []);
+  const getSpriteSheet = useCallback(
+    (spriteSheetName: string): Spritesheet => {
+      return $getSpriteSheet(spriteSheetName) ?? null;
+    },
+    [$getSpriteSheet],
+  );
 
   const getTexture = useCallback(
     ({
       texture: textureName,
       spriteSheet: spriteSheetName,
     }: TextureProps): Texture => {
-      if (spriteSheetName && getSpriteSheet(spriteSheetName))
-        return getSpriteSheet(spriteSheetName)?.textures?.[textureName] ?? null;
+      if (spriteSheetName && $getSpriteSheet(spriteSheetName))
+        return (
+          $getSpriteSheet(spriteSheetName)?.textures?.[textureName] ?? null
+        );
 
-      if (textureMapRef.current[textureName])
-        return textureMapRef.current[textureName];
+      if ($getTexture(textureName)) return $getTexture(textureName);
 
       return null;
     },
-    [getSpriteSheet],
+    [getSpriteSheet, $getSpriteSheet, $getTexture],
   );
 
   return (
@@ -113,5 +111,3 @@ export const TexturesProvider: React.FunctionComponent<ProviderProps> = ({
     />
   );
 };
-
-export const useTextures = (): TexturesState => useContext(TexturesContext);
