@@ -52,7 +52,6 @@ export const SystemProvider: React.FunctionComponent<SystemProps> = ({
       //@ts-ignore
       navigator.userAgentData?.platform || navigator.platform || "unknown";
 
-    console.log(navigator.hardwareConcurrency);
     //gpu
     try {
       //@ts-ignore
