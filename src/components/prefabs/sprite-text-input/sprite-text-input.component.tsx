@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   SpriteTextComponent,
   SpriteTextProps,
@@ -37,6 +37,9 @@ export type SpriteTextInputProps = {
 
   onValueChange?: (value: string) => void;
   onEnter?: (value: string) => void;
+
+  focusNow?: number;
+  blurNow?: number;
 } & Omit<
   SpriteTextProps,
   "text" | "wrap" | "color" | "backgroundAlpha" | "backgroundColor"
@@ -61,6 +64,8 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   //
   onValueChange,
   onEnter,
+  focusNow,
+  blurNow,
   // display
   label = "sprite-text-input",
   // container
@@ -333,6 +338,8 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     containerRef,
     onBlur,
     onFocus,
+    focusNow,
+    blurNow,
   });
 
   const cursorTextWidth =
@@ -341,15 +348,18 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   let textCursorOverflowX = cursorTextWidth - width;
   textCursorOverflowX = textCursorOverflowX > 0 ? textCursorOverflowX : 0;
 
-  const mask = (
-    <GraphicsComponent
-      type={GraphicType.RECTANGLE}
-      width={width}
-      height={height}
-      position={{
-        x: textCursorOverflowX,
-      }}
-    />
+  const mask = useMemo(
+    () => (
+      <GraphicsComponent
+        type={GraphicType.RECTANGLE}
+        width={width}
+        height={height}
+        position={{
+          x: textCursorOverflowX,
+        }}
+      />
+    ),
+    [width, height, textCursorOverflowX],
   );
 
   return (
