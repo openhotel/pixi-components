@@ -120,6 +120,11 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     [update, onValueChange, maxLength],
   );
 
+  const reset = useCallback(() => {
+    textRef.current = "";
+    cursorIndexRef.current = 0;
+  }, []);
+
   const makeActions = useCallback(
     (key: string, specialKey: boolean) => {
       if (!textRef.current?.length) return;
@@ -136,7 +141,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 
       if (key === "Enter") {
         onEnter?.(textRef.current);
-        if (clearOnEnter) textRef.current = "";
+        if (clearOnEnter) reset();
         update();
         return;
       }
@@ -261,7 +266,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         return;
       }
     },
-    [update, onValueChange],
+    [update, onValueChange, reset],
   );
 
   const onKeyDown = useCallback(
