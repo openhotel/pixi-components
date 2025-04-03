@@ -53,11 +53,11 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
   });
 
   useEffect(() => {
-    $setPosition({
-      x: position.x ?? 0,
-      y: position.y ?? 0,
-    });
-  }, [position]);
+    $setPosition(($position) => ({
+      x: position.x ?? $position.x ?? 0,
+      y: position.y ?? $position.y ?? 0,
+    }));
+  }, [position.x, position.y, $setPosition]);
 
   const onPointerEnter = useCallback(() => {
     pointerEnterRef.current = true;
@@ -133,9 +133,12 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
       const $position = { ...position };
       if ($position.x + contentSize.width > maxSize.width) {
         $position.x = maxSize.width - contentSize.width;
+        if (0 > $position.x) $position.x = 0;
       }
       if ($position.y + contentSize.height > maxSize.height) {
         $position.y = maxSize.height - contentSize.height;
+
+        if (0 > $position.y) $position.y = 0;
       }
 
       return $position;
@@ -152,7 +155,7 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
       onRemovePointerUp();
       onRemoveResize?.();
     };
-  }, [on, onCursorMove, onPointerUp]);
+  }, [on, onCursorMove, onPointerUp, size]);
 
   return (
     <ContainerComponent
