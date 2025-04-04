@@ -24,6 +24,7 @@ import {
   InputProvider,
 } from ".";
 import { Event } from "../enums";
+import { SystemProvider } from ".";
 
 type ApplicationState = {
   /**
@@ -95,15 +96,17 @@ const WrapperApplicationProvider: React.FC<
         ...props,
       }}
     >
-      <WindowProvider scale={scale}>
-        <CursorProvider>
-          <ContextProvider>
-            <InputProvider>
-              <TexturesProvider>{children}</TexturesProvider>
-            </InputProvider>
-          </ContextProvider>
-        </CursorProvider>
-      </WindowProvider>
+      <SystemProvider>
+        <WindowProvider scale={scale}>
+          <CursorProvider>
+            <ContextProvider>
+              <InputProvider>
+                <TexturesProvider>{children}</TexturesProvider>
+              </InputProvider>
+            </ContextProvider>
+          </CursorProvider>
+        </WindowProvider>
+      </SystemProvider>
     </ApplicationContext.Provider>
   );
 };

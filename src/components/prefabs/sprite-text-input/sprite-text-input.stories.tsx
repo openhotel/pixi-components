@@ -1,5 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextInputComponent } from "./sprite-text-input.component";
+import { ContainerComponent } from "../../core";
+import { useEffect, useState } from "react";
 
 const meta: Meta<typeof SpriteTextInputComponent> = {
   title: "Components/Prefabs/Sprite Text Input",
@@ -61,22 +63,44 @@ export const Placeholder: Story = {
 };
 
 export const Multiple = () => {
+  const [focusNextInput, setFocusNextInput] = useState<number>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setFocusNextInput(performance.now());
+    }, 3000);
+  }, [setFocusNextInput]);
+
   return (
-    <>
+    <ContainerComponent position={{ x: 20, y: 20 }}>
       <SpriteTextInputComponent
         height={10}
         width={50}
+        padding={{
+          left: 10,
+          bottom: 5,
+          right: 10,
+          top: 5,
+        }}
         backgroundColor={0xff00ff}
         spriteSheet="/assets/fonts/default-font.json"
+        focusNow={performance.now()}
       />
       <SpriteTextInputComponent
         height={10}
         width={50}
+        padding={{
+          left: 10,
+          bottom: 5,
+          right: 10,
+          top: 5,
+        }}
         position={{
-          y: 12,
+          y: 25,
         }}
         spriteSheet="/assets/fonts/default-font.json"
+        focusNow={focusNextInput}
       />
-    </>
+    </ContainerComponent>
   );
 };
