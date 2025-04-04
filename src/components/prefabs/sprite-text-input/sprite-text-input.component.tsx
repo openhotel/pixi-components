@@ -29,6 +29,7 @@ export type SpriteTextInputProps = {
 
   passwordChar?: string;
   defaultValue?: string;
+  value?: string;
   placeholder?: string;
   placeholderProps?: TextProps;
   maxLength?: number;
@@ -40,6 +41,9 @@ export type SpriteTextInputProps = {
 
   focusNow?: number;
   blurNow?: number;
+
+  onFocus?: () => void;
+  onBlur?: () => void;
 } & Omit<
   SpriteTextProps,
   "text" | "wrap" | "color" | "backgroundAlpha" | "backgroundColor"
@@ -56,6 +60,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   width,
   height,
   defaultValue,
+  value,
   padding,
   maxLength,
   placeholder,
@@ -66,6 +71,8 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   onEnter,
   focusNow,
   blurNow,
+  onFocus,
+  onBlur,
   // display
   label = "sprite-text-input",
   // container
@@ -77,7 +84,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   //input
   const containerRef = useRef<ContainerRef>(null);
   const isFocusedRef = useRef<boolean>(false);
-  const textRef = useRef<string>(defaultValue ?? "");
+  const textRef = useRef<string>(defaultValue ?? value ?? "");
 
   //cursor
   const currentAccentCodeRef = useRef<string>(null);
@@ -327,22 +334,31 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
     };
   }, [on, onKeyDown, onKeyUp, onPaste]);
 
-  const onFocus = useCallback(() => {
+  useEffect(() => {
+    if (value === null || value === undefined) return;
+
+    textRef.current = value;
+    cursorIndexRef.current = textRef.current.length;
+  }, [value]);
+
+  const $onFocus = useCallback(() => {
     isFocusedRef.current = true;
     startCursorBlink();
     focusInput();
-  }, [focusInput]);
+    onFocus?.();
+  }, [focusInput, onFocus]);
 
-  const onBlur = useCallback(() => {
+  const $onBlur = useCallback(() => {
     isFocusedRef.current = false;
     stopCursorBlink();
     blurInput();
-  }, [blurInput]);
+    onBlur?.();
+  }, [blurInput, onBlur]);
 
   const { focus, blur, ...componentContext } = useComponentContext({
     containerRef,
-    onBlur,
-    onFocus,
+    onBlur: $onBlur,
+    onFocus: $onFocus,
     focusNow,
     blurNow,
   });
