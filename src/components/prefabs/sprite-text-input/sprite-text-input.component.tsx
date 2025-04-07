@@ -92,7 +92,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   const cursorIndexRef = useRef<number>(textRef?.current?.length);
   const cursorVisibleRef = useRef<boolean>(false);
 
-  const { getTextLength } = useText(spriteSheet);
+  const { getTextLength, isCharValid } = useText(spriteSheet);
 
   const startCursorBlink = useCallback(() => {
     clearInterval(cursorBlinkIntervalRef.current);
@@ -112,7 +112,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 
   const writeChar = useCallback(
     (key: string) => {
-      if (key.length !== 1) return;
+      if (key.length !== 1 || !isCharValid(key)) return;
 
       if (textRef?.current?.length + 1 >= maxLength) return;
 
@@ -124,7 +124,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
 
       cursorIndexRef.current++;
     },
-    [update, onValueChange, maxLength],
+    [update, onValueChange, maxLength, isCharValid],
   );
 
   const reset = useCallback(() => {
