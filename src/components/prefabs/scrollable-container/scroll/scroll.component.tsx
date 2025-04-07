@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { ContainerComponent } from "../../../core";
 import type { ContainerProps, ContainerRef } from "../../../core";
 import { Cursor, Event, EventMode } from "../../../../enums";
@@ -10,10 +10,10 @@ type Props = {
   height: number;
   maxHeight: number;
 
-  renderTop: React.FC;
-  renderScrollBackground: React.FC;
-  renderScrollBar: React.FC;
-  renderBottom: React.FC;
+  renderTop: FC;
+  renderScrollBackground: FC;
+  renderScrollBar: FC;
+  renderBottom: FC;
 
   scrollYPosition: number;
   onScroll: (yPosition: number) => void;
@@ -21,7 +21,7 @@ type Props = {
   isCursorInside: () => boolean;
 } & ContainerProps;
 
-export const ScrollComponent: React.FC<Props> = ({
+export const ScrollComponent: FC<Props> = ({
   height,
   maxHeight,
 

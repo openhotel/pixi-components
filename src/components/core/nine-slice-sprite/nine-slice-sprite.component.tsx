@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 
 import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
@@ -56,7 +56,7 @@ export type NineSliceSpriteProps = {
  *      areas 4 and 6 will be stretched vertically
  *      area 5 will be stretched both horizontally and vertically
  */
-export const NineSliceSpriteComponent: React.FC<NineSliceSpriteProps> = ({
+export const NineSliceSpriteComponent: FC<NineSliceSpriteProps> = ({
   ref,
   label = "nine-slice-sprite",
   spriteSheet,

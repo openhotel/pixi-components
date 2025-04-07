@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 
 import { extend } from "@pixi/react";
 import type { Texture } from "pixi.js";
@@ -34,7 +34,7 @@ export type TilingSpriteProps = {
   height?: number;
 } & DisplayObjectProps<TilingSpriteRef>;
 
-export const TilingSpriteComponent: React.FC<TilingSpriteProps> = ({
+export const TilingSpriteComponent: FC<TilingSpriteProps> = ({
   ref,
   label = "sprite",
   spriteSheet,

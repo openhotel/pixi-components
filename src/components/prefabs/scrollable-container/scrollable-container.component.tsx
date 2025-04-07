@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type React from "react";
+import type {} from "react";
 import { ContainerComponent, GraphicsComponent } from "../../core";
 import type { ContainerRef } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";

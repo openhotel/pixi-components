@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type React from "react";
+import type { FC, ReactNode } from "react";
 import { Application } from "@pixi/react";
 import type { ApplicationRef } from "@pixi/react";
 import type { Renderer, Application as PixiApplication } from "pixi.js";
@@ -36,15 +36,18 @@ type ApplicationState = {
 const ApplicationContext = createContext<ApplicationState>(undefined);
 
 type ApplicationProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 
   scale?: number;
   backgroundColor?: number;
 };
 
-const WrapperApplicationProvider: React.FC<
-  ApplicationProps & ApplicationState
-> = ({ children, scale, application, ...props }) => {
+const WrapperApplicationProvider: FC<ApplicationProps & ApplicationState> = ({
+  children,
+  scale,
+  application,
+  ...props
+}) => {
   const { emit } = useEvents();
 
   useEffect(() => {
@@ -109,7 +112,7 @@ const WrapperApplicationProvider: React.FC<
   );
 };
 
-export const ApplicationProvider: React.FC<ApplicationProps> = ({
+export const ApplicationProvider: FC<ApplicationProps> = ({
   backgroundColor,
   ...props
 }) => {

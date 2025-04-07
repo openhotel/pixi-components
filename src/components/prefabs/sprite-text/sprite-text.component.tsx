@@ -5,7 +5,7 @@ import {
 } from "../../core";
 import type { ContainerRef } from "../../core";
 import { Fragment, useMemo, useState } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
 import type { DisplayObjectProps, Sides, Size } from "../../../types";
@@ -29,7 +29,7 @@ export type SpriteTextProps = {
 } & TextProps &
   Omit<DisplayObjectProps<ContainerRef>, "alpha">;
 
-export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
+export const SpriteTextComponent: FC<SpriteTextProps> = ({
   spriteSheet,
   text = "",
   maxWidth,

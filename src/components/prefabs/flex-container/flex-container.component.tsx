@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { ContainerComponent } from "../../core";
 import type { ContainerProps, ContainerRef } from "../../core";
 import { useEvents, useWindow } from "../../../hooks";
@@ -14,7 +14,7 @@ type FlexContainerProps = {
   gap?: number;
 } & ContainerProps;
 
-export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
+export const FlexContainerComponent: FC<FlexContainerProps> = ({
   ref,
   children,
   size,
