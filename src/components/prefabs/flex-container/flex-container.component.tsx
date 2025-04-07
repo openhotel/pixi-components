@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { ContainerComponent, ContainerProps, ContainerRef } from "../../core";
 import { useEvents, useWindow } from "../../../hooks";
 import { Event, FLEX_ALIGN, FLEX_JUSTIFY } from "../../../enums";
@@ -13,6 +18,7 @@ type FlexContainerProps = {
 } & ContainerProps;
 
 export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
+  ref,
   children,
   size,
   align = FLEX_ALIGN.TOP,
@@ -25,6 +31,8 @@ export const FlexContainerComponent: React.FC<FlexContainerProps> = ({
   const { on } = useEvents();
   const { getSize } = useWindow();
   const containerRef = useRef<ContainerRef>(null);
+
+  useImperativeHandle(ref, () => containerRef.current, [ref]);
 
   const rePosition = useCallback(() => {
     const sizeName = direction === "x" ? "width" : "height";

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from "react";
 import {
   SpriteTextComponent,
   SpriteTextProps,
@@ -50,6 +56,7 @@ export type SpriteTextInputProps = {
 >;
 
 export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
+  ref,
   //sprite-text
   spriteSheet,
   color = 0,
@@ -57,6 +64,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   alpha,
   // input
   backgroundColor,
+  backgroundAlpha,
   width,
   height,
   defaultValue,
@@ -93,6 +101,8 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
   const cursorVisibleRef = useRef<boolean>(false);
 
   const { getTextLength, isCharValid } = useText(spriteSheet);
+
+  useImperativeHandle(ref, () => containerRef.current, [ref]);
 
   const startCursorBlink = useCallback(() => {
     clearInterval(cursorBlinkIntervalRef.current);
@@ -396,6 +406,7 @@ export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
         type={GraphicType.RECTANGLE}
         width={width + (padding?.left ?? 0) + (padding?.right ?? 0)}
         height={height + (padding?.top ?? 0) + (padding?.bottom ?? 0)}
+        alpha={backgroundAlpha}
         tint={backgroundColor}
       />
       <SpriteTextComponent

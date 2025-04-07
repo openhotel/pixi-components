@@ -43,7 +43,6 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
     const removeOnPointerDown = on(Event.POINTER_DOWN, onPointerDown);
     const removeOnPointerUp = on(Event.POINTER_UP, onPointerDown);
 
-    console.log(contentRef.current.getBounds());
     setMaxHeight(contentRef.current.getBounds().maxY);
 
     return () => {

@@ -4,7 +4,13 @@ import {
   ContainerRef,
   GraphicsComponent,
 } from "../../core";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import {
   DragContainerProvider,
@@ -30,6 +36,7 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = (
 };
 
 const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
+  ref,
   children,
   position = { x: 0, y: 0 },
   size,
@@ -51,6 +58,8 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
     x: position.x ?? 0,
     y: position.y ?? 0,
   });
+
+  useImperativeHandle(ref, () => containerRef.current, [ref]);
 
   useEffect(() => {
     $setPosition(($position) => ({
