@@ -9,17 +9,25 @@ export const useText = (spriteSheet: string) => {
     [getSpriteSheet, spriteSheet],
   );
 
+  const isCharValid = useCallback(
+    (char: string) => Boolean($spriteSheet.textures[char]),
+    [$spriteSheet],
+  );
+
   const getTextLength = useCallback(
     (text: string) => {
       if (!$spriteSheet) return 0;
       return text.split("").reduce((length, char) => {
-        return length + $spriteSheet.textures[char].width + 1;
+        const charWidth = $spriteSheet.textures[char]?.width;
+        if (!charWidth) return length;
+        return length + charWidth + 1;
       }, 0);
     },
     [$spriteSheet],
   );
 
   return {
+    isCharValid,
     getTextLength,
   };
 };

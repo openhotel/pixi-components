@@ -4,7 +4,13 @@ import {
   ContainerRef,
   GraphicsComponent,
 } from "../../core";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import {
   DragContainerProvider,
@@ -30,6 +36,7 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = (
 };
 
 const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
+  ref,
   children,
   position = { x: 0, y: 0 },
   size,
@@ -52,12 +59,14 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
     y: position.y ?? 0,
   });
 
+  useImperativeHandle(ref, () => containerRef.current, [ref]);
+
   useEffect(() => {
-    $setPosition({
-      x: position.x ?? 0,
-      y: position.y ?? 0,
-    });
-  }, [position]);
+    $setPosition(($position) => ({
+      x: position.x ?? $position.x ?? 0,
+      y: position.y ?? $position.y ?? 0,
+    }));
+  }, [position.x, position.y, $setPosition]);
 
   const onPointerEnter = useCallback(() => {
     pointerEnterRef.current = true;
@@ -133,9 +142,12 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
       const $position = { ...position };
       if ($position.x + contentSize.width > maxSize.width) {
         $position.x = maxSize.width - contentSize.width;
+        if (0 > $position.x) $position.x = 0;
       }
       if ($position.y + contentSize.height > maxSize.height) {
         $position.y = maxSize.height - contentSize.height;
+
+        if (0 > $position.y) $position.y = 0;
       }
 
       return $position;
@@ -152,7 +164,7 @@ const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
       onRemovePointerUp();
       onRemoveResize?.();
     };
-  }, [on, onCursorMove, onPointerUp]);
+  }, [on, onCursorMove, onPointerUp, size]);
 
   return (
     <ContainerComponent
