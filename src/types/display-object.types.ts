@@ -22,10 +22,10 @@ export type DisplayObjectProps<DisplayRef> = {
   zIndex?: number;
   visible?: boolean;
 
-  onPointerDown?: (event: PointerEvent) => void;
-  onPointerUp?: (event: PointerEvent) => void;
-  onPointerEnter?: (event: PointerEvent) => void;
-  onPointerLeave?: (event: PointerEvent) => void;
+  onPointerDown?: (event: unknown) => void;
+  onPointerUp?: (event: unknown) => void;
+  onPointerEnter?: (event: unknown) => void;
+  onPointerLeave?: (event: unknown) => void;
 };
 
 export type DisplayObjectRefProps<PixiDisplay> = {

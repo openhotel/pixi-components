@@ -1,8 +1,13 @@
 {
   "name": "@oh/pixi-components",
   "version": "0.0.0",
-  "exports": "./dist/index.es.js",
+  "exports": "./dist/index.d.ts",
   "publish": {
     "exclude": ["src/", ".storybook", ".github", "!dist/"]
+  },
+  "imports": {
+    "react": "npm:@types/react",
+    "react-dom": "npm:react-dom",
+    "pixi.js": "npm:pixi.js"
   }
 }

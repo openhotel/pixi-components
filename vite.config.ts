@@ -8,7 +8,10 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
-      insertTypesEntry: true, // Generates a types entry file
+      insertTypesEntry: true,
+      rollupTypes: true,
+      include: ["src"],
+      exclude: ["node_modules"],
     }),
   ],
   build: {
@@ -18,7 +21,7 @@ export default defineConfig({
       formats: ["es"], // Supported formats
     },
     rollupOptions: {
-      external: ["react", "react-dom"], // Exclude peer dependencies
+      external: ["react", "react-dom", "pixi.js"],
       output: {
         globals: {
           react: "React",
