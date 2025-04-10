@@ -12,8 +12,13 @@
     "sourceMap": false,
     "noUnusedLocals": true,
     "lib": ["dom", "esnext"],
+    "types": ["react", "react-dom", "pixi.js"],
     "outDir": "dist",
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
