@@ -1,7 +1,7 @@
 {
   "name": "@openhotel/pixi-components",
   "license": "NC BY-SA 4.0",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "type": "module",
   "author": "openhotel",
   "main": "dist/index.es.js",

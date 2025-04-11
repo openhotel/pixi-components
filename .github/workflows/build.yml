@@ -8,9 +8,6 @@ jobs:
   build:
     name: "build"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: [2.0.0]
 
     steps:
       - uses: actions/checkout@v4
