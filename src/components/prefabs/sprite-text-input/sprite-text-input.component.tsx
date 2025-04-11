@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import type { FC } from "react";
 import { SpriteTextComponent } from "../sprite-text";
 import type { SpriteTextProps, TextProps } from "../sprite-text";
@@ -374,20 +368,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   let textCursorOverflowX = cursorTextWidth - width;
   textCursorOverflowX = textCursorOverflowX > 0 ? textCursorOverflowX : 0;
 
-  const mask = useMemo(
-    () => (
-      <GraphicsComponent
-        type={GraphicType.RECTANGLE}
-        width={width}
-        height={height}
-        position={{
-          x: textCursorOverflowX,
-        }}
-      />
-    ),
-    [width, height, textCursorOverflowX],
-  );
-
   return (
     <ContainerComponent
       label={label}
@@ -411,7 +391,10 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
           x: padding?.left ?? 0,
           y: padding?.top ?? 0,
         }}
-        mask={mask}
+        maskPolygon={[0, 0, width, 0, width, height, 0, height]}
+        maskPosition={{
+          x: textCursorOverflowX,
+        }}
         {...placeholderProps}
         visible={!textRef.current?.length}
       />
@@ -426,7 +409,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
           x: padding?.left ?? 0,
           y: padding?.top ?? 0,
         }}
-        mask={mask}
       />
       {/* cursor */}
       <GraphicsComponent

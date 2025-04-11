@@ -69,8 +69,10 @@ export const ContainerComponent: FC<ContainerProps> = ({
 
   return (
     <>
+      <pixiContainer ref={$ref} label={label} {...$props}>
+        {children}
+      </pixiContainer>
       {$props?.maskRender}
-      <pixiContainer ref={$ref} label={label} children={children} {...$props} />
     </>
   );
 };

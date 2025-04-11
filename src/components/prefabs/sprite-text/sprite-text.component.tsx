@@ -161,14 +161,10 @@ export const SpriteTextComponent: FC<SpriteTextProps> = ({
 
   return (
     <ContainerComponent
-      mask={
-        maxWidth && !wrap ? (
-          <GraphicsComponent
-            type={GraphicType.RECTANGLE}
-            width={maxWidth}
-            height={size.height}
-          />
-        ) : null
+      maskPolygon={
+        maxWidth && !wrap
+          ? [0, 0, maxWidth, 0, maxWidth, size.height, 0, size.height]
+          : null
       }
       sortableChildren={true}
       label={label}

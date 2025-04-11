@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import type { FC, ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ContainerProps, ContainerRef } from "../../core";
 import { ContainerComponent, GraphicsComponent } from "../../core";
-import type { ContainerRef, ContainerProps } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import type { Size } from "../../../types";
@@ -57,16 +57,13 @@ export const ScrollableContainerComponent: FC<Props> = ({
     [setScrollYPosition],
   );
 
-  const onChildLoaded = useCallback(() => {
-    console.log(contentRef.current.getSize());
-  }, [children]);
-
   return (
     <ContainerComponent {...containerProps} {...cursorInsideProps}>
       <GraphicsComponent
         type={GraphicType.RECTANGLE}
         width={size.width}
         height={size.height}
+        eventMode={EventMode.NONE}
       />
       <ScrollComponent
         height={size.height}
@@ -81,22 +78,21 @@ export const ScrollableContainerComponent: FC<Props> = ({
       />
       <ContainerComponent
         ref={contentRef}
-        eventMode={EventMode.STATIC}
         cursor={Cursor.POINTER}
-        mask={
-          <GraphicsComponent
-            type={GraphicType.RECTANGLE}
-            width={size.width}
-            height={size.height}
-            position={{
-              y: scrollYPosition,
-            }}
-          />
-        }
+        sortableChildren
+        maskPolygon={[
+          0,
+          0,
+          size.width,
+          0,
+          size.width,
+          size.height,
+          0,
+          size.height,
+        ]}
         pivot={{
           y: scrollYPosition,
         }}
-        onChildLoaded={onChildLoaded}
         {...cursorInsideContentProps}
       >
         {children}
