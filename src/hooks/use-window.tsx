@@ -1,13 +1,14 @@
-import React, {
-  ReactNode,
+import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import type React from "react";
 import { useApplication } from "./use-application";
-import { Size } from "../types";
+import type { Size } from "../types";
 import { useEvents } from "./use-events";
 import { Event } from "../enums";
 
@@ -20,10 +21,10 @@ type WindowState = {
   getSize: () => Size;
 };
 
-const WindowContext = React.createContext<WindowState>(undefined);
+const WindowContext = createContext<WindowState>(undefined);
 
 type WindowProps = {
-  children: ReactNode;
+  children: React.ReactNode;
   scale?: number;
 };
 

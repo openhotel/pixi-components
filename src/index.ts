@@ -1,3 +1,5 @@
+// <reference types="https://esm.sh/@types/react" />
+
 export * from "./components";
 // export * from "./consts";
 export * from "./enums";

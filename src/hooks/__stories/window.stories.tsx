@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { SpriteComponent } from "../../components";
 import { useWindow } from "../../hooks";
 import { Cursor, EventMode } from "../../enums";

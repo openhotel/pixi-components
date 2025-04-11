@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { TemplateContext } from "./template.context";
 
 type TemplateProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const TemplateProvider: React.FunctionComponent<TemplateProps> = ({

@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextComponent } from "../../components";
 import { useCursor } from "../../hooks";
 import { useEffect, useState } from "react";

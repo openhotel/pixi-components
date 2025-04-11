@@ -1,16 +1,13 @@
+import { ContainerComponent, GraphicsComponent } from "../../core";
+import type { ContainerProps, ContainerRef } from "../../core";
 import {
-  ContainerComponent,
-  ContainerProps,
-  ContainerRef,
-  GraphicsComponent,
-} from "../../core";
-import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from "react";
+import type React from "react";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import {
   DragContainerProvider,
@@ -19,7 +16,7 @@ import {
   useEvents,
   useWindow,
 } from "../../../hooks";
-import { Point, Size } from "../../../types";
+import type { Point, Size } from "../../../types";
 
 export type DragContainerComponentProps = {
   size?: Size;

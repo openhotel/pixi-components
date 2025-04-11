@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { ContainerComponent } from "./container.component";
 import { fn } from "@storybook/test";
 import { Cursor, EventMode, GraphicType } from "../../../enums";

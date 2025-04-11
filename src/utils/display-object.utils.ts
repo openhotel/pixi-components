@@ -1,4 +1,4 @@
-import { Bounds, DisplayObjectRefFunctions, Point, Size } from "../types";
+import type { Bounds, DisplayObjectRefFunctions, Point, Size } from "../types";
 import { Container } from "pixi.js";
 
 export const getDisplayObjectRefFunctions = <PixiDisplay extends Container>(

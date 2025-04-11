@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { DragContainerComponent, SpriteComponent } from "../..";
 import { useDragContainer } from "../../../hooks";
 import { useEffect } from "react";

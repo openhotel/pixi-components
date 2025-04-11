@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextComponent } from "./sprite-text.component";
 
 const meta: Meta<typeof SpriteTextComponent> = {

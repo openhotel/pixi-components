@@ -1,5 +1,5 @@
-import React, {
-  ReactNode,
+import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -7,13 +7,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Application, ApplicationRef } from "@pixi/react";
-import {
-  AbstractRenderer,
-  Application as PixiApplication,
-  Renderer,
-  TextureSource,
-} from "pixi.js";
+import type React from "react";
+import { Application } from "@pixi/react";
+import type { ApplicationRef } from "@pixi/react";
+import type { Renderer, Application as PixiApplication } from "pixi.js";
+import { AbstractRenderer, TextureSource } from "pixi.js";
 import {
   WindowProvider,
   TexturesProvider,
@@ -35,10 +33,10 @@ type ApplicationState = {
   scale?: number;
 };
 
-const ApplicationContext = React.createContext<ApplicationState>(undefined);
+const ApplicationContext = createContext<ApplicationState>(undefined);
 
 type ApplicationProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 
   scale?: number;
   backgroundColor?: number;

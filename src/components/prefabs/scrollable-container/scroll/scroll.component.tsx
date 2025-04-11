@@ -1,18 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  ContainerComponent,
-  ContainerProps,
-  ContainerRef,
-} from "../../../core";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
+import { ContainerComponent } from "../../../core";
+import type { ContainerProps, ContainerRef } from "../../../core";
 import { Cursor, Event, EventMode } from "../../../../enums";
 import { useEvents } from "../../../../hooks";
-import { Point } from "../../../../types";
+import type { Point } from "../../../../types";
 
 type Props = {
   height: number;

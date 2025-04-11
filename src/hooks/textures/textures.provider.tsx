@@ -1,10 +1,12 @@
-import React, { ReactNode, useCallback } from "react";
-import { TextureProps, TexturesContext } from "./textures.context";
+import { useCallback } from "react";
+import type React from "react";
+import type { TextureProps } from "./textures.context";
+import { TexturesContext } from "./textures.context";
 import { Spritesheet, Texture } from "pixi.js";
 import { useTexturesStore } from "./textures.store";
 
 type TexturesProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const TexturesProvider: React.FunctionComponent<TexturesProps> = ({

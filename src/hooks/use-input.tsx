@@ -1,4 +1,5 @@
-import React, { ReactNode, useCallback, useContext, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect } from "react";
+import type React from "react";
 import { useEvents } from ".";
 import { Event } from "../enums";
 
@@ -7,10 +8,10 @@ type InputState = {
   blur: () => void;
 };
 
-const InputContext = React.createContext<InputState>(undefined);
+const InputContext = createContext<InputState>(undefined);
 
 type InputProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const InputProvider: React.FunctionComponent<InputProps> = ({

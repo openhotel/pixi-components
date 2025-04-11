@@ -1,10 +1,11 @@
-import React, {
-  ReactNode,
+import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
   useRef,
 } from "react";
+import type React from "react";
 import { Event } from "../enums";
 import { EVENT_MAP } from "../consts";
 
@@ -18,10 +19,10 @@ type EventsState = {
   emit: <Data extends unknown>(event: Event | string, data?: Data) => void;
 };
 
-const EventsContext = React.createContext<EventsState>(undefined);
+const EventsContext = createContext<EventsState>(undefined);
 
 type EventsProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const EventsProvider: React.FunctionComponent<EventsProps> = ({

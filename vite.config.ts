@@ -11,7 +11,12 @@ export default defineConfig({
       insertTypesEntry: true,
       rollupTypes: true,
       include: ["src"],
-      exclude: ["node_modules"],
+      pathsToAliases: false,
+      compilerOptions: {
+        importsNotUsedAsValues: 1,
+        verbatimModuleSyntax: true, // Forces type-only imports
+        esModuleInterop: true,
+      },
     }),
   ],
   build: {
@@ -21,13 +26,7 @@ export default defineConfig({
       formats: ["es"], // Supported formats
     },
     rollupOptions: {
-      external: ["react", "react-dom", "pixi.js"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
+      external: ["react", "pixi.js"],
     },
   },
   css: {
