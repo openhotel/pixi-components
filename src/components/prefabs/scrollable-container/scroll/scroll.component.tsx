@@ -59,6 +59,15 @@ export const ScrollComponent: FC<Props> = ({
     [height, topHeight, bottomHeight],
   );
 
+  const thumbY = useMemo(() => {
+    const contentScrollableHeight = maxHeight - height;
+    const thumbTrackHeight = scrollHeight - scrollBarHeight;
+
+    if (contentScrollableHeight <= 0 || thumbTrackHeight <= 0) return 0;
+
+    return (scrollYPosition / contentScrollableHeight) * thumbTrackHeight;
+  }, [scrollYPosition, maxHeight, height, scrollHeight, scrollBarHeight]);
+
   useEffect(() => {
     const { height } = renderTopRef.current.getSize();
     setTopHeight(height);
@@ -80,9 +89,8 @@ export const ScrollComponent: FC<Props> = ({
 
       let target = Math.round(scrollYPosition + amount);
 
-      if (0 >= target) target = 0;
-      if (target > scrollHeight - scrollBarHeight)
-        target = scrollHeight - scrollBarHeight;
+      const maxScroll = maxHeight - height;
+      target = Math.max(0, Math.min(target, maxScroll));
 
       onScroll(target);
     },
@@ -101,11 +109,25 @@ export const ScrollComponent: FC<Props> = ({
 
   const onCursorMove = useCallback(
     (position: Point) => {
-      if (isPointerDownScrollBarRef.current)
-        scroll(position.y - lastPointMoveY.current);
+      if (!isPointerDownScrollBarRef.current) {
+        lastPointMoveY.current = position.y; // Fixes scrolling from other source than scroll bar and the "offset" being off
+        return;
+      }
+
+      const deltaY = position.y - lastPointMoveY.current;
       lastPointMoveY.current = position.y;
+
+      const contentScrollableHeight = maxHeight - height;
+      const thumbTrackHeight = scrollHeight - scrollBarHeight;
+
+      if (thumbTrackHeight <= 0 || contentScrollableHeight <= 0) return;
+
+      const scrollAmount =
+        (deltaY / thumbTrackHeight) * contentScrollableHeight;
+
+      scroll(scrollAmount);
     },
-    [scroll, scrollYPosition],
+    [scroll, maxHeight, height, scrollHeight, scrollBarHeight],
   );
 
   const onPointerUp = useCallback(() => {
@@ -190,7 +212,7 @@ export const ScrollComponent: FC<Props> = ({
           cursor={Cursor.GRAB}
           visible={canScroll}
           position={{
-            y: scrollYPosition,
+            y: thumbY,
           }}
           onPointerDown={onPointerDownScrollBar}
           zIndex={10}
