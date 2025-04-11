@@ -1,4 +1,4 @@
-import { useCallback, useImperativeHandle, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import type { FC } from "react";
 import { extend } from "@pixi/react";
 import { Graphics } from "pixi.js";
@@ -80,6 +80,12 @@ export const GraphicsComponent: FC<GraphicsProps> = ({
     },
     [type, polygon, radius, length, width, height],
   );
+
+  useEffect(() => {
+    if (!graphicsRef.current) return;
+    graphicsRef.current.parent.emit("child-loaded", null);
+  }, [graphicsRef.current]);
+
   return (
     <>
       <pixiGraphics

@@ -110,6 +110,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
     (props) => {
       rePosition();
       onChildLoaded?.(props);
+      containerRef.current.component.parent.emit("child-loaded", null);
     },
     [onChildLoaded],
   );
