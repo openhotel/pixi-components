@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ContainerComponent } from "./container.component";
 import { fn } from "@storybook/test";
-import { Cursor, EventMode, GraphicType } from "../../../enums";
-import { GraphicsComponent, SpriteComponent } from "..";
+import { Cursor, EventMode } from "../../../enums";
+import { SpriteComponent } from "..";
 
 const meta: Meta<typeof ContainerComponent> = {
   title: "Components/Core/Container",
@@ -24,9 +24,7 @@ export const ContainerWithMask: Story = {
         texture="/assets/logo_64x_transparent.png"
       />
     ),
-    mask: (
-      <GraphicsComponent type={GraphicType.RECTANGLE} width={32} height={64} />
-    ),
+    maskPolygon: [0, 0, 32, 0, 32, 64, 0, 64],
     position: { x: 0, y: 0 },
     pivot: { x: 0, y: 0 },
     onPointerDown: fn(),

@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { NineSliceSpriteComponent } from "./nine-slice-sprite.component";
-import { GraphicsComponent } from "../graphics";
-import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof NineSliceSpriteComponent> = {
   title: "Components/Core/NineSliceSprite",
@@ -36,9 +34,7 @@ export const SlicedSpriteWithMask: Story = {
     bottomHeight: 5,
     width: 80,
     height: 50,
-    mask: (
-      <GraphicsComponent type={GraphicType.RECTANGLE} width={40} height={50} />
-    ),
+    maskPolygon: [0, 0, 40, 0, 40, 50, 0, 50],
   },
 };
 

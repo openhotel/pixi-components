@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useMemo, useState } from "react";
 import type { DisplayObjectProps, DisplayObjectRefProps } from "../types";
-import { Container } from "pixi.js";
+import { GraphicsComponent } from "../components";
+import { GraphicType } from "../enums";
 
 export const useDisplayObject = ({
   label,
@@ -9,7 +9,8 @@ export const useDisplayObject = ({
   pivot,
   scale,
   anchor,
-  mask,
+  maskPolygon,
+  maskPosition,
   ...props
 }: DisplayObjectProps<unknown>): DisplayObjectRefProps<unknown> => {
   const $scale = useMemo(
@@ -48,17 +49,21 @@ export const useDisplayObject = ({
     };
   }, [anchor, $scale]);
 
-  const [$mask, $setMask] = useState<Container<any>>(null);
-  const maskRender = useMemo((): ReactNode => {
-    if (!mask) return null;
-    return (
-      <pixiContainer ref={$setMask} position={$position} pivot={$pivot}>
-        {mask}
-      </pixiContainer>
-    );
-  }, [mask, $position, $pivot, $setMask]);
+  const [$mask, $setMask] = useState(null);
 
-  useEffect(() => {}, []);
+  const maskRender = useMemo(
+    () =>
+      maskPolygon ? (
+        <GraphicsComponent
+          ref={$setMask}
+          type={GraphicType.POLYGON}
+          polygon={maskPolygon}
+          tint={0xff00ff}
+          position={maskPosition}
+        />
+      ) : null,
+    [maskPolygon, maskPosition],
+  );
 
   return {
     label,
@@ -67,7 +72,7 @@ export const useDisplayObject = ({
     scale: $scale,
     anchor: $anchor,
 
-    mask: $mask,
+    mask: $mask?.component,
     maskRender,
 
     ...props,

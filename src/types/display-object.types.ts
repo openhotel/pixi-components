@@ -10,7 +10,9 @@ export type DisplayObjectProps<DisplayRef> = {
 
   label?: string;
 
-  mask?: ReactNode;
+  maskPolygon?: number[];
+  maskPosition?: Partial<Point>;
+
   position?: Partial<Point>;
   pivot?: Partial<Point>;
   scale?: Partial<Point>;

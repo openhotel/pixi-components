@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TilingSpriteComponent } from "./tiling-sprite.component";
-import { GraphicsComponent } from "../graphics";
-import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof TilingSpriteComponent> = {
   title: "Components/Core/Tiling Sprite",
@@ -45,8 +43,6 @@ export const SpriteTextureWithMask: Story = {
     texture: "/assets/logo_64x_transparent.png",
     width: 100,
     height: 100,
-    mask: (
-      <GraphicsComponent type={GraphicType.RECTANGLE} width={80} height={50} />
-    ),
+    maskPolygon: [0, 0, 80, 0, 80, 50, 0, 50],
   },
 };

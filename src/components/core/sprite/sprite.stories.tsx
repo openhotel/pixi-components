@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SpriteComponent } from "./sprite.component";
-import { GraphicsComponent } from "../graphics";
-import { GraphicType } from "../../../enums";
 
 const meta: Meta<typeof SpriteComponent> = {
   title: "Components/Core/Sprite",
@@ -35,8 +33,6 @@ export const SpriteTexture: Story = {
 export const SpriteTextureWithMask: Story = {
   args: {
     texture: "/assets/logo_64x_transparent.png",
-    mask: (
-      <GraphicsComponent type={GraphicType.RECTANGLE} width={40} height={50} />
-    ),
+    maskPolygon: [0, 0, 40, 0, 40, 50, 0, 50],
   },
 };

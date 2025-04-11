@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AnimatedSpriteComponent } from "./animated-sprite.component";
-import { GraphicType, PlayStatus } from "../../../enums";
+import { PlayStatus } from "../../../enums";
 import { useCallback, useState } from "react";
-import { GraphicsComponent } from "../graphics";
 
 const meta: Meta<typeof AnimatedSpriteComponent> = {
   title: "Components/Core/Animated Sprite",
@@ -21,13 +20,7 @@ export const TurnLeftAndStopWithMask: Story = {
     spriteSheet: "/assets/fighter/fighter.json",
     animation: "turnLeft",
     playStatus: PlayStatus.PLAY_AND_STOP,
-    mask: (
-      <GraphicsComponent
-        type={GraphicType.RECTANGLE}
-        width={100}
-        height={150}
-      />
-    ),
+    maskPolygon: [0, 0, 100, 0, 100, 150, 0, 150],
   },
 };
 
