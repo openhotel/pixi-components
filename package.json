@@ -1,5 +1,6 @@
 {
   "name": "@openhotel/pixi-components",
+  "license": "NC BY-SA 4.0",
   "version": "0.0.2",
   "type": "module",
   "author": "openhotel",
@@ -12,6 +13,9 @@
   ],
   "engines": {
     "node": "22"
+  },
+  "repository": {
+    "url": "https://github.com/openhotel/pixi-components"
   },
   "packageManager": "yarn@4.6.0",
   "devDependencies": {
