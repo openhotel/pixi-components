@@ -7,9 +7,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: [2.0.0]
 
     permissions:
       contents: read
@@ -52,9 +49,6 @@ jobs:
 
       - name: run build
         run: yarn run build
-
-      - name: remove src
-        run: rm -R ./src
 
       - name: Publish package
         run: npm publish --access public
