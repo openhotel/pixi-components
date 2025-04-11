@@ -768,9 +768,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oh/pixi-components@workspace:.":
+"@openhotel/pixi-components@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@oh/pixi-components@workspace:."
+  resolution: "@openhotel/pixi-components@workspace:."
   dependencies:
     "@chromatic-com/storybook": "npm:3.2.4"
     "@pixi/react": "npm:8.0.0"
@@ -795,7 +795,6 @@ __metadata:
     prettier: "npm:3.3.3"
     prop-types: "npm:15.8.1"
     react: "npm:19.0.0"
-    react-dom: "npm:19.0.0"
     storybook: "npm:8.5.1"
     storybook-dark-mode: "npm:4.0.2"
     vite: "npm:5.4.10"
@@ -3989,17 +3988,6 @@ __metadata:
     resolve: "npm:^1.22.1"
     strip-indent: "npm:^4.0.0"
   checksum: 10c0/59f8b26b292df0d54cf5b1fff33d9a46bf318caadb97b2dde55cbc8fb6210e03ab5b295bd97a54a6b5afa1c0fca814c9a852cca673f8f260740103c708c683da
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:19.0.0":
-  version: 19.0.0
-  resolution: "react-dom@npm:19.0.0"
-  dependencies:
-    scheduler: "npm:^0.25.0"
-  peerDependencies:
-    react: ^19.0.0
-  checksum: 10c0/a36ce7ab507b237ae2759c984cdaad4af4096d8199fb65b3815c16825e5cfeb7293da790a3fc2184b52bfba7ba3ff31c058c01947aff6fd1a3701632aabaa6a9
   languageName: node
   linkType: hard
 

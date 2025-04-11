@@ -1,9 +1,15 @@
 {
-  "name": "@oh/pixi-components",
+  "name": "@openhotel/pixi-components",
+  "version": "0.0.2",
   "type": "module",
+  "author": "openhotel",
   "main": "dist/index.es.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/index.d.ts",
+    "dist/index.es.js"
+  ],
   "engines": {
     "node": "22"
   },
@@ -38,7 +44,6 @@
     "dayjs": "1.11.13",
     "pixi.js": "^8.9.1",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
     "zustand": "^5.0.3"
   },
   "scripts": {
@@ -48,8 +53,7 @@
     "build-storybook": "storybook build",
     "build": "vite build",
     "build:watch": "nodemon",
-    "publish": "npx jsr publish --allow-dirty --allow-slow-types",
-    "publish:check": "npx jsr publish --allow-dirty  --dry-run",
+    "publish": "npm publish --provenance --access public",
     "link": "npm link"
   }
 }
