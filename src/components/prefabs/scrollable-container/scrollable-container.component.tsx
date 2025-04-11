@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type {} from "react";
+import type { FC, ReactNode } from "react";
 import { ContainerComponent, GraphicsComponent } from "../../core";
-import type { ContainerRef } from "../../core";
+import type { ContainerRef, ContainerProps } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import type { Size } from "../../../types";
@@ -10,18 +10,19 @@ import { ScrollComponent } from "./scroll";
 type Props = {
   size: Size;
   scrollbar: {
-    renderTop: React.FC;
-    renderScrollBackground: React.FC;
-    renderScrollBar: React.FC;
-    renderBottom: React.FC;
+    renderTop: FC;
+    renderScrollBackground: FC;
+    renderScrollBar: FC;
+    renderBottom: FC;
   };
-  children: React.ReactNode;
-};
+  children: ReactNode;
+} & ContainerProps;
 
-export const ScrollableContainerComponent: React.FC<Props> = ({
+export const ScrollableContainerComponent: FC<Props> = ({
   size,
   scrollbar,
   children,
+  ...containerProps
 }) => {
   const contentRef = useRef<ContainerRef>(null);
 
@@ -41,7 +42,7 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
     const removeOnPointerDown = on(Event.POINTER_DOWN, onPointerDown);
     const removeOnPointerUp = on(Event.POINTER_UP, onPointerDown);
 
-    setMaxHeight(contentRef.current.getBounds().maxY);
+    setMaxHeight(contentRef.current.getSize().height);
 
     return () => {
       removeOnPointerDown();
@@ -56,8 +57,12 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
     [setScrollYPosition],
   );
 
+  const onChildLoaded = useCallback(() => {
+    console.log(contentRef.current.getSize());
+  }, [children]);
+
   return (
-    <ContainerComponent {...cursorInsideProps}>
+    <ContainerComponent {...containerProps} {...cursorInsideProps}>
       <GraphicsComponent
         type={GraphicType.RECTANGLE}
         width={size.width}
@@ -91,6 +96,7 @@ export const ScrollableContainerComponent: React.FC<Props> = ({
         pivot={{
           y: scrollYPosition,
         }}
+        onChildLoaded={onChildLoaded}
         {...cursorInsideContentProps}
       >
         {children}

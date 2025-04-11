@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ScrollableContainerComponent } from "./scrollable-container.component";
 import { GraphicsComponent } from "../../core";
-import { GraphicType } from "../../../enums";
+import { FLEX_JUSTIFY, GraphicType } from "../../../enums";
+import { FlexContainerComponent } from "../flex-container";
 
 const meta: Meta<typeof ScrollableContainerComponent> = {
   title: "Components/Prefabs/Scrollable Container",
@@ -20,6 +21,10 @@ export const Primary: Story = {
     size: {
       width: 200,
       height: 220,
+    },
+    position: {
+      x: 0,
+      y: 50,
     },
     scrollbar: {
       renderTop: () => (
@@ -57,16 +62,21 @@ export const Primary: Story = {
     },
     children: (
       <>
-        <GraphicsComponent
-          type={GraphicType.RECTANGLE}
-          tint={0xff00ff}
-          height={350}
-          width={100}
-          position={{
-            x: 10,
-            y: 50,
-          }}
-        />
+        <FlexContainerComponent
+          justify={FLEX_JUSTIFY.START}
+          direction="y"
+          gap={3}
+        >
+          {Array.from({ length: 20 }, (_, index) => (
+            <GraphicsComponent
+              key={index}
+              type={GraphicType.RECTANGLE}
+              width={200}
+              height={100}
+              tint={0xff00ff}
+            />
+          ))}
+        </FlexContainerComponent>
       </>
     ),
   },
