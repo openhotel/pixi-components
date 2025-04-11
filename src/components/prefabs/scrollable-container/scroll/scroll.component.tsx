@@ -110,6 +110,7 @@ export const ScrollComponent: FC<Props> = ({
   const onCursorMove = useCallback(
     (position: Point) => {
       if (!isPointerDownScrollBarRef.current) {
+        lastPointMoveY.current = position.y; // Fixes scrolling from other source than scroll bar and the "offset" being off
         return;
       }
 
