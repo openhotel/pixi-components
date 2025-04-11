@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import { useEvents } from ".";
 import { Event } from "../enums";
 
@@ -11,12 +11,10 @@ type InputState = {
 const InputContext = createContext<InputState>(undefined);
 
 type InputProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const InputProvider: React.FunctionComponent<InputProps> = ({
-  children,
-}) => {
+export const InputProvider: FC<InputProps> = ({ children }) => {
   const { emit } = useEvents();
 
   const getInput = useCallback(

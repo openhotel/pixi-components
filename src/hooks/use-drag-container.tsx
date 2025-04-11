@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 
 type DragContainerState = {
   dragPolygon?: number[];
@@ -9,12 +9,10 @@ type DragContainerState = {
 const DragContainerContext = createContext<DragContainerState>(undefined);
 
 type DragContainerProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const DragContainerProvider: React.FunctionComponent<
-  DragContainerProps
-> = ({ children }) => {
+export const DragContainerProvider: FC<DragContainerProps> = ({ children }) => {
   const [dragPolygon, setDragPolygon] = useState<number[]>([]);
 
   return (

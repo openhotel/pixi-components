@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef } from "react";
-import type React from "react";
+import type { RefObject } from "react";
 import { usePointerOutside, useContext } from ".";
 import type { ContainerRef } from "../components";
 
 type Props = {
-  containerRef: React.RefObject<ContainerRef>;
+  containerRef: RefObject<ContainerRef>;
   onFocus: () => void;
   onBlur: () => void;
   focusNow?: number;

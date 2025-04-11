@@ -5,7 +5,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import { Event } from "../enums";
 import { EVENT_MAP } from "../consts";
 
@@ -22,12 +22,10 @@ type EventsState = {
 const EventsContext = createContext<EventsState>(undefined);
 
 type EventsProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const EventsProvider: React.FunctionComponent<EventsProps> = ({
-  children,
-}) => {
+export const EventsProvider: FC<EventsProps> = ({ children }) => {
   const eventMapRef = useRef<Record<Event, ((data?: any) => void)[]>>(
     //@ts-ignore
     {},

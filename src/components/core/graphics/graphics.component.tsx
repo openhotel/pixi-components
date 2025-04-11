@@ -1,5 +1,5 @@
 import { useCallback, useImperativeHandle, useRef } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { extend } from "@pixi/react";
 import { Graphics } from "pixi.js";
 import type { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
@@ -22,7 +22,7 @@ export type GraphicsProps = {
   height?: number;
 } & DisplayObjectProps<GraphicsRef>;
 
-export const GraphicsComponent: React.FC<GraphicsProps> = ({
+export const GraphicsComponent: FC<GraphicsProps> = ({
   ref,
   label = "graphics",
   type,

@@ -5,7 +5,7 @@ import {
   useEffect,
   useRef,
 } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import { useWindow } from "./use-window";
 import { useEvents } from "./use-events";
 import { Cursor, Event } from "../enums";
@@ -21,12 +21,10 @@ type CursorState = {
 const CursorContext = createContext<CursorState>(undefined);
 
 type CursorProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const CursorProvider: React.FunctionComponent<CursorProps> = ({
-  children,
-}) => {
+export const CursorProvider: FC<CursorProps> = ({ children }) => {
   const { application } = useApplication();
   const { normalizeValue } = useWindow();
   const { on, emit } = useEvents();

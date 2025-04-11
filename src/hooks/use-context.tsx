@@ -4,7 +4,7 @@ import {
   useContext as $$useContext,
   useRef,
 } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import type { DisplayObjectRefProps } from "../types";
 
 type ContextState = {
@@ -23,12 +23,10 @@ type ContextState = {
 const ContextContext = createContext<ContextState>(undefined);
 
 type ContextProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const ContextProvider: React.FunctionComponent<ContextProps> = ({
-  children,
-}) => {
+export const ContextProvider: FC<ContextProps> = ({ children }) => {
   const contextSelectedIndexRef = useRef<number>(null);
   const contextCallbackListRef = useRef<
     {

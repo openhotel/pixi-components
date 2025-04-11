@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
 import {
   DragContainerProvider,
@@ -22,7 +22,7 @@ export type DragContainerComponentProps = {
   size?: Size;
 } & ContainerProps;
 
-export const DragContainerComponent: React.FC<DragContainerComponentProps> = (
+export const DragContainerComponent: FC<DragContainerComponentProps> = (
   props,
 ) => {
   return (
@@ -32,7 +32,7 @@ export const DragContainerComponent: React.FC<DragContainerComponentProps> = (
   );
 };
 
-const DragContainerComponentWrapper: React.FC<DragContainerComponentProps> = ({
+const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
   ref,
   children,
   position = { x: 0, y: 0 },

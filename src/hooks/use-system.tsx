@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import { useApplication } from "@pixi/react";
 
 type SystemState = {
@@ -20,12 +20,10 @@ type SystemState = {
 const SystemContext = createContext<SystemState>(undefined);
 
 type SystemProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export const SystemProvider: React.FunctionComponent<SystemProps> = ({
-  children,
-}) => {
+export const SystemProvider: FC<SystemProps> = ({ children }) => {
   const { app } = useApplication();
 
   const data = useMemo(() => {

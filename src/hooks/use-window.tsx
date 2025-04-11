@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type React from "react";
+import type { ReactNode, FC } from "react";
 import { useApplication } from "./use-application";
 import type { Size } from "../types";
 import { useEvents } from "./use-events";
@@ -24,17 +24,14 @@ type WindowState = {
 const WindowContext = createContext<WindowState>(undefined);
 
 type WindowProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   scale?: number;
 };
 
 const _getOddExtra = (value: number): number =>
   (value % 2 === 1 ? 1 : 0) + value;
 
-export const WindowProvider: React.FunctionComponent<WindowProps> = ({
-  children,
-  scale = 2,
-}) => {
+export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
   const { application } = useApplication();
   const { emit } = useEvents();
 

@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 
 import { extend } from "@pixi/react";
 import { Texture, Sprite, Spritesheet, AnimatedSprite } from "pixi.js";
@@ -33,7 +33,7 @@ export type AnimatedSpriteProps = {
   onFrameChange?: (currentFrame: number) => void | Promise<void>;
 } & DisplayObjectProps<AnimatedSpriteRef>;
 
-export const AnimatedSpriteComponent: React.FC<AnimatedSpriteProps> = ({
+export const AnimatedSpriteComponent: FC<AnimatedSpriteProps> = ({
   ref,
   label = "animated-sprite",
   spriteSheet,

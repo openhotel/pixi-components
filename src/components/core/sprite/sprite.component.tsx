@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 
 import { extend } from "@pixi/react";
 import { Texture } from "pixi.js";
@@ -27,7 +27,7 @@ export type SpriteProps = {
   texture: string;
 } & DisplayObjectProps<SpriteRef>;
 
-export const SpriteComponent: React.FC<SpriteProps> = ({
+export const SpriteComponent: FC<SpriteProps> = ({
   ref,
   label = "sprite",
   spriteSheet,

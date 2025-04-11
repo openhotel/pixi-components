@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import type React from "react";
+import type { FC } from "react";
 import { SpriteTextComponent } from "../sprite-text";
 import type { SpriteTextProps, TextProps } from "../sprite-text";
 import { ContainerComponent, GraphicsComponent } from "../../core";
@@ -50,7 +50,7 @@ export type SpriteTextInputProps = {
   "text" | "wrap" | "color" | "backgroundAlpha" | "backgroundColor"
 >;
 
-export const SpriteTextInputComponent: React.FC<SpriteTextInputProps> = ({
+export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   ref,
   //sprite-text
   spriteSheet,
