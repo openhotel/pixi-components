@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { AnimatedSpriteComponent } from "./animated-sprite.component";
 import { GraphicType, PlayStatus } from "../../../enums";
 import { useCallback, useState } from "react";

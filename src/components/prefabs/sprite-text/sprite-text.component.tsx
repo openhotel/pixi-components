@@ -2,12 +2,13 @@ import {
   ContainerComponent,
   SpriteComponent,
   GraphicsComponent,
-  ContainerRef,
 } from "../../core";
-import React, { useMemo, useState } from "react";
+import type { ContainerRef } from "../../core";
+import { Fragment, useMemo, useState } from "react";
+import type React from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
-import { DisplayObjectProps, Sides, Size } from "../../../types";
+import type { DisplayObjectProps, Sides, Size } from "../../../types";
 
 export type TextProps = {
   color?: number | number[];
@@ -77,7 +78,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
       const charData = $spriteSheet.textures[char];
       if (!charData) continue;
       list.push(
-        <React.Fragment key={index + char}>
+        <Fragment key={index + char}>
           <SpriteComponent
             spriteSheet={spriteSheet}
             texture={char}
@@ -124,7 +125,7 @@ export const SpriteTextComponent: React.FC<SpriteTextProps> = ({
               }}
             />
           ) : null}
-        </React.Fragment>,
+        </Fragment>,
       );
       lastX += charData.width + 1;
 

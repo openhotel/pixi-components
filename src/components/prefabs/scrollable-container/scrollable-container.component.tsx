@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ContainerComponent,
-  ContainerRef,
-  GraphicsComponent,
-} from "../../core";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type React from "react";
+import { ContainerComponent, GraphicsComponent } from "../../core";
+import type { ContainerRef } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
 import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
-import { Size } from "../../../types";
+import type { Size } from "../../../types";
 import { ScrollComponent } from "./scroll";
 
 type Props = {

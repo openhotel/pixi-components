@@ -1,13 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import { ContainerComponent, ContainerProps, ContainerRef } from "../../core";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import type React from "react";
+import { ContainerComponent } from "../../core";
+import type { ContainerProps, ContainerRef } from "../../core";
 import { useEvents, useWindow } from "../../../hooks";
 import { Event, FLEX_ALIGN, FLEX_JUSTIFY } from "../../../enums";
-import { Size } from "../../../types";
+import type { Size } from "../../../types";
 
 type FlexContainerProps = {
   align?: FLEX_ALIGN;

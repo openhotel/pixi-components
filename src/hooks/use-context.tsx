@@ -1,10 +1,11 @@
-import React, {
-  ReactNode,
+import {
+  createContext,
   useCallback,
   useContext as $$useContext,
   useRef,
 } from "react";
-import { DisplayObjectRefProps } from "../types";
+import type React from "react";
+import type { DisplayObjectRefProps } from "../types";
 
 type ContextState = {
   add: (
@@ -19,10 +20,10 @@ type ContextState = {
   blur: Function;
 };
 
-const ContextContext = React.createContext<ContextState>(undefined);
+const ContextContext = createContext<ContextState>(undefined);
 
 type ContextProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const ContextProvider: React.FunctionComponent<ContextProps> = ({

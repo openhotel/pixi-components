@@ -1,16 +1,16 @@
-import { ReactNode, Ref } from "react";
+import type React from "react";
 import { Cursor, EventMode } from "../enums";
-import { Point, Size, Bounds } from ".";
+import type { Point, Size, Bounds } from ".";
 import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js";
 
 export type DisplayObject = AnimatedSprite | Sprite | Container | Graphics;
 
 export type DisplayObjectProps<DisplayRef> = {
-  ref?: Ref<DisplayRef>;
+  ref?: React.Ref<DisplayRef>;
 
   label?: string;
 
-  mask?: ReactNode;
+  mask?: React.ReactNode;
   position?: Partial<Point>;
   pivot?: Partial<Point>;
   scale?: Partial<Point>;
@@ -38,7 +38,7 @@ export type DisplayObjectRefProps<PixiDisplay> = {
   readonly label: Readonly<string>;
 
   readonly mask?: Container<any>;
-  readonly maskRender?: ReactNode;
+  readonly maskRender?: React.ReactNode;
 
   readonly position: Readonly<Point>;
   readonly pivot: Readonly<Point>;

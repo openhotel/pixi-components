@@ -1,16 +1,17 @@
-import React, {
+import {
   useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
 } from "react";
+import type React from "react";
 
 import { extend } from "@pixi/react";
-import { Texture } from "pixi.js";
+import type { Texture } from "pixi.js";
 import { TilingSprite } from "pixi.js";
 import { useTextures, useDisplayObject } from "../../../hooks";
-import {
+import type {
   DisplayObjectProps,
   DisplayObjectRefProps,
   Point,

@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { SpriteTextComponent } from "../../components";
 import { useEvents } from "../../hooks";
 import { Event } from "../../enums";
 import { useEffect, useState } from "react";
-import { Size } from "../../types";
+import type { Size } from "../../types";
 
 const EventsStory = () => {
   const { on } = useEvents();

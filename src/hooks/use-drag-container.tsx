@@ -1,14 +1,15 @@
-import React, { ReactNode, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+import type React from "react";
 
 type DragContainerState = {
   dragPolygon?: number[];
   setDragPolygon?: (polygon: number[]) => void;
 };
 
-const DragContainerContext = React.createContext<DragContainerState>(undefined);
+const DragContainerContext = createContext<DragContainerState>(undefined);
 
 type DragContainerProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const DragContainerProvider: React.FunctionComponent<

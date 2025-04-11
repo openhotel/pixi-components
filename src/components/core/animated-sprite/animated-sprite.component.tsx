@@ -1,15 +1,16 @@
-import React, {
+import {
   useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
 } from "react";
+import type React from "react";
 
 import { extend } from "@pixi/react";
 import { Texture, Sprite, Spritesheet, AnimatedSprite } from "pixi.js";
 import { useTextures, useDisplayObject } from "../../../hooks";
-import { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
+import type { DisplayObjectProps, DisplayObjectRefProps } from "../../../types";
 import { getDisplayObjectRefFunctions } from "../../../utils";
 import { PlayStatus } from "../../../enums";
 

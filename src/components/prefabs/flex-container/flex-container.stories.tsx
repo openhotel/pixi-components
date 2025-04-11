@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { FlexContainerComponent, SpriteComponent } from "../..";
 import { FLEX_ALIGN, FLEX_JUSTIFY } from "../../../enums";
 

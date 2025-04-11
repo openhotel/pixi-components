@@ -1,20 +1,15 @@
-import React, {
+import {
   useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
 } from "react";
-import {
-  SpriteTextComponent,
-  SpriteTextProps,
-  TextProps,
-} from "../sprite-text";
-import {
-  ContainerComponent,
-  ContainerRef,
-  GraphicsComponent,
-} from "../../core";
+import type React from "react";
+import { SpriteTextComponent } from "../sprite-text";
+import type { SpriteTextProps, TextProps } from "../sprite-text";
+import { ContainerComponent, GraphicsComponent } from "../../core";
+import type { ContainerRef } from "../../core";
 import { Cursor, Event, EventMode, GraphicType, OS } from "../../../enums";
 import {
   useComponentContext,

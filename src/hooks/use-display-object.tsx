@@ -1,5 +1,6 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { DisplayObjectProps, DisplayObjectRefProps } from "../types";
+import { useEffect, useMemo, useState } from "react";
+import type React from "react";
+import type { DisplayObjectProps, DisplayObjectRefProps } from "../types";
 import { Container } from "pixi.js";
 
 export const useDisplayObject = ({
@@ -48,7 +49,7 @@ export const useDisplayObject = ({
   }, [anchor, $scale]);
 
   const [$mask, $setMask] = useState<Container<any>>(null);
-  const maskRender = useMemo((): ReactNode => {
+  const maskRender = useMemo((): React.ReactNode => {
     if (!mask) return null;
     return (
       <pixiContainer ref={$setMask} position={$position} pivot={$pivot}>

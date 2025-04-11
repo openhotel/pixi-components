@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { NineSliceSpriteComponent } from "./nine-slice-sprite.component";
 import { GraphicsComponent } from "../graphics";
 import { GraphicType } from "../../../enums";

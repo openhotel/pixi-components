@@ -1,14 +1,8 @@
-import React, {
-  ReactNode,
-  Ref,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import type React from "react";
 import { extend } from "@pixi/react";
 import { Container } from "pixi.js";
-import {
+import type {
   DisplayObject,
   DisplayObjectProps,
   DisplayObjectRefProps,
@@ -27,8 +21,8 @@ export type ContainerRef = {
 } & DisplayObjectRefProps<Container<any>>;
 
 export type ContainerProps = {
-  children?: ReactNode;
-  onChildLoaded?: (ref: Ref<unknown>) => void;
+  children?: React.ReactNode;
+  onChildLoaded?: (ref: React.Ref<unknown>) => void;
   sortableChildren?: boolean;
 } & DisplayObjectProps<ContainerRef>;
 

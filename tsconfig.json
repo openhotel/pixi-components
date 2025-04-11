@@ -4,21 +4,17 @@
     "declaration": true,
     "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "isolatedModules": false,
-    "moduleResolution": "node",
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",
     "esModuleInterop": true,
     "sourceMap": false,
     "noUnusedLocals": true,
     "lib": ["dom", "esnext"],
-    "types": ["react", "react-dom", "pixi.js"],
+    "types": ["@types/*", "pixi.js"],
     "outDir": "dist",
-    "emitDeclarationOnly": true,
-    "paths": {
-      "react": ["./node_modules/@types/react"],
-      "react-dom": ["./node_modules/@types/react-dom"]
-    }
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]

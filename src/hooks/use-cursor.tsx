@@ -1,14 +1,15 @@
-import React, {
-  ReactNode,
+import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
   useRef,
 } from "react";
+import type React from "react";
 import { useWindow } from "./use-window";
 import { useEvents } from "./use-events";
 import { Cursor, Event } from "../enums";
-import { Point } from "../types";
+import type { Point } from "../types";
 import { useApplication } from "./use-application";
 
 type CursorState = {
@@ -17,10 +18,10 @@ type CursorState = {
   setCursor: (cursor: Cursor) => void;
 };
 
-const CursorContext = React.createContext<CursorState>(undefined);
+const CursorContext = createContext<CursorState>(undefined);
 
 type CursorProps = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 export const CursorProvider: React.FunctionComponent<CursorProps> = ({
