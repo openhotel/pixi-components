@@ -39,16 +39,18 @@ export const ScrollableContainerComponent: FC<Props> = ({
   const onPointerUp = useCallback(() => {}, []);
 
   useEffect(() => {
+    setMaxHeight(contentRef.current.getSize().height);
+  }, [setMaxHeight, children]);
+
+  useEffect(() => {
     const removeOnPointerDown = on(Event.POINTER_DOWN, onPointerDown);
     const removeOnPointerUp = on(Event.POINTER_UP, onPointerDown);
-
-    setMaxHeight(contentRef.current.getSize().height);
 
     return () => {
       removeOnPointerDown();
       removeOnPointerUp();
     };
-  }, [on, onPointerDown, onPointerUp, setMaxHeight]);
+  }, [on, onPointerDown, onPointerUp]);
 
   const onScroll = useCallback(
     (yPosition: number) => {

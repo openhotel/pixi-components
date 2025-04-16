@@ -94,7 +94,15 @@ export const ScrollComponent: FC<Props> = ({
 
       onScroll(target);
     },
-    [onScroll, canScroll, scrollBarHeight, scrollHeight, scrollYPosition],
+    [
+      onScroll,
+      canScroll,
+      scrollBarHeight,
+      scrollHeight,
+      scrollYPosition,
+      maxHeight,
+      height,
+    ],
   );
 
   const onWheel = useCallback(
@@ -155,7 +163,7 @@ export const ScrollComponent: FC<Props> = ({
       removeOnCursorMove();
       removeOnPointerUp();
     };
-  }, [goDown, goUp, onCursorMove, scroll]);
+  }, [goDown, goUp, onWheel, onCursorMove, onPointerUp, scroll]);
 
   const onPointerDownTop = useCallback(() => {
     if (!canScroll) return;
