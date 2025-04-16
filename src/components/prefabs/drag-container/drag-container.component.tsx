@@ -20,6 +20,8 @@ import type { Point, Size } from "../../../types";
 
 export type DragContainerComponentProps = {
   size?: Size;
+  minZIndex?: number;
+  maxZIndex?: number;
 } & ContainerProps;
 
 export const DragContainerComponent: FC<DragContainerComponentProps> = (
@@ -37,6 +39,8 @@ const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
   children,
   position = { x: 0, y: 0 },
   size,
+  minZIndex = 0,
+  maxZIndex = Number.MAX_SAFE_INTEGER,
   ...containerProps
 }) => {
   const { dragPolygon } = useDragContainer();
@@ -75,23 +79,23 @@ const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
 
   const onPointerDown = useCallback(() => {
     pointerDownRef.current = true;
-    containerRef.current.component.zIndex = Number.MAX_SAFE_INTEGER;
+    containerRef.current.component.zIndex = maxZIndex;
 
     $firstPosition.current = { ...containerRef.current.position };
     $firstCursorPosition.current = getCursorPosition();
     setCursor(Cursor.GRABBING);
-  }, [getCursorPosition, getScale]);
+  }, [getCursorPosition, getScale, maxZIndex]);
 
   const onPointerUp = useCallback(
     (event: PointerEvent) => {
       if (!pointerDownRef.current) return;
 
       pointerDownRef.current = false;
-      containerRef.current.component.zIndex = 0;
+      containerRef.current.component.zIndex = minZIndex;
 
       setCursor(pointerEnterRef.current ? Cursor.GRAB : Cursor.DEFAULT);
     },
-    [setCursor],
+    [setCursor, minZIndex],
   );
 
   const onCursorMove = useCallback(
