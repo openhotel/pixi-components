@@ -32,8 +32,7 @@ export const Primary: Story = {
       bottom: 4,
     },
     maxLength: 16,
-    onValueChange: console.info,
-    onEnter: console.info,
+    onChange: console.info,
   },
 };
 
@@ -57,8 +56,7 @@ export const Placeholder: Story = {
       bottom: 4,
     },
     maxLength: 16,
-    onValueChange: console.info,
-    clearOnEnter: true,
+    onChange: console.info,
   },
 };
 
@@ -70,6 +68,9 @@ export const Multiple = () => {
       setFocusNextInput(performance.now());
     }, 3000);
   }, [setFocusNextInput]);
+
+  const [value, setValue] = useState<string>("");
+  const [value1, setValue1] = useState<string>("");
 
   return (
     <ContainerComponent position={{ x: 20, y: 20 }}>
@@ -85,6 +86,8 @@ export const Multiple = () => {
         backgroundColor={0xff00ff}
         spriteSheet="/assets/fonts/default-font.json"
         focusNow={performance.now()}
+        onChange={(e) => setValue(e.target.value)}
+        value={value}
       />
       <SpriteTextInputComponent
         height={10}
@@ -100,6 +103,8 @@ export const Multiple = () => {
         }}
         spriteSheet="/assets/fonts/default-font.json"
         focusNow={focusNextInput}
+        onChange={(e) => setValue1(e.target.value)}
+        value={value1}
       />
     </ContainerComponent>
   );

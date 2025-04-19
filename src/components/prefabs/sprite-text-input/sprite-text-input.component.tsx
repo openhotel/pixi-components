@@ -14,6 +14,12 @@ import {
 } from "../../../hooks";
 import { combineAccentAndChar, getAccentCode, getOS } from "../../../utils";
 
+export type KeyboardEventExtended = KeyboardEvent & {
+  target: {
+    value: string;
+  };
+};
+
 export type SpriteTextInputProps = {
   color?: number;
   backgroundColor?: number;
@@ -23,16 +29,15 @@ export type SpriteTextInputProps = {
   height: number;
 
   passwordChar?: string;
-  defaultValue?: string;
-  value?: string;
   placeholder?: string;
   placeholderProps?: TextProps;
   maxLength?: number;
 
   clearOnEnter?: boolean;
 
-  onValueChange?: (value: string) => void;
-  onEnter?: (value: string) => void;
+  defaultValue?: string;
+  value: string;
+  onChange?: (event: KeyboardEventExtended) => void;
 
   focusNow?: number;
   blurNow?: number;
@@ -56,16 +61,17 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   backgroundAlpha,
   width,
   height,
-  defaultValue,
-  value,
   padding,
   maxLength,
   placeholder,
   placeholderProps,
   clearOnEnter = false,
   //
-  onValueChange,
-  onEnter,
+  onChange,
+
+  defaultValue,
+  value,
+
   focusNow,
   blurNow,
   onFocus,
@@ -110,7 +116,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [update]);
 
   const writeChar = useCallback(
-    (key: string) => {
+    (key: string, event: KeyboardEvent) => {
       if (key.length !== 1 || !isCharValid(key)) return;
 
       if (textRef?.current?.length + 1 >= maxLength) return;
@@ -119,11 +125,10 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         textRef.current.slice(0, cursorIndexRef.current) +
         key +
         textRef.current.slice(cursorIndexRef.current);
-      onValueChange?.(textRef.current);
 
       cursorIndexRef.current++;
     },
-    [update, onValueChange, maxLength, isCharValid],
+    [update, maxLength, isCharValid],
   );
 
   const reset = useCallback(() => {
@@ -132,7 +137,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, []);
 
   const makeActions = useCallback(
-    (key: string, specialKey: boolean) => {
+    (key: string, specialKey: boolean, event: KeyboardEvent) => {
       if (!textRef.current?.length) return;
 
       const textArrayFromStart = specialKey
@@ -144,13 +149,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
       const textArrayFromEnd = specialKey
         ? textRef.current.substring(cursorIndexRef.current).split("")
         : [];
-
-      if (key === "Enter") {
-        onEnter?.(textRef.current);
-        if (clearOnEnter) reset();
-        update();
-        return;
-      }
 
       if (
         key === "Backspace" &&
@@ -176,7 +174,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
           textRef.current =
             textRef.current.slice(0, cursorIndexRef.current - sliced) +
             textRef.current.slice(cursorIndexRef.current);
-          onValueChange?.(textRef.current);
 
           cursorIndexRef.current -= sliced;
           return;
@@ -185,7 +182,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         textRef.current =
           textRef.current.slice(0, cursorIndexRef.current - 1) +
           textRef.current.slice(cursorIndexRef.current);
-        onValueChange?.(textRef.current);
 
         cursorIndexRef.current--;
         return;
@@ -215,14 +211,12 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
           textRef.current =
             textRef.current.slice(0, cursorIndexRef.current) +
             textRef.current.slice(cursorIndexRef.current + sliced);
-          onValueChange?.(textRef.current);
           return;
         }
 
         textRef.current =
           textRef.current.slice(0, cursorIndexRef.current) +
           textRef.current.slice(cursorIndexRef.current + 1);
-        onValueChange?.(textRef.current);
 
         return;
       }
@@ -272,11 +266,12 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         return;
       }
     },
-    [update, onValueChange, reset],
+    [update, reset],
   );
 
   const onKeyDown = useCallback(
-    ({ key, metaKey, ctrlKey, code, shiftKey, altKey }: KeyboardEvent) => {
+    (event: KeyboardEvent) => {
+      let { key, metaKey, ctrlKey, code, shiftKey, altKey } = event;
       if (!isFocusedRef.current) return;
 
       if (key === "Tab") return;
@@ -296,11 +291,15 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         currentAccentCodeRef.current = "";
       }
 
-      writeChar(key);
-      makeActions(key, getOS() === OS.DARWIN ? altKey : shiftKey);
+      writeChar(key, event);
+      makeActions(key, getOS() === OS.DARWIN ? altKey : shiftKey, event);
       startCursorBlink();
+
+      //@ts-ignore
+      event.target.value = textRef.current;
+      onChange?.(event as KeyboardEventExtended);
     },
-    [startCursorBlink, writeChar, makeActions, update, onEnter],
+    [startCursorBlink, writeChar, makeActions, update, onChange],
   );
 
   const onKeyUp = useCallback(
@@ -334,11 +333,10 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [on, onKeyDown, onKeyUp, onPaste]);
 
   useEffect(() => {
-    if (value === null || value === undefined) return;
-
-    textRef.current = value;
+    textRef.current = value ?? textRef.current ?? "";
     cursorIndexRef.current = textRef.current.length;
-  }, [value]);
+    update();
+  }, [value, update]);
 
   const $onFocus = useCallback(() => {
     isFocusedRef.current = true;
