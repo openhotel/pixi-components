@@ -66,6 +66,7 @@ export const ScrollableContainerComponent: FC<Props> = ({
         width={size.width}
         height={size.height}
         eventMode={EventMode.NONE}
+        alpha={0}
       />
       <ScrollComponent
         height={size.height}
