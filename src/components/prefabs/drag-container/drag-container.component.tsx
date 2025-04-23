@@ -183,6 +183,7 @@ const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
         onPointerEnter={onPointerEnter}
         onPointerLeave={onPointerLeave}
         zIndex={10}
+        tint={0x00ff00}
         alpha={0}
       />
       {children}
