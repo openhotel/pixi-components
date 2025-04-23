@@ -1,9 +1,9 @@
 import type { FC, ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ContainerProps, ContainerRef } from "../../core";
-import { ContainerComponent, GraphicsComponent } from "../../core";
+import { ContainerComponent } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
-import { Cursor, Event, EventMode, GraphicType } from "../../../enums";
+import { Cursor, Event } from "../../../enums";
 import type { Size } from "../../../types";
 import { ScrollComponent } from "./scroll";
 
@@ -39,8 +39,11 @@ export const ScrollableContainerComponent: FC<Props> = ({
   const onPointerUp = useCallback(() => {}, []);
 
   useEffect(() => {
+    //reset scroll every time children is rerendered
+    setScrollYPosition(0);
+    //assign new height if children is rerendered
     setMaxHeight(contentRef.current.getSize().height);
-  }, [setMaxHeight, children]);
+  }, [setScrollYPosition, setMaxHeight, children]);
 
   useEffect(() => {
     const removeOnPointerDown = on(Event.POINTER_DOWN, onPointerDown);
@@ -61,13 +64,14 @@ export const ScrollableContainerComponent: FC<Props> = ({
 
   return (
     <ContainerComponent {...containerProps} {...cursorInsideProps}>
-      <GraphicsComponent
-        type={GraphicType.RECTANGLE}
-        width={size.width}
-        height={size.height}
-        eventMode={EventMode.NONE}
-        alpha={0}
-      />
+      {/*<GraphicsComponent*/}
+      {/*  type={GraphicType.RECTANGLE}*/}
+      {/*  width={size.width}*/}
+      {/*  height={maxHeight}*/}
+      {/*  eventMode={EventMode.NONE}*/}
+      {/*  alpha={0}*/}
+      {/*  tint={0xff00ff}*/}
+      {/*/>*/}
       <ScrollComponent
         height={size.height}
         position={{
@@ -80,7 +84,6 @@ export const ScrollableContainerComponent: FC<Props> = ({
         {...scrollbar}
       />
       <ContainerComponent
-        ref={contentRef}
         cursor={Cursor.POINTER}
         sortableChildren
         maskPolygon={[
@@ -98,6 +101,10 @@ export const ScrollableContainerComponent: FC<Props> = ({
         }}
         {...cursorInsideContentProps}
       >
+        {children}
+      </ContainerComponent>
+      {/*Allows the calc of the real height*/}
+      <ContainerComponent visible={false} ref={contentRef}>
         {children}
       </ContainerComponent>
     </ContainerComponent>
