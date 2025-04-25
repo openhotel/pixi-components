@@ -31,8 +31,9 @@ export const Primary: Story = {
       right: 7,
       bottom: 4,
     },
-    maxLength: 16,
+    maxLength: 200,
     onChange: console.info,
+    position: { x: 20, y: 20 },
   },
 };
 
