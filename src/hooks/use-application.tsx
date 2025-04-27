@@ -40,6 +40,7 @@ type ApplicationProps = {
 
   scale?: number;
   backgroundColor?: number;
+  preference?: "webgpu" | "webgl";
 };
 
 const WrapperApplicationProvider: FC<ApplicationProps & ApplicationState> = ({
@@ -114,6 +115,7 @@ const WrapperApplicationProvider: FC<ApplicationProps & ApplicationState> = ({
 
 export const ApplicationProvider: FC<ApplicationProps> = ({
   backgroundColor,
+  preference = "webgpu",
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -153,7 +155,7 @@ export const ApplicationProvider: FC<ApplicationProps> = ({
       <Application
         ref={$application}
         sharedTicker={false}
-        preference="webgpu"
+        preference={preference}
         onInit={onInit}
         antialias={true}
         backgroundColor={backgroundColor}
