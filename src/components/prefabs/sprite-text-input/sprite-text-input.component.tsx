@@ -382,32 +382,37 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         alpha={backgroundAlpha}
         tint={backgroundColor}
       />
-      <SpriteTextComponent
-        spriteSheet={spriteSheet}
-        text={placeholder}
+      <ContainerComponent
+        maskPolygon={[
+          padding?.left ?? 0,
+          0,
+          width + (padding?.right ?? 0),
+          0,
+          width + (padding?.right ?? 0),
+          height + (padding?.bottom ?? 0),
+          padding?.left ?? 0,
+          height + (padding?.bottom ?? 0),
+        ]}
         position={{
           x: padding?.left ?? 0,
           y: padding?.top ?? 0,
         }}
-        maskPolygon={[0, 0, width, 0, width, height, 0, height]}
-        maskPosition={{
-          x: textCursorOverflowX,
-        }}
-        {...placeholderProps}
-        visible={!textRef.current?.length}
-      />
-      <SpriteTextComponent
-        spriteSheet={spriteSheet}
-        text={textRef?.current ?? ""}
-        color={color}
-        pivot={{
-          x: textCursorOverflowX,
-        }}
-        position={{
-          x: padding?.left ?? 0,
-          y: padding?.top ?? 0,
-        }}
-      />
+      >
+        <SpriteTextComponent
+          spriteSheet={spriteSheet}
+          text={placeholder}
+          {...placeholderProps}
+          visible={!textRef.current?.length}
+        />
+        <SpriteTextComponent
+          spriteSheet={spriteSheet}
+          text={textRef?.current ?? ""}
+          color={color}
+          position={{
+            x: -textCursorOverflowX,
+          }}
+        />
+      </ContainerComponent>
       {/* cursor */}
       <GraphicsComponent
         type={GraphicType.RECTANGLE}
