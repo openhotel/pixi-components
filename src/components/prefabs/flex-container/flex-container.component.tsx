@@ -80,10 +80,14 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
         case FLEX_JUSTIFY.SPACE_EVENLY:
           child.position[direction] = Math.round(
             positionForChildren / 2 +
-              positionForChildren * childIndex -
-              itemSizeW / 2,
+            positionForChildren * childIndex -
+            itemSizeW / 2,
           );
-
+          break;
+        case FLEX_JUSTIFY.SPACE_BETWEEN:
+          const spaceBetween = totalEmptySize / (childList.length - 1);
+          child.position[direction] = Math.round(lastItemPosition)
+          lastItemPosition += itemSizeW + spaceBetween;
           break;
       }
 

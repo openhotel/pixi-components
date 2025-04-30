@@ -4,6 +4,7 @@ export enum FLEX_JUSTIFY {
   END,
   CENTER,
   SPACE_EVENLY,
+  SPACE_BETWEEN,
 }
 
 export enum FLEX_ALIGN {
