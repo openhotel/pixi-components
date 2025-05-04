@@ -1,9 +1,15 @@
-import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from "react";
 import type { FC } from "react";
 import { ContainerComponent } from "../../core";
 import type { ContainerProps, ContainerRef } from "../../core";
-import { useEvents, useWindow } from "../../../hooks";
-import { Event, FLEX_ALIGN, FLEX_JUSTIFY } from "../../../enums";
+import { useWindow } from "../../../hooks";
+import { FLEX_ALIGN, FLEX_JUSTIFY } from "../../../enums";
 import type { Size } from "../../../types";
 
 type FlexContainerProps = {
@@ -25,7 +31,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
   gap = 0,
   ...containerProps
 }) => {
-  const { on } = useEvents();
+  // const { on } = useEvents();
   const { getSize } = useWindow();
   const containerRef = useRef<ContainerRef>(null);
 
@@ -36,9 +42,11 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
     const reverseDirection = direction === "x" ? "y" : "x";
     const reverseSizeName = direction === "x" ? "height" : "width";
 
+    const windowSize = getSize();
+
     const $size = {
-      width: size?.width ?? getSize().width,
-      height: size?.height ?? getSize().height,
+      width: size?.width ?? windowSize.width,
+      height: size?.height ?? windowSize.height,
     };
 
     const childList = containerRef.current?.getChildren();
@@ -104,11 +112,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
           break;
       }
     }
-  }, [children, getSize, size, justify, align, direction, gap]);
-
-  const onResize = useCallback(() => {
-    rePosition();
-  }, [rePosition]);
+  }, [getSize, size, justify, align, direction, gap]);
 
   const $onChildLoaded = useCallback(
     (props) => {
@@ -120,21 +124,19 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
   );
 
   useEffect(() => {
-    const removeOnResize = on(Event.RESIZE, onResize);
-
     rePosition();
-    return () => {
-      removeOnResize();
-    };
-  }, [on, onResize, rePosition]);
+  }, [rePosition]);
 
-  return (
-    <ContainerComponent
-      ref={containerRef}
-      onChildLoaded={$onChildLoaded}
-      {...containerProps}
-    >
-      {children}
-    </ContainerComponent>
+  return useMemo(
+    () => (
+      <ContainerComponent
+        ref={containerRef}
+        onChildLoaded={$onChildLoaded}
+        {...containerProps}
+      >
+        {children}
+      </ContainerComponent>
+    ),
+    [containerProps, $onChildLoaded, children],
   );
 };
