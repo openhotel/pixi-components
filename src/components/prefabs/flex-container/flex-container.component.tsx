@@ -18,6 +18,7 @@ type FlexContainerProps = {
   size?: Partial<Size>;
   direction?: "x" | "y";
   gap?: number;
+  test?: boolean;
 } & ContainerProps;
 
 export const FlexContainerComponent: FC<FlexContainerProps> = ({
@@ -29,6 +30,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
   direction = "x",
   onChildLoaded,
   gap = 0,
+  test,
   ...containerProps
 }) => {
   // const { on } = useEvents();
@@ -112,7 +114,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
           break;
       }
     }
-  }, [getSize, size, justify, align, direction, gap]);
+  }, [getSize, size, justify, align, direction, gap, children]);
 
   const $onChildLoaded = useCallback(
     (props) => {
@@ -120,7 +122,7 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
       onChildLoaded?.(props);
       containerRef.current.component.parent.emit("child-loaded", null);
     },
-    [onChildLoaded],
+    [onChildLoaded, rePosition, containerRef],
   );
 
   useEffect(() => {

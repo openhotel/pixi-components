@@ -194,18 +194,21 @@ export const SpriteTextComponent: FC<SpriteTextProps> = ({
           {...containerProps}
         >
           {textSprites}
-          <GraphicsComponent
-            type={GraphicType.RECTANGLE}
-            width={(sizeRef.current?.width ?? 0) + (padding?.right ?? 0)}
-            height={
-              (sizeRef.current?.height ?? 0) +
-              (padding?.top ?? 0) +
-              (padding?.bottom ?? 0)
-            }
-            tint={backgroundColor as number}
-            alpha={backgroundAlpha as number}
-            zIndex={0}
-          />
+          {(backgroundColor && !Array.isArray(backgroundColor)) ||
+          (backgroundAlpha && !Array.isArray(backgroundAlpha)) ? (
+            <GraphicsComponent
+              type={GraphicType.RECTANGLE}
+              width={(sizeRef.current?.width ?? 0) + (padding?.right ?? 0)}
+              height={
+                (sizeRef.current?.height ?? 0) +
+                (padding?.top ?? 0) +
+                (padding?.bottom ?? 0)
+              }
+              tint={backgroundColor as number}
+              alpha={backgroundAlpha as number}
+              zIndex={0}
+            />
+          ) : null}
         </ContainerComponent>
       ) : null,
     [
