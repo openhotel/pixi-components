@@ -127,6 +127,8 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         textRef.current.slice(cursorIndexRef.current);
 
       cursorIndexRef.current++;
+
+      console.log(cursorIndexRef.current);
     },
     [update, maxLength, isCharValid],
   );
@@ -366,6 +368,24 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   let textCursorOverflowX = cursorTextWidth - width;
   textCursorOverflowX = textCursorOverflowX > 0 ? textCursorOverflowX : 0;
 
+  const renderCursor = (
+    <GraphicsComponent
+      type={GraphicType.RECTANGLE}
+      width={1}
+      height={9}
+      tint={color}
+      pivot={{ x: -(padding?.left ?? 0) + 1, y: -(padding?.top ?? 0) + 2 }}
+      position={{
+        x:
+          cursorIndexRef.current === 0
+            ? 0
+            : cursorTextWidth + 1 - textCursorOverflowX,
+      }}
+      eventMode={EventMode.NONE}
+      visible={cursorVisibleRef.current}
+    />
+  );
+
   return (
     <ContainerComponent
       label={label}
@@ -413,22 +433,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
           }}
         />
       </ContainerComponent>
-      {/* cursor */}
-      <GraphicsComponent
-        type={GraphicType.RECTANGLE}
-        width={1}
-        height={9}
-        tint={color}
-        pivot={{ x: -(padding?.left ?? 0) + 1, y: -(padding?.top ?? 0) + 2 }}
-        position={{
-          x:
-            cursorIndexRef.current === 0
-              ? 0
-              : cursorTextWidth + 1 - textCursorOverflowX,
-        }}
-        eventMode={EventMode.NONE}
-        visible={cursorVisibleRef.current}
-      />
+      {renderCursor}
     </ContainerComponent>
   );
 };
