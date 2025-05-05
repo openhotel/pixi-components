@@ -4,7 +4,7 @@ import {
   GraphicsComponent,
 } from "../../core";
 import type { ContainerRef } from "../../core";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useImperativeHandle, useMemo, useRef } from "react";
 import type { FC } from "react";
 import { useTextures } from "../../../hooks";
 import { GraphicType, HorizontalAlign } from "../../../enums";
@@ -41,19 +41,29 @@ export const SpriteTextComponent: FC<SpriteTextProps> = ({
   padding,
   alpha,
   label = "sprite-text",
+  ref,
   ...containerProps
 }) => {
   const { getSpriteSheet } = useTextures();
 
-  const [size, setSize] = useState<Size>({ width: 0, height: 0 });
+  const containerRef = useRef<ContainerRef>(null);
+
+  useImperativeHandle(ref, () => containerRef.current, [ref]);
+
+  const sizeRef = useRef<Size>({ width: 0, height: 0 });
 
   const $spriteSheet = useMemo(
     () => getSpriteSheet(spriteSheet),
     [getSpriteSheet, spriteSheet],
   );
 
+  const canLoad = useMemo(
+    () => text.length > 0 && $spriteSheet,
+    [text, $spriteSheet],
+  );
+
   const textSprites = useMemo(() => {
-    if (!$spriteSheet) return null;
+    if (!canLoad) return null;
 
     const isWrapEnabled = wrap && maxWidth;
     const $padding = {
@@ -140,14 +150,15 @@ export const SpriteTextComponent: FC<SpriteTextProps> = ({
         jumps++;
       }
     }
-    setSize({
+    sizeRef.current = {
       width: maxWidth ?? lastX,
       height: ($spriteSheet.textures[" "].height + 1) * jumps,
-    });
+    };
+    if (containerRef.current)
+      containerRef.current.component.parent.emit("child-loaded", null);
     return list;
   }, [
     getSpriteSheet,
-    setSize,
     text,
     backgroundAlpha,
     backgroundColor,
@@ -159,31 +170,54 @@ export const SpriteTextComponent: FC<SpriteTextProps> = ({
     $spriteSheet,
   ]);
 
-  return (
-    <ContainerComponent
-      maskPolygon={
-        maxWidth && !wrap
-          ? [0, 0, maxWidth, 0, maxWidth, size.height, 0, size.height]
-          : null
-      }
-      sortableChildren={true}
-      label={label}
-      {...containerProps}
-    >
-      {textSprites}
-      {(backgroundColor && !Array.isArray(backgroundColor)) ||
-      (backgroundAlpha && !Array.isArray(backgroundAlpha)) ? (
-        <GraphicsComponent
-          type={GraphicType.RECTANGLE}
-          width={(size?.width ?? 0) + (padding?.right ?? 0)}
-          height={
-            (size?.height ?? 0) + (padding?.top ?? 0) + (padding?.bottom ?? 0)
+  return useMemo(
+    () =>
+      canLoad ? (
+        <ContainerComponent
+          ref={containerRef}
+          maskPolygon={
+            maxWidth && !wrap
+              ? [
+                  0,
+                  0,
+                  maxWidth,
+                  0,
+                  maxWidth,
+                  sizeRef.current.height,
+                  0,
+                  sizeRef.current.height,
+                ]
+              : null
           }
-          tint={backgroundColor as number}
-          alpha={backgroundAlpha as number}
-          zIndex={0}
-        />
-      ) : null}
-    </ContainerComponent>
+          sortableChildren={true}
+          label={label}
+          {...containerProps}
+        >
+          {textSprites}
+          <GraphicsComponent
+            type={GraphicType.RECTANGLE}
+            width={(sizeRef.current?.width ?? 0) + (padding?.right ?? 0)}
+            height={
+              (sizeRef.current?.height ?? 0) +
+              (padding?.top ?? 0) +
+              (padding?.bottom ?? 0)
+            }
+            tint={backgroundColor as number}
+            alpha={backgroundAlpha as number}
+            zIndex={0}
+          />
+        </ContainerComponent>
+      ) : null,
+    [
+      canLoad,
+      maxWidth,
+      wrap,
+      label,
+      containerProps,
+      textSprites,
+      backgroundColor,
+      backgroundAlpha,
+      padding,
+    ],
   );
 };
