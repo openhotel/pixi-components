@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -167,26 +168,36 @@ const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
     };
   }, [on, onCursorMove, onPointerUp, size]);
 
-  return (
-    <ContainerComponent
-      ref={containerRef}
-      sortableChildren
-      position={$position}
-      {...containerProps}
-    >
-      <GraphicsComponent
-        type={GraphicType.POLYGON}
-        polygon={dragPolygon}
-        cursor={Cursor.GRAB}
-        eventMode={EventMode.STATIC}
-        onPointerDown={onPointerDown}
-        onPointerEnter={onPointerEnter}
-        onPointerLeave={onPointerLeave}
-        zIndex={10}
-        tint={0x00ff00}
-        alpha={0}
-      />
-      {children}
-    </ContainerComponent>
+  return useMemo(
+    () => (
+      <ContainerComponent
+        ref={containerRef}
+        sortableChildren
+        position={$position}
+        {...containerProps}
+      >
+        <GraphicsComponent
+          type={GraphicType.POLYGON}
+          polygon={dragPolygon}
+          cursor={Cursor.GRAB}
+          eventMode={EventMode.STATIC}
+          onPointerDown={onPointerDown}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          zIndex={10}
+          tint={0x00ff00}
+          alpha={0}
+        />
+        {children}
+      </ContainerComponent>
+    ),
+    [
+      $position,
+      containerProps,
+      dragPolygon,
+      onPointerDown,
+      onPointerEnter,
+      onPointerLeave,
+    ],
   );
 };

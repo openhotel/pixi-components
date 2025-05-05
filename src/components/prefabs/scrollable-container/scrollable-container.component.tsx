@@ -1,5 +1,5 @@
 import type { FC, ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import type { ContainerProps, ContainerRef } from "../../core";
 import { ContainerComponent } from "../../core";
 import { useCursorInside, useEvents } from "../../../hooks";
@@ -62,51 +62,65 @@ export const ScrollableContainerComponent: FC<Props> = ({
     [setScrollYPosition],
   );
 
-  return (
-    <ContainerComponent {...containerProps} {...cursorInsideProps}>
-      {/*<GraphicsComponent*/}
-      {/*  type={GraphicType.RECTANGLE}*/}
-      {/*  width={size.width}*/}
-      {/*  height={maxHeight}*/}
-      {/*  eventMode={EventMode.NONE}*/}
-      {/*  alpha={0}*/}
-      {/*  tint={0xff00ff}*/}
-      {/*/>*/}
-      <ScrollComponent
-        height={size.height}
-        position={{
-          x: size.width,
-        }}
-        maxHeight={maxHeight}
-        onScroll={onScroll}
-        isCursorInside={isCursorInside}
-        scrollYPosition={scrollYPosition}
-        {...scrollbar}
-      />
-      <ContainerComponent
-        cursor={Cursor.POINTER}
-        sortableChildren
-        maskPolygon={[
-          0,
-          0,
-          size.width,
-          0,
-          size.width,
-          size.height,
-          0,
-          size.height,
-        ]}
-        pivot={{
-          y: scrollYPosition,
-        }}
-        {...cursorInsideContentProps}
-      >
-        {children}
+  return useMemo(
+    () => (
+      <ContainerComponent {...containerProps} {...cursorInsideProps}>
+        {/*<GraphicsComponent*/}
+        {/*  type={GraphicType.RECTANGLE}*/}
+        {/*  width={size.width}*/}
+        {/*  height={maxHeight}*/}
+        {/*  eventMode={EventMode.NONE}*/}
+        {/*  alpha={0}*/}
+        {/*  tint={0xff00ff}*/}
+        {/*/>*/}
+        <ScrollComponent
+          height={size.height}
+          position={{
+            x: size.width,
+          }}
+          maxHeight={maxHeight}
+          onScroll={onScroll}
+          isCursorInside={isCursorInside}
+          scrollYPosition={scrollYPosition}
+          {...scrollbar}
+        />
+        <ContainerComponent
+          cursor={Cursor.POINTER}
+          sortableChildren
+          maskPolygon={[
+            0,
+            0,
+            size.width,
+            0,
+            size.width,
+            size.height,
+            0,
+            size.height,
+          ]}
+          pivot={{
+            y: scrollYPosition,
+          }}
+          {...cursorInsideContentProps}
+        >
+          {children}
+        </ContainerComponent>
+        {/*Allows the calc of the real height*/}
+        <ContainerComponent visible={false} ref={contentRef}>
+          {children}
+        </ContainerComponent>
       </ContainerComponent>
-      {/*Allows the calc of the real height*/}
-      <ContainerComponent visible={false} ref={contentRef}>
-        {children}
-      </ContainerComponent>
-    </ContainerComponent>
+    ),
+    [
+      containerProps,
+      cursorInsideProps,
+      size,
+      maxHeight,
+      onScroll,
+      isCursorInside,
+      scrollYPosition,
+      scrollbar,
+      cursorInsideContentProps,
+      children,
+    ],
   );
 };

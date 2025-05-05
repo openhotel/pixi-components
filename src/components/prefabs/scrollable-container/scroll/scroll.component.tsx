@@ -191,55 +191,71 @@ export const ScrollComponent: FC<Props> = ({
     setGoDown(false);
   }, [canScroll, setGoDown]);
 
-  return (
-    <ContainerComponent {...containerProps}>
-      <ContainerComponent
-        ref={renderTopRef}
-        eventMode={EventMode.STATIC}
-        cursor={Cursor.POINTER}
-        onPointerDown={onPointerDownTop}
-        onPointerUp={onPointerTopUp}
-      >
-        <RenderTop />
-      </ContainerComponent>
-      <ContainerComponent
-        position={{
-          y: topHeight,
-        }}
-        sortableChildren
-      >
+  return useMemo(
+    () => (
+      <ContainerComponent {...containerProps}>
         <ContainerComponent
+          ref={renderTopRef}
           eventMode={EventMode.STATIC}
           cursor={Cursor.POINTER}
+          onPointerDown={onPointerDownTop}
+          onPointerUp={onPointerTopUp}
         >
-          <RenderScrollBackground />
+          <RenderTop />
         </ContainerComponent>
         <ContainerComponent
-          ref={renderScrollBarRef}
-          eventMode={EventMode.STATIC}
-          cursor={Cursor.GRAB}
-          visible={canScroll}
           position={{
-            y: thumbY,
+            y: topHeight,
           }}
-          onPointerDown={onPointerDownScrollBar}
-          zIndex={10}
+          sortableChildren
         >
-          <RenderScrollBar />
+          <ContainerComponent
+            eventMode={EventMode.STATIC}
+            cursor={Cursor.POINTER}
+          >
+            <RenderScrollBackground />
+          </ContainerComponent>
+          <ContainerComponent
+            ref={renderScrollBarRef}
+            eventMode={EventMode.STATIC}
+            cursor={Cursor.GRAB}
+            visible={canScroll}
+            position={{
+              y: thumbY,
+            }}
+            onPointerDown={onPointerDownScrollBar}
+            zIndex={10}
+          >
+            <RenderScrollBar />
+          </ContainerComponent>
+        </ContainerComponent>
+        <ContainerComponent
+          ref={renderBottomRef}
+          position={{
+            y: height - topHeight,
+          }}
+          eventMode={EventMode.STATIC}
+          cursor={Cursor.POINTER}
+          onPointerDown={onPointerDownBottom}
+          onPointerUp={onPointerBottomUp}
+        >
+          <RenderBottom />
         </ContainerComponent>
       </ContainerComponent>
-      <ContainerComponent
-        ref={renderBottomRef}
-        position={{
-          y: height - topHeight,
-        }}
-        eventMode={EventMode.STATIC}
-        cursor={Cursor.POINTER}
-        onPointerDown={onPointerDownBottom}
-        onPointerUp={onPointerBottomUp}
-      >
-        <RenderBottom />
-      </ContainerComponent>
-    </ContainerComponent>
+    ),
+    [
+      containerProps,
+      renderTopRef,
+      onPointerDownTop,
+      onPointerTopUp,
+      topHeight,
+      canScroll,
+      thumbY,
+      onPointerDownScrollBar,
+      height,
+      topHeight,
+      onPointerDownBottom,
+      onPointerBottomUp,
+    ],
   );
 };
