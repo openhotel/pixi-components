@@ -39,10 +39,19 @@ export const ScrollableContainerComponent: FC<Props> = ({
   const onPointerUp = useCallback(() => {}, []);
 
   useEffect(() => {
-    //reset scroll every time children is rerendered
-    setScrollYPosition(0);
-    //assign new height if children is rerendered
-    setMaxHeight(contentRef.current.getSize().height);
+    setMaxHeight((maxHeight) => {
+      const targetMaxHeight = contentRef.current.getSize().height;
+
+      if (targetMaxHeight === maxHeight) return maxHeight;
+
+      setScrollYPosition((scrollYPosition) =>
+        //assign the new max height if scroll is exceeding the new max
+        scrollYPosition > targetMaxHeight && maxHeight > targetMaxHeight
+          ? targetMaxHeight
+          : scrollYPosition,
+      );
+      return targetMaxHeight;
+    });
   }, [setScrollYPosition, setMaxHeight, children]);
 
   useEffect(() => {
@@ -62,7 +71,21 @@ export const ScrollableContainerComponent: FC<Props> = ({
     [setScrollYPosition],
   );
 
-  return useMemo(
+  /*Allows the calc of the real height*/
+  const renderMaxContent = useMemo(
+    () => (
+      <ContainerComponent
+        visible={false}
+        ref={contentRef}
+        // onChildLoaded={onChildLoaded}
+      >
+        {children}
+      </ContainerComponent>
+    ),
+    [children],
+  );
+
+  const renderContent = useMemo(
     () => (
       <ContainerComponent {...containerProps} {...cursorInsideProps}>
         {/*<GraphicsComponent*/}
@@ -104,10 +127,6 @@ export const ScrollableContainerComponent: FC<Props> = ({
         >
           {children}
         </ContainerComponent>
-        {/*Allows the calc of the real height*/}
-        <ContainerComponent visible={false} ref={contentRef}>
-          {children}
-        </ContainerComponent>
       </ContainerComponent>
     ),
     [
@@ -122,5 +141,15 @@ export const ScrollableContainerComponent: FC<Props> = ({
       cursorInsideContentProps,
       children,
     ],
+  );
+
+  return useMemo(
+    () => (
+      <>
+        {renderMaxContent}
+        {renderContent}
+      </>
+    ),
+    [renderMaxContent, renderContent],
   );
 };
