@@ -59,7 +59,6 @@
     "build-storybook": "storybook build",
     "build": "vite build",
     "build:watch": "nodemon",
-    "publish": "npm publish --provenance --access public",
     "link": "npm link"
   }
 }
