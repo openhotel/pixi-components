@@ -127,8 +127,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
         textRef.current.slice(cursorIndexRef.current);
 
       cursorIndexRef.current++;
-
-      console.log(cursorIndexRef.current);
     },
     [update, maxLength, isCharValid],
   );
