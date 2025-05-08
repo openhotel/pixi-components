@@ -405,13 +405,14 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
       <ContainerComponent
         maskPolygon={[
           padding?.left ?? 0,
-          0,
+          padding?.top ?? 0,
           width + (padding?.right ?? 0),
-          0,
+          padding?.top ?? 0,
           width + (padding?.right ?? 0),
-          height + (padding?.bottom ?? 0),
+          //the extra +1 is because this is a polygon and the height needs to be included!
+          height + (padding?.bottom ?? 0) + 1,
           padding?.left ?? 0,
-          height + (padding?.bottom ?? 0),
+          height + (padding?.bottom ?? 0) + 1,
         ]}
         position={{
           x: padding?.left ?? 0,
