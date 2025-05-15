@@ -334,7 +334,6 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
 
   useEffect(() => {
     textRef.current = value ?? textRef.current ?? "";
-    cursorIndexRef.current = textRef.current.length;
     update();
   }, [value, update]);
 
