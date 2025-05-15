@@ -333,14 +333,10 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [on, onKeyDown, onKeyUp, onPaste]);
 
   useEffect(() => {
-    const isExternalChange = value !== textRef.current;
+    if (value === textRef.current) return;
 
     textRef.current = value ?? textRef.current ?? "";
-
-    if (isExternalChange) {
-      cursorIndexRef.current = textRef.current.length;
-    }
-
+    cursorIndexRef.current = textRef.current.length;
     update()
   }, [value, update]);
 
