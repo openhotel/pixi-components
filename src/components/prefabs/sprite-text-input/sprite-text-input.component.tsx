@@ -333,8 +333,15 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [on, onKeyDown, onKeyUp, onPaste]);
 
   useEffect(() => {
+    const isExternalChange = value !== textRef.current;
+
     textRef.current = value ?? textRef.current ?? "";
-    update();
+
+    if (isExternalChange) {
+      cursorIndexRef.current = textRef.current.length;
+    }
+
+    update()
   }, [value, update]);
 
   const $onFocus = useCallback(() => {
