@@ -119,7 +119,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
     (key: string, event: KeyboardEvent) => {
       if (key.length !== 1 || !isCharValid(key)) return;
 
-      if (textRef?.current?.length + 1 >= maxLength) return;
+      if (textRef?.current?.length >= maxLength) return;
 
       textRef.current =
         textRef.current.slice(0, cursorIndexRef.current) +
