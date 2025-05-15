@@ -337,7 +337,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
 
     textRef.current = value ?? textRef.current ?? "";
     cursorIndexRef.current = textRef.current.length;
-    update()
+    update();
   }, [value, update]);
 
   const $onFocus = useCallback(() => {
