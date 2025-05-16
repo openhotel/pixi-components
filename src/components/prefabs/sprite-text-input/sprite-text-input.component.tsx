@@ -313,8 +313,14 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
 
   const onPaste = useCallback(
     (text: string) => {
-      textRef.current = (textRef.current + text).substring(0, maxLength);
-      cursorIndexRef.current = textRef.current.length;
+      const cursorIndex = cursorIndexRef.current;
+      const currentText = textRef.current;
+
+      const before = currentText.slice(0, cursorIndex);
+      const after = currentText.slice(cursorIndex);
+
+      textRef.current = (before + text + after).slice(0, maxLength);
+      cursorIndexRef.current = before.length + text.length;
       update();
     },
     [maxLength, update],
