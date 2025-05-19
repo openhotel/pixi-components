@@ -29,6 +29,7 @@ export type DisplayObjectProps<DisplayRef> = {
   onPointerUp?: (event: unknown) => void;
   onPointerEnter?: (event: unknown) => void;
   onPointerLeave?: (event: unknown) => void;
+  onPointerMove?: (event: unknown) => void;
 };
 
 export type DisplayObjectRefProps<PixiDisplay> = {
