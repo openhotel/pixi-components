@@ -119,7 +119,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
     (key: string, event: KeyboardEvent) => {
       if (key.length !== 1 || !isCharValid(key)) return;
 
-      if (textRef?.current?.length + 1 >= maxLength) return;
+      if (textRef?.current?.length >= maxLength) return;
 
       textRef.current =
         textRef.current.slice(0, cursorIndexRef.current) +
@@ -313,8 +313,14 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
 
   const onPaste = useCallback(
     (text: string) => {
-      textRef.current = (textRef.current + text).substring(0, maxLength);
-      cursorIndexRef.current = textRef.current.length;
+      const cursorIndex = cursorIndexRef.current;
+      const currentText = textRef.current;
+
+      const before = currentText.slice(0, cursorIndex);
+      const after = currentText.slice(cursorIndex);
+
+      textRef.current = (before + text + after).slice(0, maxLength);
+      cursorIndexRef.current = before.length + text.length;
       update();
     },
     [maxLength, update],
@@ -333,6 +339,8 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [on, onKeyDown, onKeyUp, onPaste]);
 
   useEffect(() => {
+    if (value === textRef.current) return;
+
     textRef.current = value ?? textRef.current ?? "";
     cursorIndexRef.current = textRef.current.length;
     update();
