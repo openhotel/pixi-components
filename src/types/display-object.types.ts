@@ -23,11 +23,13 @@ export type DisplayObjectProps<DisplayRef> = {
   alpha?: number;
   zIndex?: number;
   visible?: boolean;
+  angle?: number;
 
   onPointerDown?: (event: unknown) => void;
   onPointerUp?: (event: unknown) => void;
   onPointerEnter?: (event: unknown) => void;
   onPointerLeave?: (event: unknown) => void;
+  onPointerMove?: (event: unknown) => void;
 };
 
 export type DisplayObjectRefProps<PixiDisplay> = {
@@ -52,6 +54,7 @@ export type DisplayObjectRefProps<PixiDisplay> = {
   readonly alpha?: Readonly<number>;
   readonly zIndex?: Readonly<number>;
   readonly visible?: Readonly<boolean>;
+  readonly angle?: Readonly<number>;
 } & DisplayObjectRefFunctions;
 
 export type DisplayObjectRefFunctions = {
