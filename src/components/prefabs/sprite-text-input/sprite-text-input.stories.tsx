@@ -110,3 +110,60 @@ export const Multiple = () => {
     </ContainerComponent>
   );
 };
+
+export const ExternalChanges = () => {
+  const [rotatingValue, setRotatingValue] = useState<string>("");
+  const [numberAppendingValue, setNumberAppendingValue] = useState<string>("");
+
+  const words = ["rotating", "words", "appear", "on", "this", "input"];
+
+  useEffect(() => {
+    let wordIndex = 0;
+
+    const interval = setInterval(() => {
+      setRotatingValue(words[wordIndex]);
+      wordIndex = (wordIndex + 1) % words.length;
+
+      setNumberAppendingValue((prev) => prev + Math.floor(Math.random() * 10));
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <ContainerComponent position={{ x: 20, y: 20 }}>
+      <SpriteTextInputComponent
+        height={10}
+        width={150}
+        padding={{
+          left: 10,
+          bottom: 5,
+          right: 10,
+          top: 5,
+        }}
+        backgroundColor={0xff00ff}
+        spriteSheet="/assets/fonts/default-font.json"
+        onChange={(e) => setRotatingValue(e.target.value)}
+        value={rotatingValue}
+      />
+
+      <SpriteTextInputComponent
+        height={10}
+        width={150}
+        padding={{
+          left: 10,
+          bottom: 5,
+          right: 10,
+          top: 5,
+        }}
+        position={{
+          y: 25,
+        }}
+        backgroundColor={0x00ffff}
+        spriteSheet="/assets/fonts/default-font.json"
+        onChange={(e) => setNumberAppendingValue(e.target.value)}
+        value={numberAppendingValue}
+      />
+    </ContainerComponent>
+  );
+};
