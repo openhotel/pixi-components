@@ -34,7 +34,7 @@ export const InputProvider: FC<InputProps> = ({ children }) => {
     const input = document.createElement("input");
     input.style.position = "absolute";
     input.style.left = "-20px";
-    input.style.top = "-20px";
+    input.style.top = "-30px";
     input.style.zIndex = "-10";
     document.body.append(input);
 
