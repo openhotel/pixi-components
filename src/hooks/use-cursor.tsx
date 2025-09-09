@@ -31,8 +31,8 @@ export const CursorProvider: FC<CursorProps> = ({ children }) => {
 
   const position = useRef<Point>({ x: 0, y: 0 });
 
-  const onPointerMove = useCallback(
-    (event: MouseEvent | TouchEvent) => {
+  const getPositionFromEvent = useCallback(
+    (event: MouseEvent | TouchEvent): Point => {
       let targetX = 0;
       let targetY = 0;
 
@@ -45,22 +45,31 @@ export const CursorProvider: FC<CursorProps> = ({ children }) => {
         targetY = touch.clientY;
       }
 
-      const $position = {
+      return {
         x: normalizeValue(targetX),
         y: normalizeValue(targetY),
       };
+    },
+    [normalizeValue],
+  );
 
-      if (position.current.x === targetX && position.current.y === targetY)
-        return;
-
+  const onPointerMove = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      const $position = getPositionFromEvent(event);
       position.current = $position;
       emit(Event.CURSOR_MOVE, $position);
     },
     [normalizeValue, on, emit],
   );
-  const onPointerDown = useCallback(() => {
-    emit(Event.CURSOR_DOWN, position.current);
-  }, [emit]);
+
+  const onPointerDown = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      const $position = getPositionFromEvent(event);
+      position.current = $position;
+      emit(Event.CURSOR_DOWN, $position);
+    },
+    [normalizeValue, emit],
+  );
 
   const setCursor = useCallback(
     (cursor: Cursor) => {
