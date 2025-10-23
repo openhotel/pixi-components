@@ -44,8 +44,12 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
     const { offsetHeight, offsetWidth } = application.canvas.parentElement;
 
     return {
-      width: sizeRef?.current?.width ?? _getOddExtra(Math.round(offsetWidth / $scale)),
-      height: sizeRef?.current?.height ?? _getOddExtra(Math.round(offsetHeight / $scale)),
+      width:
+        sizeRef?.current?.width ??
+        _getOddExtra(Math.round(offsetWidth / $scale)),
+      height:
+        sizeRef?.current?.height ??
+        _getOddExtra(Math.round(offsetHeight / $scale)),
     };
   }, [application, $scale]);
 
@@ -92,7 +96,7 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
 
   const getScale = useCallback(() => $scale, [$scale]);
   const getSize = useCallback(() => currentSizeRef.current, []);
-  
+
   const setSize = useCallback((size: Size | null) => {
     sizeRef.current = size;
     $resize();
@@ -111,7 +115,7 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
         normalizeValue,
 
         getSize,
-        setSize
+        setSize,
       }}
       children={children}
     />
