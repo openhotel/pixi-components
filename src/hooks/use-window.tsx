@@ -19,6 +19,7 @@ type WindowState = {
   normalizeValue: (value: number) => number;
 
   getSize: () => Size;
+  setSize: (size: Size | null) => void;
 };
 
 const WindowContext = createContext<WindowState>(undefined);
@@ -35,15 +36,20 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
   const { application } = useApplication();
   const { emit } = useEvents();
 
-  const sizeRef = useRef<Size>({ width: 0, height: 0 });
+  const sizeRef = useRef<Size | null>(null);
+  const currentSizeRef = useRef<Size>({ width: 0, height: 0 });
   const [$scale, setScale] = useState<number>(scale);
 
   const $getSize = useCallback(() => {
     const { offsetHeight, offsetWidth } = application.canvas.parentElement;
 
     return {
-      width: _getOddExtra(Math.round(offsetWidth / $scale)),
-      height: _getOddExtra(Math.round(offsetHeight / $scale)),
+      width:
+        sizeRef?.current?.width ??
+        _getOddExtra(Math.round(offsetWidth / $scale)),
+      height:
+        sizeRef?.current?.height ??
+        _getOddExtra(Math.round(offsetHeight / $scale)),
     };
   }, [application, $scale]);
 
@@ -63,7 +69,7 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
     // "calc(100vh - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px))";
 
     const $size = $getSize();
-    sizeRef.current = $size;
+    currentSizeRef.current = $size;
     emit<Size>(Event.RESIZE, $size);
 
     application.renderer.resolution = $scale * Math.round(devicePixelRatio);
@@ -89,7 +95,12 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
   }, [$resize]);
 
   const getScale = useCallback(() => $scale, [$scale]);
-  const getSize = useCallback(() => sizeRef.current, []);
+  const getSize = useCallback(() => currentSizeRef.current, []);
+
+  const setSize = useCallback((size: Size | null) => {
+    sizeRef.current = size;
+    $resize();
+  }, []);
 
   useEffect(() => {
     setScale(scale);
@@ -104,6 +115,7 @@ export const WindowProvider: FC<WindowProps> = ({ children, scale = 2 }) => {
         normalizeValue,
 
         getSize,
+        setSize,
       }}
       children={children}
     />
