@@ -407,7 +407,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
       ref={containerRef}
       {...containerProps}
       eventMode={enabled ? EventMode.STATIC : EventMode.NONE}
-      cursor={enabled ? Cursor.NOT_ALLOWED : Cursor.POINTER}
+      cursor={enabled ? Cursor.POINTER : Cursor.NOT_ALLOWED}
       {...componentContext}
     >
       <GraphicsComponent
