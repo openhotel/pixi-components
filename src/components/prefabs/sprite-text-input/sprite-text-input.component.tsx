@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import type { FC } from "react";
-import { SpriteTextComponent } from "../sprite-text";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import type { SpriteTextProps, TextProps } from "../sprite-text";
-import { ContainerComponent, GraphicsComponent } from "../../core";
+import { SpriteTextComponent } from "../sprite-text";
 import type { ContainerRef } from "../../core";
+import { ContainerComponent, GraphicsComponent } from "../../core";
 import { Cursor, Event, EventMode, GraphicType, OS } from "../../../enums";
 import {
   useComponentContext,
@@ -44,6 +44,8 @@ export type SpriteTextInputProps = {
 
   onFocus?: () => void;
   onBlur?: () => void;
+
+  enabled?: boolean;
 } & Omit<
   SpriteTextProps,
   "text" | "wrap" | "color" | "backgroundAlpha" | "backgroundColor"
@@ -66,6 +68,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   placeholder,
   placeholderProps,
   clearOnEnter = false,
+  enabled = true,
   //
   onChange,
 
@@ -347,11 +350,13 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
   }, [value, update]);
 
   const $onFocus = useCallback(() => {
+    if (!enabled) return;
+
     isFocusedRef.current = true;
     startCursorBlink();
     focusInput();
     onFocus?.();
-  }, [focusInput, onFocus]);
+  }, [focusInput, onFocus, enabled]);
 
   const $onBlur = useCallback(() => {
     isFocusedRef.current = false;
@@ -364,7 +369,7 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
     containerRef,
     onBlur: $onBlur,
     onFocus: $onFocus,
-    focusNow,
+    focusNow: enabled ? focusNow : null,
     blurNow,
   });
 
@@ -373,6 +378,10 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
 
   let textCursorOverflowX = cursorTextWidth - width;
   textCursorOverflowX = textCursorOverflowX > 0 ? textCursorOverflowX : 0;
+
+  useEffect(() => {
+    $onBlur();
+  }, [enabled, $onBlur]);
 
   const renderCursor = (
     <GraphicsComponent
@@ -397,8 +406,8 @@ export const SpriteTextInputComponent: FC<SpriteTextInputProps> = ({
       label={label}
       ref={containerRef}
       {...containerProps}
-      eventMode={EventMode.STATIC}
-      cursor={Cursor.POINTER}
+      eventMode={enabled ? EventMode.STATIC : EventMode.NONE}
+      cursor={enabled ? Cursor.NOT_ALLOWED : Cursor.POINTER}
       {...componentContext}
     >
       <GraphicsComponent

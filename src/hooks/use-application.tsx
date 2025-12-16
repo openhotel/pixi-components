@@ -116,7 +116,7 @@ const WrapperApplicationProvider: FC<ApplicationProps & ApplicationState> = ({
 
 export const ApplicationProvider: FC<ApplicationProps> = ({
   backgroundColor,
-  backgroundAlpha,
+  backgroundAlpha = 0,
   preference = "webgpu",
   ...props
 }) => {
