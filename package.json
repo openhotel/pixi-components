@@ -15,7 +15,7 @@
     "node": "22"
   },
   "repository": {
-    "url": "https://github.com/openhotel/pixi-components"
+    "url": "git+https://github.com/openhotel/pixi-components.git"
   },
   "packageManager": "yarn@4.6.0",
   "devDependencies": {

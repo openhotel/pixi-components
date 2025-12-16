@@ -52,5 +52,4 @@ jobs:
 
       - name: Publish package
         run: npm install -g npm@latest
-      - run: npm ci
-      - run: npm publish --access public
+      - run: npm publish --access public --tag latest
