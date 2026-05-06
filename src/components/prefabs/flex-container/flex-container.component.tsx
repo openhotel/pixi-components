@@ -61,6 +61,9 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
     const totalEmptySize = $size[sizeName] - totalItemSize;
     let lastItemPosition = 0;
 
+    //remove gap when only one child
+    const $gap = childList.length === 1 ? 0 : gap;
+
     for (let childIndex = 0; childIndex < childList.length; childIndex++) {
       let child = childList[childIndex];
 
@@ -73,19 +76,19 @@ export const FlexContainerComponent: FC<FlexContainerProps> = ({
       switch (justify) {
         case FLEX_JUSTIFY.START:
           child.position[direction] = Math.round(lastItemPosition);
-          lastItemPosition = lastItemPosition + itemSizeW + gap;
+          lastItemPosition = lastItemPosition + itemSizeW + $gap;
           break;
         case FLEX_JUSTIFY.END:
           child.position[direction] = Math.round(
             $size[sizeName] - itemSizeW - lastItemPosition,
           );
-          lastItemPosition += itemSizeW + gap;
+          lastItemPosition += itemSizeW + $gap;
           break;
         case FLEX_JUSTIFY.CENTER:
           child.position[direction] = Math.round(
-            lastItemPosition + totalEmptySize / 2 - gap,
+            lastItemPosition + totalEmptySize / 2 - $gap,
           );
-          lastItemPosition += itemSizeW + gap;
+          lastItemPosition += itemSizeW + $gap;
           break;
         case FLEX_JUSTIFY.SPACE_EVENLY:
           child.position[direction] = Math.round(
