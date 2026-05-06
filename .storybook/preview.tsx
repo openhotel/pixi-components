@@ -125,11 +125,25 @@ export const decorators = [
     }, [props]);
 
     return (
-      <ApplicationProvider scale={scale} backgroundColor={backgroundColor}>
-        <ApplicationWrapper props={props}>
-          {withConsole()(renderStory)(props)}
-        </ApplicationWrapper>
-      </ApplicationProvider>
+      <>
+        <div style={{ position: "absolute" }}>
+          <img
+            style={{ cursor: "pointer" }}
+            src="https://fastly.picsum.photos/id/702/200/300.jpg?hmac=mkz0etLNxZEtcZKYuBuDYD9KewX-7Tv_qsT6aFO0bCU"
+          />
+        </div>
+        <div style={{ position: "absolute" }}>
+          <ApplicationProvider
+            scale={scale}
+            backgroundColor={backgroundColor}
+            backgroundAlpha={0}
+          >
+            <ApplicationWrapper props={props}>
+              {withConsole()(renderStory)(props)}
+            </ApplicationWrapper>
+          </ApplicationProvider>
+        </div>
+      </>
     );
   },
 ];
