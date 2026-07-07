@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect } from "react";
 import type { ReactNode, FC } from "react";
-import { useEvents } from ".";
+import { useEvents } from "./";
 import { Event } from "../enums";
 
 type InputState = {

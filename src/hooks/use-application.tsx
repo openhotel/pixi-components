@@ -20,9 +20,9 @@ import {
   useEvents,
   ContextProvider,
   InputProvider,
-} from ".";
+} from "./";
 import { Event } from "../enums";
-import { SystemProvider } from ".";
+import { SystemProvider } from "./";
 
 type ApplicationState = {
   /**

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { RefObject } from "react";
-import { usePointerOutside, useContext } from ".";
+import { usePointerOutside, useContext } from "./";
 import type { ContainerRef } from "../components";
 
 type Props = {
