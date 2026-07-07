@@ -67,9 +67,9 @@ jobs:
       - name: run build
         run: yarn run build
 
-#      - name: Publish package
-#        run: npm install -g npm@latest
-#      - run: npm publish --access public --tag latest
+      #      - name: Publish package
+      #        run: npm install -g npm@latest
+      #      - run: npm publish --access public --tag latest
 
       - name: Publish package
         run: yarn run publish
