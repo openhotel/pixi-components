@@ -59,6 +59,8 @@
     "build-storybook": "storybook build",
     "build": "vite build",
     "build:watch": "nodemon",
-    "link": "npm link"
+    "link": "npm link",
+    "publish": "npx jsr publish --allow-dirty",
+    "publish:check": "npx jsr publish --allow-dirty --dry-run"
   }
 }
