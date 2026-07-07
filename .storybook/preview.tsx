@@ -126,6 +126,10 @@ export const decorators = [
 
     return (
       <>
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
         <div style={{ position: "absolute" }}>
           <img
             style={{ cursor: "pointer" }}
