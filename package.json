@@ -46,7 +46,7 @@
     "build": "vite build",
     "build:watch": "nodemon",
     "link": "npm link",
-    "publish": "npx jsr publish --allow-dirty",
-    "publish:check": "npx jsr publish --allow-dirty --dry-run"
+    "publish": "npx jsr publish --allow-slow-types --allow-dirty",
+    "publish:check": "npx jsr publish --allow-dirty --allow-slow-types --dry-run"
   }
 }
