@@ -1,4 +1,4 @@
-import { useTextures } from ".";
+import { useTextures } from "./";
 import { useCallback, useMemo } from "react";
 
 export const useText = (spriteSheet: string) => {
