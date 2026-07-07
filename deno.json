@@ -1,6 +1,0 @@
-{
-  "name": "@oh/pixi-components",
-  "version": "0.0.0",
-  "exports": "./index.ts",
-  "nodeModulesDir": "auto"
-}

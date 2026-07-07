@@ -1,6 +1,6 @@
 import type { Ref, ReactNode } from "react";
 import { Cursor, EventMode } from "../enums";
-import type { Point, Size, Bounds } from "./";
+import type { Point, Size, Bounds } from ".";
 import { AnimatedSprite, Container, Graphics, Sprite } from "pixi.js";
 
 export type DisplayObject = AnimatedSprite | Sprite | Container | Graphics;
