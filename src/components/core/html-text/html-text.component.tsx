@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback, useImperativeHandle } from "react";
 import type { FC } from "react";
 
 import { extend } from "@pixi/react";
@@ -10,6 +10,7 @@ import {
 } from "pixi.js";
 import { DisplayObjectProps, type DisplayObjectRefProps } from "../../../types";
 import { useDisplayObject } from "../../../hooks";
+import { getDisplayObjectRefFunctions } from "../../../utils";
 
 extend({
   HtmlText: HTMLText,
@@ -30,6 +31,18 @@ export type HtmlTextProps = {
 export const HtmlTextComponent: FC<HtmlTextProps> = ({ ref, ...props }) => {
   const textRef = useRef<HTMLText>(null);
   const $props = useDisplayObject(props);
+
+  const getRefProps = useCallback(
+    (): HtmlTextRef => ({
+      ...getDisplayObjectRefFunctions(textRef.current),
+      ...$props,
+      text: props.text,
+      component: textRef.current,
+    }),
+    [textRef.current, $props, props.text],
+  );
+
+  useImperativeHandle(ref, getRefProps, [getRefProps]);
 
   return <pixiHtmlText ref={textRef} {...$props} />;
 };
