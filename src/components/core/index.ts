@@ -6,3 +6,4 @@ export * from "./animated-sprite";
 export * from "./tiling-sprite";
 export * from "./text";
 export * from "./html-text";
+export * from "./bitmap-text";
