@@ -33,6 +33,7 @@ const preview = {
       toolbar: {
         title: "Scale 2",
         items: [
+          { value: 1 / 2, title: "Scale 1/2" },
           { value: 1, title: "Scale 1" },
           { value: 2, title: "Scale 2" },
           { value: 3, title: "Scale 3" },
