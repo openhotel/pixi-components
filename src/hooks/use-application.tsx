@@ -33,7 +33,7 @@ type ApplicationState = {
   scale?: number;
 };
 
-const ApplicationContext = createContext<ApplicationState>(undefined);
+const ApplicationContext = createContext<ApplicationState | null>(null);
 
 type ApplicationProps = {
   children: ReactNode;
@@ -42,6 +42,7 @@ type ApplicationProps = {
   backgroundColor?: number;
   backgroundAlpha?: number;
   preference?: "webgpu" | "webgl";
+  preserveDrawingBuffer?: boolean;
 };
 
 const WrapperApplicationProvider: FC<ApplicationProps & ApplicationState> = ({
@@ -118,6 +119,7 @@ export const ApplicationProvider: FC<ApplicationProps> = ({
   backgroundColor,
   backgroundAlpha = 0,
   preference = "webgpu",
+  preserveDrawingBuffer,
   ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -162,14 +164,22 @@ export const ApplicationProvider: FC<ApplicationProps> = ({
         antialias={true}
         backgroundColor={backgroundColor}
         backgroundAlpha={backgroundAlpha}
+        preserveDrawingBuffer={preserveDrawingBuffer}
       >
         {isLoaded ? (
-          <WrapperApplicationProvider {...props} application={application} />
+          <WrapperApplicationProvider {...props} application={application!} />
         ) : null}
       </Application>
     </EventsProvider>
   );
 };
 
-export const useApplication = (): ApplicationState =>
-  useContext(ApplicationContext);
+export const useApplication = (): ApplicationState => {
+  const context = useContext(ApplicationContext);
+  if (!context) {
+    throw new Error(
+      "useApplication must be used within an ApplicationProvider",
+    );
+  }
+  return context;
+};
