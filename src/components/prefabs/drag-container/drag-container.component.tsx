@@ -83,6 +83,10 @@ const DragContainerComponentWrapper: FC<DragContainerComponentProps> = ({
     containerRef.current.component.zIndex = maxZIndex;
 
     $firstPosition.current = { ...containerRef.current.position };
+
+    // TODO: Check the race condition here. The problem is that this getCursorPosition() is called BEFORE the use-cursor
+    // onPointerDown, so the position used here is the LAST set position (which is the last onPointerMove position), not the
+    // current one
     $firstCursorPosition.current = getCursorPosition();
     setCursor(Cursor.GRABBING);
   }, [getCursorPosition, getScale, maxZIndex]);
